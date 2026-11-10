@@ -1,0 +1,506 @@
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #F5F8FC;
+    color: #142B4A;
+}
+
+/* LAYOUT UTAMA */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background: #142B4A;
+    color: white;
+    min-height: 100vh;
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 65px;
+}
+
+.brand h2 {
+    font-size: 19px;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    background: white;
+    color: #142B4A;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* MENU SIDEBAR */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu a,
+.logout {
+    text-decoration: none;
+    color: #E2EAF5;
+    padding: 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+}
+
+.menu a span,
+.logout span {
+    font-size: 22px;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: #3478C8;
+    color: white;
+}
+
+.logout {
+    margin-top: auto;
+    border-top: 1px solid #526780;
+    border-radius: 0;
+    padding-top: 25px;
+}
+
+/* AREA UTAMA */
+.main-content {
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+    height: 85px;
+    background: white;
+    border-bottom: 1px solid #DCE7F5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 45px;
+    color: #142B4A;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile strong,
+.profile small {
+    display: block;
+}
+
+.profile small {
+    color: #64748B;
+    margin-top: 4px;
+}
+
+.avatar {
+    width: 43px;
+    height: 43px;
+    background: #DCEBFF;
+    color: #3478C8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 19px;
+}
+
+/* KONTEN */
+.content {
+    padding: 40px 45px;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.page-heading {
+    margin-bottom: 30px;
+}
+
+.page-heading h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.page-heading p,
+.card-heading p,
+.discussion-heading p {
+    color: #64748B;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* FORM CARD */
+.form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #DCE7F5;
+    margin-bottom: 40px;
+}
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.card-heading h2 {
+    font-size: 22px;
+    margin-bottom: 7px;
+}
+
+.heading-icon {
+    width: 48px;
+    height: 48px;
+    background: #E3F0FF;
+    color: #3478C8;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+/* INPUT FORM */
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.reply-form textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #DCE7F5;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #142B4A;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.reply-form textarea:focus {
+    outline: none;
+    border-color: #3478C8;
+}
+
+.form-group textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.form-footer span {
+    color: #64748B;
+    font-size: 13px;
+}
+
+/* TOMBOL */
+button {
+    background: #3478C8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 22px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #142B4A;
+}
+
+/* JUDUL DISKUSI */
+.discussion-heading {
+    margin-bottom: 20px;
+}
+
+.discussion-heading h2 {
+    font-size: 23px;
+    margin-bottom: 7px;
+}
+
+/* CARD TOPIK */
+.topic-card {
+    background: white;
+    border: 1px solid #DCE7F5;
+    border-radius: 13px;
+    padding: 25px;
+    margin-bottom: 22px;
+}
+
+.topic-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.topic-category {
+    background: #E3F0FF;
+    color: #2464A8;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.topic-status {
+    background: #FFF4D6;
+    color: #9A6700;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.topic-card h3 {
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.topic-info {
+    color: #64748B;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.topic-content {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    color: #334155;
+}
+
+/* TANGGAPAN EXPERT */
+.response-area {
+    border-top: 1px solid #DCE7F5;
+    padding-top: 20px;
+}
+
+.response-area h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.response-card {
+    background: #F0F6FF;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.expert-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.expert-avatar {
+    background: #142B4A;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.expert-label {
+    background: #DCEBFF;
+    color: #2464A8;
+    border-radius: 15px;
+    padding: 5px 9px;
+    font-size: 11px;
+}
+
+.response-card p {
+    line-height: 1.7;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.response-card small {
+    color: #64748B;
+}
+
+.empty-response {
+    color: #64748B;
+    font-size: 13px;
+    padding: 10px 0;
+}
+
+/* FORM BALASAN */
+.reply-form {
+    margin-top: 20px;
+}
+
+.reply-form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* PESAN */
+.success {
+    background: #DCFCE7;
+    color: #166534;
+    border: 1px solid #BBF7D0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.error {
+    background: #FEE2E2;
+    color: #B91C1C;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.error p {
+    margin-bottom: 5px;
+}
+
+/* DATA KOSONG */
+.empty-data {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid #DCE7F5;
+    border-radius: 12px;
+}
+
+.empty-data p {
+    color: #64748B;
+    margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main-content {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+
+    .content {
+        padding: 25px;
+    }
+
+    .topbar {
+        padding: 0 25px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .sidebar {
+        width: 75px;
+        padding: 20px 10px;
+    }
+
+    .brand h2,
+    .menu a:not(.active),
+    .logout {
+        font-size: 0;
+    }
+
+    .brand {
+        justify-content: center;
+    }
+
+    .menu a {
+        justify-content: center;
+        padding: 15px 5px;
+        font-size: 0;
+    }
+
+    .menu a span {
+        font-size: 22px;
+    }
+
+    .main-content {
+        margin-left: 75px;
+        width: calc(100% - 75px);
+    }
+
+    .content {
+        padding: 20px 15px;
+    }
+
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .form-card {
+        padding: 18px;
+    }
+
+    .form-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
