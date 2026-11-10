@@ -1,0 +1,282 @@
+/* =============================================================================
+   FILE        : style.css
+   DESKRIPSI   : Layout CSS Eksternal (Pure CSS) Sesuai Mockup UI Aspirasi Kampus[cite: 1]
+   ============================================================================= */
+
+/* Reset Dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f1f5f9;
+    color: #334155;
+    line-height: 1.5;
+}
+
+/* Header & Top Bar Navigation */
+.header-nav {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+    font-size: 1.125rem;
+}
+
+.brand-icon {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+/* Header User Profile Info */
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #93c5fd;
+}
+
+.user-avatar-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.user-avatar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Main Container Layout */
+.container {
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 0 16px;
+}
+
+/* Header Banner Form */
+.banner-card {
+    background-color: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.banner-icon {
+    color: #1e3a8a;
+    font-size: 2rem;
+}
+
+.banner-text h1 {
+    font-size: 1.5rem;
+    color: #0f172a;
+}
+
+.banner-text p {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+/* Form Container Card */
+.form-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Form Group Grid System */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        align-items: flex-start;
+    }
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #334155;
+    margin-bottom: 8px;
+    padding-top: 8px;
+}
+
+.form-control-wrap {
+    width: 100%;
+}
+
+/* Input Styles */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background-color: #ffffff;
+    color: #334155;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Radio Group Component */
+.radio-group {
+    display: flex;
+    gap: 24px;
+    padding-top: 8px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+/* Custom File Upload Input */
+.file-upload-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.btn-choose-file {
+    background-color: #f1f5f9;
+    border-right: 1px solid #cbd5e1;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: #475569;
+}
+
+.btn-choose-file:hover {
+    background-color: #e2e8f0;
+}
+
+.file-name-display {
+    padding: 0 16px;
+    font-size: 0.875rem;
+    color: #94a3b8;
+}
+
+.file-hint {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+/* Pesan Error & Highlight Input Server-Side PHP */
+.error-text {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    display: block;
+}
+
+.input-error {
+    border-color: #dc2626 !important;
+}
+
+/* Button Group Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 24px;
+}
+
+.btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
