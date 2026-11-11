@@ -1,25 +1,18 @@
 <?php
 require "koneksi.php";
 session_start();
-
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
 
-    // Jika email dan password kosong
     if (empty($email) && empty($password)) {
         $error = "Email dan password wajib diisi.";
     }
-
-    // Jika salah satu kosong
     else if (empty($email) || empty($password)) {
         $error = "Email dan password wajib diisi.";
     }
-
-    // Jika keduanya sudah diisi
     else {
 
         $sql = "SELECT * FROM user
@@ -28,10 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("ss", $email, $password);
         $stmt->execute();
-
         $result = $stmt->get_result();
 
-        // Jika email dan password cocok
         if ($result->num_rows > 0) {
 
             $data = $result->fetch_assoc();
@@ -52,21 +43,59 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<form action="masuk.php" method="post">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
+    </header>
 
-    <label for="email">Email:</label>
-    <input type="text" id="email" name="email" value="<?= isset($errors["email"]) ? "" : trim($_POST["email"] ?? "") ?>">
-    <br><br>
+    <form action="masuk.php" method="post">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" value="<?= isset($errors["email"]) ? "" : trim($_POST["email"] ?? "") ?>">
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
+        <br><br>
+        <span style="color: red;">
+            <?= $error ?>
+        </span>
+        <br><br>
+        <input type="submit" value="Masuk">
+    </form>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-    <br><br>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-wrap">
+        <div class="footer-brand">
+            <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
+            <p>Platform aspirasi dan laporan mahasiswa untuk kampus yang lebih baik.</p>
+        </div>
 
-    <span style="color: red;">
-        <?= $error ?>
-    </span>
-    <br><br>
+        <div class="footer-col">
+            <h4>Navigasi</h4>
+            <a href="#beranda">Beranda</a>
+            <a href="#trending">Trending</a>
+            <a href="#tentang">Tentang</a>
+            <a href="#kontak">Kontak</a>
+        </div>
 
-    <input type="submit" value="Masuk">
+        <div class="footer-col">
+            <h4>Layanan</h4>
+            <a href="#">Buat Laporan</a>
+            <a href="#">Pantau Laporan</a>
+            <a href="#">Pertanyaan Umum</a>
+        </div>
+        </div>
 
-</form>
+        <p class="copyright">© 2026 RembugUTM. Semua hak dilindungi.</p>
+    </footer>
+</body>
+</html>

@@ -1,21 +1,12 @@
 <?php
 $host = "localhost";
-$user = "root";
+$username = "root";
 $password = "";
-$database = "forum_db";
+$dbname = "forum_db";
 
-$conn = mysqli_connect(
-    $host,
-    $user,
-    $password,
-    $database
-);
+$connect = mysqli_connect($host, $username, $password, $dbname);
 
-if (!$conn) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
-}
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+if(!$connect){
+	echo "GAGAL KONEKSI KE DATABASE";
 }
 ?>
