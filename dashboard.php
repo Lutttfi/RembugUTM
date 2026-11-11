@@ -1,98 +1,241 @@
-<?php
-    $nama_user = "Bila";
-    $total_laporan = 1;
-    $dalam_proses = 1;
-    $selesai = 0;
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Aspirasi Kampus</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RembugUTM - Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="wrapper">
-        <!-- Sidebar langsung dimasukkan ke sini (Tanpa file terpisah) -->
-        <div class="sidebar">
-            <div>
-                <div class="logo">
-                    <span>💬</span> Aspirasi Kampus
-                </div>
-                <ul class="menu-list">
-                    <li><a href="dashboard.php" class="aktif">🏠 Dashboard</a></li>
-                    <li><a href="#">📋 Laporan</a></li>
-                    <li><a href="#">🕒 Riwayat Laporan</a></li>
-                </ul>
-            </div>
-            <!-- <div>
-                <a href="#" class="btn-keluar">🚪 Keluar</a>
-            </div> -->
-        </div>
+<div class="layout">
 
-        <!-- Konten Kanan -->
-        <div class="content">
-            <div class="header-user">
-                <span class="user-icon">👤</span>
-            </div>
+    <!-- SIDEBAR WITH REMBUG UTM BRANDING -->
+    <aside class="sidebar">
+        <a href="index.php" class="logo">
+            <span class="logo-icon">R</span> Rembug<b>UTM</b>
+        </a>
 
-            <div class="sapaan">
-                <h2>Halo, <?php echo $nama_user; ?>!</h2>
-                <p>Selamat datang di Aspirasi Kampus. Sampaikan aspirasi Anda untuk kampus yang lebih baik.</p>
-            </div>
+        <nav class="menu">
+            <a href="dashboard.html" class="active">
+                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+            </a>
+            <a href="diskusi.php">
+                <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>
+            </a>
+            <a href="riwayat.php">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
+            </a>
+            <a href="profil.php">
+                <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
+            </a>
+        </nav>
 
-            <div class="cards-flex">
-                <div class="card">
-                    <div class="card-icon icon-blue">💬</div>
-                    <div class="card-info">
-                        <h3><?php echo $total_laporan; ?></h3>
-                        <span>Total Laporan</span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon icon-cyan">🕒</div>
-                    <div class="card-info">
-                        <h3><?php echo $dalam_proses; ?></h3>
-                        <span>Dalam Proses</span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon icon-green">✔</div>
-                    <div class="card-info">
-                        <h3><?php echo $selesai; ?></h3>
-                        <span>Selesai</span>
-                    </div>
-                </div>
+        <a href="logout.php" class="logout">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+        </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-title">
+                <a href="index.php" class="logo logo-dark">
+                    <span class="logo-icon">R</span> Rembug<b>UTM</b>
+                </a>
             </div>
 
-            <div class="box-laporan">
-                <div class="box-header">
-                    <h3>📢 Laporan Terbaru</h3>
-                    <a href="#">Lihat Semua &rarr;</a>
+            <div class="profile">
+                <a href="profil.php" class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+            </div>
+        </header>
+
+        <section class="content">
+
+            <!-- ========================================================
+                 VERSI 1: DASHBOARD CLIENT (SEPERTI FOTO PERTAMA)
+                 ======================================================== -->
+            <div class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>Dashboard</h1>
+                    <p>Selamat datang, Ririn!</p>
                 </div>
-                <div class="item-laporan">
-                    <div class="item-left">
-                        <div class="icon-file">📄</div>
-                        <div class="item-text">
-                            <h4>Fasilitas WiFi di Perpustakaan</h4>
-                            <p>Dikirim pada 10 Nov 2025 • Dalam Proses</p>
+
+                <!-- STATS CARDS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <i class="fa-solid fa-message"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>1</h2>
+                            <span>Total Laporan</span>
                         </div>
                     </div>
-                    <span class="status-tag">Dalam Proses</span>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue-light">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>1</h2>
+                            <span>Dalam Proses</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <i class="fa-solid fa-square-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>0</h2>
+                            <span>Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAPORAN TERBARU CARD -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2>Laporan Terbaru</h2>
+                        <a href="diskusi.php" class="link-more">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="report-list">
+                        <div class="report-item">
+                            <div class="report-main">
+                                <div class="report-icon">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <div class="report-details">
+                                    <h3>Masalah fasilitas perpustakaan</h3>
+                                    <span class="report-date">10 Nov 2026</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-process">Dalam Proses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIPS BOX -->
+                <div class="tips-box">
+                    <div class="tips-icon">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div class="tips-content">
+                        <h4>Tips</h4>
+                        <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="banner-tips">
-                <div class="tips-text">
-                    <h4>💡 Tips Pengajuan Laporan</h4>
-                    <p>Pastikan aspirasi Anda jelas dan sesuai dengan topik yang relevan dengan kampus.</p>
+            <br><hr style="border: 1px dashed #c5d3ea; margin: 40px 0;"><br>
+
+            <!-- ========================================================
+                 VERSI 2: DASHBOARD EXPERT (SEPERTI FOTO KEDUA)
+                 ======================================================== -->
+            <div class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>Dashboard - Expert</h1>
+                    <p>Kelola laporan dan tanggapi aspirasi mahasiswa.</p>
                 </div>
-                <div class="tips-icon">📢</div>
+
+                <!-- STATS CARDS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>5</h2>
+                            <span>Total Laporan</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue-light">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>3</h2>
+                            <span>Dalam Proses</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <i class="fa-solid fa-square-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h2>2</h2>
+                            <span>Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAPORAN TERBARU EXPERT CARD -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2>Laporan Terbaru</h2>
+                        <a href="diskusi.php" class="link-more">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="report-list">
+                        <!-- ITEM 1 -->
+                        <div class="report-item">
+                            <div class="report-main">
+                                <div class="report-icon">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <div class="report-details">
+                                    <h3>Permintaan penambahan ruang belajar</h3>
+                                    <span class="report-date">10 Nov 2026</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-process">Dalam Proses</span>
+                        </div>
+
+                        <!-- ITEM 2 -->
+                        <div class="report-item">
+                            <div class="report-main">
+                                <div class="report-icon">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <div class="report-details">
+                                    <h3>Keluhan fasilitas AC</h3>
+                                    <span class="report-date">09 Nov 2026</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-new">Baru</span>
+                        </div>
+
+                        <!-- ITEM 3 -->
+                        <div class="report-item">
+                            <div class="report-main">
+                                <div class="report-icon">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <div class="report-details">
+                                    <h3>Saran peningkatan WiFi</h3>
+                                    <span class="report-date">08 Nov 2026</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-done">Selesai</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-        </div>
-    </div>
+        </section>
+
+    </main>
+
+</div>
 
 </body>
 </html>
