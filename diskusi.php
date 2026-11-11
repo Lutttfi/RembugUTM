@@ -1,10 +1,10 @@
-
 <?php
+session_start();
 include "koneksi.php";
 
 // Memeriksa status login
 if (!isset($_SESSION['Id_User'])) {
-    header("Location: login.php");
+    header("Location: masuk.php");
     exit;
 }
 
@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // CLIENT: Membuat topik baru
     if (isset($_POST['buat_topik']) && $role == 'Client') {
 
+        $jenis_laporan = isset($_POST['jenis_laporan']) ? $_POST['jenis_laporan'] : 'Laporan';
         $judul = trim($_POST['judul']);
         $kategori = (int) $_POST['kategori'];
         $isi = trim($_POST['isi']);
@@ -43,10 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn,
             "SELECT Id_Kategori FROM Kategori WHERE Id_Kategori = ?"
         );
-
         mysqli_stmt_bind_param($cek_kategori, "i", $kategori);
         mysqli_stmt_execute($cek_kategori);
-
         $hasil_kategori = mysqli_stmt_get_result($cek_kategori);
 
         if ($kategori <= 0 || mysqli_num_rows($hasil_kategori) == 0) {
@@ -55,20 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Validasi isi diskusi
         if ($isi == '') {
-            $errors[] = "Isi aspirasi wajib diisi.";
+            $errors[] = "Isi laporan wajib diisi.";
         } elseif (strlen($isi) < 10 || strlen($isi) > 10000) {
-            $errors[] = "Isi aspirasi harus terdiri dari 10-10000 karakter.";
+            $errors[] = "Isi laporan harus terdiri dari 10-10000 karakter.";
         }
 
         // Menyimpan topik
         if (empty($errors)) {
 
-            $query = "INSERT INTO Topik
-                (Id_User, Id_Kategori, Judul_Topik, Isi_Diskusi, Status)
-                VALUES (?, ?, ?, ?, ?)";
-
+            $query = "INSERT INTO Topik (Id_User, Id_Kategori, Judul_Topik, Isi_Diskusi, Status) VALUES (?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $query);
-
             $status = "Menunggu Tanggapan";
 
             mysqli_stmt_bind_param(
@@ -106,53 +101,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors[] = "Tanggapan harus terdiri dari 5-10000 karakter.";
         }
 
-        // Memastikan topik tersedia
-        $cek_topik = mysqli_prepare(
-            $conn,
-            "SELECT Id_Topik FROM Topik WHERE Id_Topik = ?"
-        );
-
-        mysqli_stmt_bind_param($cek_topik, "i", $id_topik);
-        mysqli_stmt_execute($cek_topik);
-
-        $hasil_topik = mysqli_stmt_get_result($cek_topik);
-
-        if (mysqli_num_rows($hasil_topik) == 0) {
-            $errors[] = "Topik tidak ditemukan.";
-        }
-
-        // Menyimpan tanggapan Expert
         if (empty($errors)) {
-
-            $query = "INSERT INTO Respon
-                (Id_User, Id_Topik, Isi_Respon)
-                VALUES (?, ?, ?)";
-
+            $query = "INSERT INTO Respon (Id_User, Id_Topik, Isi_Respon) VALUES (?, ?, ?)";
             $stmt = mysqli_prepare($conn, $query);
-
-            mysqli_stmt_bind_param(
-                $stmt,
-                "iis",
-                $id_user,
-                $id_topik,
-                $isi_respon
-            );
+            mysqli_stmt_bind_param($stmt, "iis", $id_user, $id_topik, $isi_respon);
 
             if (mysqli_stmt_execute($stmt)) {
-
-                // Memperbarui status topik
-                $update = mysqli_prepare(
-                    $conn,
-                    "UPDATE Topik SET Status = 'Sudah Ditanggapi'
-                     WHERE Id_Topik = ?"
-                );
-
+                $update = mysqli_prepare($conn, "UPDATE Topik SET Status = 'Sudah Ditanggapi' WHERE Id_Topik = ?");
                 mysqli_stmt_bind_param($update, "i", $id_topik);
                 mysqli_stmt_execute($update);
 
                 header("Location: diskusi.php?berhasil=respon");
                 exit;
-
             } else {
                 $errors[] = "Tanggapan gagal disimpan.";
             }
@@ -169,18 +129,14 @@ if (isset($_GET['berhasil'])) {
     }
 }
 
-// Mengambil seluruh topik dan informasi pembuatnya
+// Mengambil seluruh topik
 $query_topik = "
-    SELECT
-        Topik.*,
-        User.Nama_Lengkap,
-        Kategori.Nama_Kategori
+    SELECT Topik.*, User.Nama_Lengkap, Kategori.Nama_Kategori
     FROM Topik
     JOIN User ON Topik.Id_User = User.Id_User
     JOIN Kategori ON Topik.Id_Kategori = Kategori.Id_Kategori
     ORDER BY Topik.Created_At DESC
 ";
-
 $result_topik = mysqli_query($conn, $query_topik);
 
 function aman($data) {
@@ -190,95 +146,71 @@ function aman($data) {
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan - Aspirasi Kampus</title>
+    <title>Aspirasi Kampus - Form Laporan</title>
     <link rel="stylesheet" href="diskusi.css">
+    <!-- Icon FontAwesome / Google Icons Opsional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
 
 <div class="layout">
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-
         <div class="brand">
-            <div class="brand-icon">A</div>
+            <div class="brand-icon">
+                <i class="fa-solid fa-comments"></i>
+            </div>
             <h2>Aspirasi Kampus</h2>
         </div>
 
         <nav class="menu">
             <a href="dashboard.php">
-                <span>⌂</span> Dashboard
+                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
-
             <a href="diskusi.php" class="active">
-                <span>▤</span> Laporan
+                <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>
             </a>
-
             <a href="riwayat.php">
-                <span>◷</span> Riwayat Laporan
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
             </a>
         </nav>
 
         <a href="logout.php" class="logout">
-            <span>⇥</span> Keluar
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
-
     </aside>
 
 
-    <!-- BAGIAN UTAMA -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
         <!-- TOPBAR -->
         <header class="topbar">
-            <span>Halaman Laporan</span>
+            <div class="topbar-title">
+                <i class="fa-solid fa-comments"></i>
+                <h2>Aspirasi Kampus</h2>
+            </div>
 
             <div class="profile">
                 <div class="avatar">
-                    <?php echo strtoupper(substr($nama, 0, 1)); ?>
-                </div>
-                <div>
-                    <strong><?php echo aman($nama); ?></strong>
-                    <small><?php echo aman($role); ?></small>
+                    <i class="fa-solid fa-user"></i>
                 </div>
             </div>
         </header>
 
-
         <section class="content">
 
-            <div class="page-heading">
-                <h1>
-                    <?php if ($role == 'Client') { ?>
-                        Buat Laporan Aspirasi
-                    <?php } else { ?>
-                        Forum Diskusi Aspirasi
-                    <?php } ?>
-                </h1>
-
-                <p>
-                    Sampaikan aspirasi dan berikan tanggapan
-                    untuk kampus yang lebih baik.
-                </p>
-            </div>
-
-
-            <!-- PESAN BERHASIL -->
+            <!-- NOTIFIKASI SUKSES / ERROR -->
             <?php if ($success != '') { ?>
-                <div class="success">
-                    <?php echo aman($success); ?>
-                </div>
+                <div class="alert success"><?php echo aman($success); ?></div>
             <?php } ?>
 
-
-            <!-- PESAN ERROR -->
             <?php if (!empty($errors)) { ?>
-                <div class="error">
+                <div class="alert error">
                     <?php foreach ($errors as $error) { ?>
                         <p><?php echo aman($error); ?></p>
                     <?php } ?>
@@ -286,69 +218,87 @@ function aman($data) {
             <?php } ?>
 
 
-            <!-- FORM CLIENT -->
+            <!-- FORM CLIENT (SESUAI MOCKUP) -->
             <?php if ($role == 'Client') { ?>
 
-            <div class="form-card">
-
-                <div class="card-heading">
-                    <div>
-                        <h2>Form Aspirasi</h2>
-                        <p>Isi formulir berikut untuk mengirimkan aspirasi.</p>
+            <div class="form-container">
+                
+                <!-- HEADER FORM -->
+                <div class="form-header">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-bullhorn"></i>
                     </div>
-                    <span class="heading-icon">✎</span>
+                    <div class="header-text">
+                        <h1>Form Laporan / Diskusi</h1>
+                        <p>Sampaikan aspirasi Anda dengan jelas dan sopan.</p>
+                    </div>
                 </div>
 
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data" class="form-body">
 
-                    <div class="form-group">
-                        <label>Judul Laporan</label>
-                        <input
-                            type="text"
-                            name="judul"
-                            placeholder="Masukkan judul aspirasi..."
-                            value="<?php echo isset($_POST['judul']) ? aman($_POST['judul']) : ''; ?>"
-                        >
+                    <!-- JENIS LAPORAN -->
+                    <div class="form-group-row">
+                        <label class="form-label">Jenis Laporan</label>
+                        <div class="form-input radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="jenis_laporan" value="Laporan" checked>
+                                <span class="radio-custom"></span> Laporan
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="jenis_laporan" value="Diskusi">
+                                <span class="radio-custom"></span> Diskusi
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Kategori Aspirasi</label>
-
-                        <select name="kategori">
-                            <option value="">Pilih kategori...</option>
-
-                            <?php while ($kategori = mysqli_fetch_assoc($query_kategori)) { ?>
-
-                                <option value="<?php echo $kategori['Id_Kategori']; ?>"
-                                    <?php
-                                    if (
-                                        isset($_POST['kategori']) &&
-                                        $_POST['kategori'] == $kategori['Id_Kategori']
-                                    ) {
-                                        echo "selected";
-                                    }
-                                    ?>>
-                                    <?php echo aman($kategori['Nama_Kategori']); ?>
-                                </option>
-
-                            <?php } ?>
-
-                        </select>
+                    <!-- JUDUL -->
+                    <div class="form-group-row">
+                        <label class="form-label">Judul</label>
+                        <div class="form-input">
+                            <input type="text" name="judul" placeholder="Masukkan judul laporan..." value="<?php echo isset($_POST['judul']) ? aman($_POST['judul']) : ''; ?>" required>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Isi Laporan</label>
-                        <textarea
-                            name="isi"
-                            placeholder="Tuliskan detail aspirasi, kritik, atau saran Anda..."
-                        ><?php echo isset($_POST['isi']) ? aman($_POST['isi']) : ''; ?></textarea>
+                    <!-- KATEGORI -->
+                    <div class="form-group-row">
+                        <label class="form-label">Kategori</label>
+                        <div class="form-input">
+                            <select name="kategori" required>
+                                <option value="">Pilih kategori...</option>
+                                <?php while ($kategori = mysqli_fetch_assoc($query_kategori)) { ?>
+                                    <option value="<?php echo $kategori['Id_Kategori']; ?>" <?php echo (isset($_POST['kategori']) && $_POST['kategori'] == $kategori['Id_Kategori']) ? "selected" : ""; ?>>
+                                        <?php echo aman($kategori['Nama_Kategori']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-footer">
-                        <span>Pastikan informasi yang diberikan jelas dan sopan.</span>
-                        <button type="submit" name="buat_topik">
-                            Kirim Aspirasi →
-                        </button>
+                    <!-- ISI LAPORAN -->
+                    <div class="form-group-row">
+                        <label class="form-label">Isi Laporan</label>
+                        <div class="form-input">
+                            <textarea name="isi" placeholder="Tulis detail laporan atau diskusi Anda di sini..." required><?php echo isset($_POST['isi']) ? aman($_POST['isi']) : ''; ?></textarea>
+                        </div>
+                    </div>
+
+                    <!-- LAMPIRAN -->
+                    <div class="form-group-row">
+                        <label class="form-label">Lampiran <small class="text-muted">(Opsional)</small></label>
+                        <div class="form-input">
+                            <div class="file-upload-box">
+                                <input type="file" name="lampiran" id="lampiran" class="file-input">
+                                <label for="lampiran" class="btn-choose-file">Choose File</label>
+                                <span class="file-name">Tidak ada file yang dipilih</span>
+                            </div>
+                            <span class="input-hint">Format: JPG, PNG, PDF (maks. 5MB)</span>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER BUTTONS -->
+                    <div class="form-footer-actions">
+                        <button type="reset" class="btn-cancel">Batal</button>
+                        <button type="submit" name="buat_topik" class="btn-submit">Kirim Laporan</button>
                     </div>
 
                 </form>
@@ -358,143 +308,72 @@ function aman($data) {
             <?php } ?>
 
 
-            <!-- DAFTAR DISKUSI -->
+            <!-- LIST TOPIK & DISKUSI -->
             <div class="discussion-heading">
-                <div>
-                    <h2>Daftar Topik Diskusi</h2>
-                    <p>Lihat aspirasi yang disampaikan oleh mahasiswa.</p>
-                </div>
+                <h2>Daftar Laporan & Diskusi</h2>
             </div>
 
-
             <?php if (mysqli_num_rows($result_topik) > 0) { ?>
-
                 <?php while ($topik = mysqli_fetch_assoc($result_topik)) { ?>
-
                     <div class="topic-card">
-
                         <div class="topic-top">
-                            <span class="topic-category">
-                                <?php echo aman($topik['Nama_Kategori']); ?>
-                            </span>
-
-                            <span class="topic-status">
+                            <span class="topic-category"><?php echo aman($topik['Nama_Kategori']); ?></span>
+                            <span class="topic-status <?php echo strtolower(str_replace(' ', '-', $topik['Status'])); ?>">
                                 <?php echo aman($topik['Status']); ?>
                             </span>
                         </div>
 
-                        <h3>
-                            <?php echo aman($topik['Judul_Topik']); ?>
-                        </h3>
+                        <h3><?php echo aman($topik['Judul_Topik']); ?></h3>
 
                         <div class="topic-info">
-                            Oleh <?php echo aman($topik['Nama_Lengkap']); ?>
-                            ·
-                            <?php echo date('d-m-Y H:i', strtotime($topik['Created_At'])); ?>
+                            Oleh <strong><?php echo aman($topik['Nama_Lengkap']); ?></strong> · <?php echo date('d M Y H:i', strtotime($topik['Created_At'])); ?>
                         </div>
 
-                        <p class="topic-content">
-                            <?php echo nl2br(aman($topik['Isi_Diskusi'])); ?>
-                        </p>
+                        <p class="topic-content"><?php echo nl2br(aman($topik['Isi_Diskusi'])); ?></p>
 
-
+                        <!-- TANGGAPAN EXPERT -->
                         <?php
-                        // Mengambil tanggapan dari topik terkait
                         $id_topik = $topik['Id_Topik'];
-
-                        $query_respon = "
-                            SELECT Respon.*, User.Nama_Lengkap
-                            FROM Respon
-                            JOIN User ON Respon.Id_User = User.Id_User
-                            WHERE Respon.Id_Topik = ?
-                            ORDER BY Respon.Created_At ASC
-                        ";
-
+                        $query_respon = "SELECT Respon.*, User.Nama_Lengkap FROM Respon JOIN User ON Respon.Id_User = User.Id_User WHERE Respon.Id_Topik = ? ORDER BY Respon.Created_At ASC";
                         $stmt_respon = mysqli_prepare($conn, $query_respon);
                         mysqli_stmt_bind_param($stmt_respon, "i", $id_topik);
                         mysqli_stmt_execute($stmt_respon);
-
                         $result_respon = mysqli_stmt_get_result($stmt_respon);
                         ?>
 
                         <div class="response-area">
-
                             <h4>Tanggapan Expert</h4>
-
                             <?php if (mysqli_num_rows($result_respon) > 0) { ?>
-
                                 <?php while ($respon = mysqli_fetch_assoc($result_respon)) { ?>
-
                                     <div class="response-card">
-
                                         <div class="expert-name">
-                                            <span class="expert-avatar">E</span>
-
-                                            <strong>
-                                                <?php echo aman($respon['Nama_Lengkap']); ?>
-                                            </strong>
-
+                                            <span class="expert-avatar"><i class="fa-solid fa-user-shield"></i></span>
+                                            <strong><?php echo aman($respon['Nama_Lengkap']); ?></strong>
                                             <span class="expert-label">Expert</span>
                                         </div>
-
-                                        <p>
-                                            <?php echo nl2br(aman($respon['Isi_Respon'])); ?>
-                                        </p>
-
-                                        <small>
-                                            <?php echo date('d-m-Y H:i', strtotime($respon['Created_At'])); ?>
-                                        </small>
-
+                                        <p><?php echo nl2br(aman($respon['Isi_Respon'])); ?></p>
+                                        <small><?php echo date('d M Y H:i', strtotime($respon['Created_At'])); ?></small>
                                     </div>
-
                                 <?php } ?>
-
                             <?php } else { ?>
-
-                                <p class="empty-response">
-                                    Belum ada tanggapan dari Expert.
-                                </p>
-
+                                <p class="empty-response">Belum ada tanggapan dari Expert.</p>
                             <?php } ?>
 
-
-                            <!-- FORM BALASAN EXPERT -->
                             <?php if ($role == 'Expert') { ?>
-
                                 <form method="POST" class="reply-form">
-
-                                    <input
-                                        type="hidden"
-                                        name="id_topik"
-                                        value="<?php echo $id_topik; ?>"
-                                    >
-
-                                    <textarea
-                                        name="isi_respon"
-                                        placeholder="Tuliskan tanggapan resmi..."
-                                    ></textarea>
-
-                                    <button type="submit" name="balas_topik">
-                                        Kirim Tanggapan →
-                                    </button>
-
+                                    <input type="hidden" name="id_topik" value="<?php echo $id_topik; ?>">
+                                    <textarea name="isi_respon" placeholder="Tuliskan tanggapan resmi..." required></textarea>
+                                    <button type="submit" name="balas_topik" class="btn-submit">Kirim Tanggapan</button>
                                 </form>
-
                             <?php } ?>
-
                         </div>
-
                     </div>
-
                 <?php } ?>
-
             <?php } else { ?>
-
                 <div class="empty-data">
-                    <h3>Belum Ada Topik Aspirasi</h3>
-                    <p>Topik aspirasi yang dikirimkan akan muncul di sini.</p>
+                    <h3>Belum Ada Laporan</h3>
+                    <p>Laporan yang kamu buat akan tampil di sini.</p>
                 </div>
-
             <?php } ?>
 
         </section>
@@ -502,6 +381,22 @@ function aman($data) {
     </main>
 
 </div>
+
+<script>
+    // Script Sederhana untuk menampilkan nama file yang di-upload
+    const fileInput = document.getElementById('lampiran');
+    const fileNameSpan = document.querySelector('.file-name');
+
+    if(fileInput) {
+        fileInput.addEventListener('change', function() {
+            if(this.files && this.files.length > 0) {
+                fileNameSpan.textContent = this.files[0].name;
+            } else {
+                fileNameSpan.textContent = "Tidak ada file yang dipilih";
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
