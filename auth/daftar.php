@@ -78,9 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <label for="confirm_password">Confirm Password:</label>
                     <input type="password" id="confirm_password" name="confirm_password" value="<?= isset($errors["confirm_password"]) ? "" : trim($_POST["confirm_password"] ?? "") ?>">
                     <span style="color: red;"><?= $errors["confirm_password"] ?? "" ?></span><br><br> 
-                    <label for="nomor_telpon">nomor_telpon:</label>
-                    <input type="text" id="nomor_telpon" name="nomor_telpon" value="<?= isset($errors["nomor_telpon"]) ? "" : trim($_POST["nomor_telpon"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["nomor_telpon"] ?? "" ?></span><br><br>
                     <label for="role">Daftar Sebagai:</label>
                     <select id="role" name="role">
                         <option value="">-- Pilih Role --</option>
