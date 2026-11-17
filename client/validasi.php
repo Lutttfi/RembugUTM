@@ -18,8 +18,7 @@ function update_buku($Id_User, $Username, $Password, $Email, $Role)
 
 function requiredCheck($field)
 {
-    $field = trim($field);
-    return empty($field);
+    return trim($field) === "";
 }
 
 function valUsername(&$errors, $field)

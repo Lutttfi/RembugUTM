@@ -24,12 +24,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($data["role"] === "client") {
             $_SESSION["login"] = true;
             $_SESSION["id_user"] = $data["id_user"];
-            header("Location: ../client/dashboard.php");
+            header("Location: ../client/beranda.php");
             exit();
         } else if ($data["role"] === "expert") {
             $_SESSION["login"] = true;
             $_SESSION["id_user"] = $data["id_user"];
-            header("Location: ../expert/dashboard.php");
+            header("Location: ../expert/beranda.php");
             exit();
         }else {
             echo "Username, password, atau role salah!";

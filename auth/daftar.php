@@ -15,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = valPassword($errors, $password);
     $errors = valConfirmPassword($errors, $password, $confirm_password);
     $errors = valRole($errors, $role);
-        // Cek username
+    
+    // Cek username
     $sql = "SELECT username FROM USER WHERE username = ?";
     $stmt = $connect->prepare($sql);
     $stmt->bind_param("s", $username);
@@ -38,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result->num_rows > 0) {
         $errors["email"] = "Email sudah terdaftar!";
     }
-    
+
     if (empty($errors)) {
         $sql = "INSERT INTO user (username, email, password, role)
         VALUES (?, ?, SHA2(?, 0), ?)";
