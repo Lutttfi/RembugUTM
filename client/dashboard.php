@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Dashboard</title>
-    <link rel="stylesheet" href="client/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
@@ -18,7 +17,7 @@
         </a>
 
         <nav class="menu">
-            <a href="dashboard.html" class="active">
+            <a href="dashboard.php" class="active">
                 <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
             <a href="diskusi.php">
@@ -32,7 +31,7 @@
             </a>
         </nav>
 
-        <a href="logout.php" class="logout">
+        <a href="auth/logout.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
     </aside>

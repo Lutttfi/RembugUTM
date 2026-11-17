@@ -1,11 +1,23 @@
+<?php
+session_start();
+include '../database/koneksi.php';
+
+// Ambil semua topik diskusi beserta nama pembuat dan kategorinya dari database
+$query_topik = mysqli_query($connect, "
+    SELECT t.*, k.Nama_Kategori, u.Username 
+    FROM topik t
+    LEFT JOIN kategori k ON t.Id_Kategori = k.Id_Kategori
+    LEFT JOIN user u ON t.Id_User = u.Id_User
+    ORDER BY t.Created_At DESC
+");
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Riwayat Laporan</title>
+    <title>RembugUTM - Riwayat Diskusi</title>
     <link rel="stylesheet" href="css/diskusi.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -22,17 +34,17 @@
                 <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
             <a href="diskusi.php">
-                <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>
+                <i class="fa-solid fa-comments"></i> <span>Forum Diskusi</span>
             </a>
             <a href="riwayat.php" class="active">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Diskusi</span>
             </a>
             <a href="profil.php">
                 <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
             </a>
         </nav>
 
-        <a href="logout.php" class="logout">
+        <a href="../auth/logout.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
     </aside>
@@ -57,77 +69,92 @@
 
         <section class="content">
 
-            <!-- LIST TOPIK & DISKUSI (RIWAYAT LAPORAN) -->
-            <div class="discussion-heading">
+            <!-- HEADER & TOMBOL BUAT TOPIK BARU -->
+            <div class="discussion-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>Riwayat Laporan & Diskusi</h2>
+                <a href="diskusi.php" class="btn" style="text-decoration: none;">+ Buat Topik Baru</a>
             </div>
 
             <div class="topic-list">
-                
-                <!-- TOPIC CARD 1 -->
-                <div class="topic-card">
-                    <div class="topic-top">
-                        <span class="topic-category">Fasilitas Kampus</span>
-                        <span class="topic-status sudah-ditanggapi">Sudah Ditanggapi</span>
-                    </div>
-
-                    <h3>Proyektor Rusak di Ruang Gedung B3</h3>
-
-                    <div class="topic-info">
-                        Oleh <strong>Ahmad Fauzi</strong> · 10 Nov 2026 14:30
-                    </div>
-
-                    <p class="topic-content">Proyektor di ruang B3 mati total saat perkuliahan berlangsung. Mohon untuk segera dicek oleh tim sarpras.</p>
-
-                    <div class="response-area">
-                        <h4>Tanggapan Expert</h4>
+                <?php if (mysqli_num_rows($query_topik) > 0) : ?>
+                    <?php while ($topik = mysqli_fetch_assoc($query_topik)) : ?>
+                        <?php
+                        $id_topik = $topik['Id_Topik'];
                         
-                        <div class="response-card">
-                            <div class="expert-name">
-                                <span class="expert-avatar"><i class="fa-solid fa-user-shield"></i></span>
-                                <strong>Tim Sarpras Kampus</strong>
-                                <span class="expert-label">Expert</span>
+                        // Ambil tanggapan Expert untuk topik ini dari tabel respon
+                        $query_respon = mysqli_query($connect, "
+                            SELECT r.*, u.Username AS Nama_Expert 
+                            FROM respon r
+                            LEFT JOIN user u ON r.Id_User = u.Id_User
+                            WHERE r.Id_Topik = '$id_topik'
+                            ORDER BY r.Id_Respon ASC
+                        ");
+                        $jumlah_respon = mysqli_num_rows($query_respon);
+                        $sudah_ditanggapi = ($jumlah_respon > 0 || $topik['Status'] === 'Selesai');
+                        ?>
+
+                        <!-- TOPIC CARD DINAMIS -->
+                        <div class="topic-card">
+                            <div class="topic-top">
+                                <span class="topic-category"><?= htmlspecialchars($topik['Nama_Kategori'] ?? 'Umum'); ?></span>
+                                <?php if ($sudah_ditanggapi) : ?>
+                                    <span class="topic-status sudah-ditanggapi">Sudah Ditanggapi</span>
+                                <?php else : ?>
+                                    <span class="topic-status menunggu-tanggapan">Menunggu Tanggapan</span>
+                                <?php endif; ?>
                             </div>
-                            <p>Laporan telah diterima. Tim teknisi kami sedang menuju ke lokasi untuk perbaikan proyektor.</p>
-                            <small>10 Nov 2026 15:00</small>
+
+                            <h3><?= htmlspecialchars($topik['Judul_Topik']); ?></h3>
+
+                            <div class="topic-info">
+                                Oleh <strong><?= htmlspecialchars($topik['Username'] ?? 'Warga'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
+                            </div>
+
+                            <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
+
+                            <!-- TAMPILKAN LAMPIRAN JIKA ADA -->
+                            <?php if (!empty($topik['Lampiran'])) : ?>
+                                <div style="margin: 10px 0;">
+                                    <a href="../uploads/<?= htmlspecialchars($topik['Lampiran']); ?>" target="_blank" style="font-size: 13px; color: #2563eb; text-decoration: underline;">
+                                        <i class="fa-solid fa-paperclip"></i> Lihat Lampiran (<?= htmlspecialchars($topik['Lampiran']); ?>)
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- AREA TANGGAPAN EXPERT (TANPA FORM REPLY) -->
+                            <div class="response-area">
+                                <h4>Tanggapan Expert</h4>
+
+                                <?php if ($jumlah_respon > 0) : ?>
+                                    <?php while ($respon = mysqli_fetch_assoc($query_respon)) : ?>
+                                        <div class="response-card">
+                                            <div class="expert-name">
+                                                <span class="expert-avatar"><i class="fa-solid fa-user-shield"></i></span>
+                                                <strong><?= htmlspecialchars($respon['Nama_Expert'] ?? 'Expert'); ?></strong>
+                                                <span class="expert-label">Expert</span>
+                                            </div>
+                                            <p><?= nl2br(htmlspecialchars($respon['Isi_Respon'] ?? $respon['Respon'] ?? '')); ?></p>
+                                            <?php if (!empty($respon['Created_At'])) : ?>
+                                                <small><?= date('d M Y H:i', strtotime($respon['Created_At'])); ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endwhile; ?>
+                                    
+                                    <p style="font-size: 13px; color: #64748b; margin-top: 10px;">
+                                        Topik ini telah ditanggapi dan ditutup. Punya pembahasan lain? <a href="diskusi.php" style="color: #2563eb; font-weight: 600;">Buat Topik Baru</a>.
+                                    </p>
+                                <?php else : ?>
+                                    <p class="empty-response">Belum ada tanggapan dari Expert.</p>
+                                <?php endif; ?>
+                            </div>
                         </div>
-
-                        <!-- Form Balas (Expert) -->
-                        <form action="diskusi.php" method="POST" class="reply-form">
-                            <input type="hidden" name="id_topik" value="1">
-                            <textarea name="isi_respon" placeholder="Tuliskan tanggapan resmi..."></textarea>
-                            <button type="submit" name="balas_topik" class="btn">Kirim Tanggapan</button>
-                        </form>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <div class="topic-card" style="text-align: center; padding: 30px;">
+                        <p>Belum ada topik diskusi yang dibuat.</p>
+                        <a href="diskusi.php" class="btn" style="display: inline-block; margin-top: 10px; text-decoration: none;">Mulai Topik Pertama</a>
                     </div>
-                </div>
-
-                <!-- TOPIC CARD 2 -->
-                <div class="topic-card">
-                    <div class="topic-top">
-                        <span class="topic-category">Akademik & Kurikulum</span>
-                        <span class="topic-status menunggu-tanggapan">Menunggu Tanggapan</span>
-                    </div>
-
-                    <h3>Jadwal Pengisian KRS Bentrok</h3>
-
-                    <div class="topic-info">
-                        Oleh <strong>Siti Rahma</strong> · 11 Nov 2026 09:15
-                    </div>
-
-                    <p class="topic-content">Jadwal mata kuliah Pemrograman Web bentrok dengan Basis Data di kelas TI-B. Apakah ada opsi kelas paralel lain?</p>
-
-                    <div class="response-area">
-                        <h4>Tanggapan Expert</h4>
-                        <p class="empty-response">Belum ada tanggapan dari Expert.</p>
-
-                        <form action="diskusi.php" method="POST" class="reply-form">
-                            <input type="hidden" name="id_topik" value="2">
-                            <textarea name="isi_respon" placeholder="Tuliskan tanggapan resmi..."></textarea>
-                            <button type="submit" name="balas_topik" class="btn">Kirim Tanggapan</button>
-                        </form>
-                    </div>
-                </div>
-
+                <?php endif; ?>
             </div>
 
         </section>
