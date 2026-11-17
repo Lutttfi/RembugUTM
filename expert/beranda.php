@@ -56,91 +56,11 @@
 
         <section class="content">
 
-            <!-- ========================================================
-                 VERSI 1: DASHBOARD CLIENT (SEPERTI FOTO PERTAMA)
-                 ======================================================== -->
-            <div class="dashboard-section">
-                <div class="dashboard-header">
-                    <h1>Dashboard</h1>
-                    <p>Selamat datang, Ririn!</p>
-                </div>
-
-                <!-- STATS CARDS -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue">
-                            <i class="fa-solid fa-message"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>1</h2>
-                            <span>Total Laporan</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue-light">
-                            <i class="fa-regular fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>1</h2>
-                            <span>Dalam Proses</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon icon-green">
-                            <i class="fa-solid fa-square-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>0</h2>
-                            <span>Selesai</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LAPORAN TERBARU CARD -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2>Laporan Terbaru</h2>
-                        <a href="diskusi.php" class="link-more">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="report-list">
-                        <div class="report-item">
-                            <div class="report-main">
-                                <div class="report-icon">
-                                    <i class="fa-solid fa-file-lines"></i>
-                                </div>
-                                <div class="report-details">
-                                    <h3>Masalah fasilitas perpustakaan</h3>
-                                    <span class="report-date">10 Nov 2026</span>
-                                </div>
-                            </div>
-                            <span class="badge badge-process">Dalam Proses</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TIPS BOX -->
-                <div class="tips-box">
-                    <div class="tips-icon">
-                        <i class="fa-solid fa-lightbulb"></i>
-                    </div>
-                    <div class="tips-content">
-                        <h4>Tips</h4>
-                        <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
-                    </div>
-                </div>
-            </div>
-
-            <br><hr style="border: 1px dashed #c5d3ea; margin: 40px 0;"><br>
-
-            <!-- ========================================================
-                 VERSI 2: DASHBOARD EXPERT (SEPERTI FOTO KEDUA)
-                 ======================================================== -->
-            <div class="dashboard-section">
-                <div class="dashboard-header">
-                    <h1>Dashboard - Expert</h1>
+                 <!-- beranda EXPERT  -->
+                  
+            <div class="beranda-section">
+                <div class="beranda-header">
+                    <h1>Beranda - Expert</h1>
                     <p>Kelola laporan dan tanggapi aspirasi mahasiswa.</p>
                 </div>
 
@@ -178,7 +98,7 @@
                 </div>
 
                 <!-- LAPORAN TERBARU EXPERT CARD -->
-                <div class="dashboard-card">
+                <div class="beranda-card">
                     <div class="card-header">
                         <h2>Laporan Terbaru</h2>
                         <a href="diskusi.php" class="link-more">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
