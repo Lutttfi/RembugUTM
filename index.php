@@ -20,8 +20,8 @@
     </nav>
 
     <div class="auth">
-      <a href="masuk.php" class="btn btn-outline">Masuk</a>
-      <a href="daftar.php" class="btn">Daftar</a>
+      <a href="auth/masuk.php" class="btn btn-outline">Masuk</a>
+      <a href="auth/daftar.php" class="btn">Daftar</a>
     </div>
   </header>
 

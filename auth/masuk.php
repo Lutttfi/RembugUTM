@@ -1,44 +1,40 @@
 <?php
-require "koneksi.php";
+require "../client/validasi.php";
 session_start();
-$error = "";
-
+$error = [];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
+    $username =  htmlspecialchars($_POST["username"]?? "");
+    $password = htmlspecialchars($_POST["password"]?? "");
 
-    if (empty($email) && empty($password)) {
-        $error = "Email dan password wajib diisi.";
-    }
-    else if (empty($email) || empty($password)) {
-        $error = "Email dan password wajib diisi.";
-    }
-    else {
+    $errors = valUsername($errors, $username);
+    $errors = valPassword($errors, $password);
 
-        $sql = "SELECT * FROM user
-                WHERE Email = ? AND Password = SHA2(?, 0)";
-
+    if (empty($errors)) {
+        $sql = "SELECT username, password, role, Id_User FROM user WHERE username = ? AND password = SHA2(?, 0)";
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("ss", $email, $password);
+        $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
         $result = $stmt->get_result();
+        $data = $result->fetch_assoc();
+            
+    if ($data) {
 
-        if ($result->num_rows > 0) {
+        $_SESSION["login"] = true;
+        $_SESSION["id_user"] = $data["id_user"];
+        $_SESSION["role"] = $data["role"];
 
-            $data = $result->fetch_assoc();
-
-            $_SESSION["Id_User"] = $data["Id_User"];
-            $_SESSION["Username"] = $data["Username"];
-            $_SESSION["Email"] = $data["Email"];
-
-            header("Location: dashboard.php");
+        if ($data["role"] === "client") {
+            header("Location: ../client/beranda.php");
             exit();
 
-        } else {
-            $error = "Email dan password salah";
+        } else if ($data["role"] === "expert") {
+            header("Location: ../expert/beranda.php");
+            exit();
         }
 
-        $stmt->close();
+    } else {
+        echo "Username atau password salah!";
+    }
     }
 }
 ?>
@@ -48,54 +44,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Daftar</title>
+    <link rel="stylesheet" href="../client/css/daftar.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <header class="navbar">
-        <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
-    </header>
-
-    <form action="masuk.php" method="post">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" value="<?= isset($errors["email"]) ? "" : trim($_POST["email"] ?? "") ?>">
-        <br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-        <br><br>
-        <span style="color: red;">
-            <?= $error ?>
-        </span>
-        <br><br>
-        <input type="submit" value="Masuk">
-    </form>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-wrap">
-        <div class="footer-brand">
-            <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
-            <p>Platform aspirasi dan laporan mahasiswa untuk kampus yang lebih baik.</p>
+    <div class="register-container">
+        <!-- BAGIAN KIRI -->
+        <div class="register-left">
+            <div class="left-content">
+                <p class="subtitle">MULAI PERJALANAN ANDA</p>
+                <h1>
+                    Suarakan aspirasi,
+                    wujudkan kampus
+                    yang lebih baik.
+                </h1>
+                <p class="description">
+                    Bergabung bersama mahasiswa lainnya
+                    untuk menyampaikan aspirasi dan
+                    membangun lingkungan kampus yang lebih baik.
+                </p>
+                <ul>
+                    <li>Sampaikan aspirasi dengan mudah</li>
+                    <li>Pantau perkembangan laporan</li>
+                    <li>Terhubung dengan mahasiswa lainnya</li>
+                </ul>
+            </div>
         </div>
-
-        <div class="footer-col">
-            <h4>Navigasi</h4>
-            <a href="#beranda">Beranda</a>
-            <a href="#trending">Trending</a>
-            <a href="#tentang">Tentang</a>
-            <a href="#kontak">Kontak</a>
+        <!-- BAGIAN KANAN -->
+        <div class="register-right">
+            <div class="form-content">
+                <h1>Masuk ke Akun</h1>
+                <form action="masuk.php" method="post">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
+                    <span style="color: red;"><?= $errors["username"] ?? "" ?></span><br><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
+                    <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
+                    <input type="submit" value="Masuk Ke Dashbord">
+                </form>
+            </div>
         </div>
-
-        <div class="footer-col">
-            <h4>Layanan</h4>
-            <a href="#">Buat Laporan</a>
-            <a href="#">Pantau Laporan</a>
-            <a href="#">Pertanyaan Umum</a>
-        </div>
-        </div>
-
-        <p class="copyright">© 2026 RembugUTM. Semua hak dilindungi.</p>
-    </footer>
+    </div>
 </body>
 </html>

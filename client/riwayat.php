@@ -30,7 +30,7 @@ $query_topik = mysqli_query($connect, "
         </a>
 
         <nav class="menu">
-            <a href="dashboard.php">
+            <a href="beranda.php">
                 <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
             <a href="diskusi.php">

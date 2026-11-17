@@ -152,21 +152,21 @@ a {
   margin: 0 auto;
 }
 
-/* ==========================================
-   DASHBOARD HEADER
-   ========================================== */
-.dashboard-header {
+
+   /* BERANDA HEADER */
+
+.beranda-header {
   margin-bottom: 24px;
 }
 
-.dashboard-header h1 {
+.beranda-header h1 {
   font-size: 24px;
   color: #0d2447;
   font-weight: bold;
   margin-bottom: 4px;
 }
 
-.dashboard-header p {
+.beranda-header p {
   font-size: 14px;
   color: #52617a;
 }
@@ -232,7 +232,7 @@ a {
 /* ==========================================
    LAPORAN TERBARU CARD
    ========================================== */
-.dashboard-card {
+.beranda-card {
   background-color: white;
   border-radius: 16px;
   padding: 24px;
