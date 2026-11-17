@@ -3,11 +3,8 @@ require "../client/validasi.php";
 session_start();
 $error = [];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $errors = [];
-
-    $username =  $_POST["username"]?? "";
-    $password = $_POST["password"]?? "";
+    $username =  htmlspecialchars($_POST["username"]?? "");
+    $password = htmlspecialchars($_POST["password"]?? "");
 
     $errors = valUsername($errors, $username);
     $errors = valPassword($errors, $password);
@@ -20,20 +17,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $result = $stmt->get_result();
         $data = $result->fetch_assoc();
             
-        var_dump($data);
+    if ($data) {
+
+        $_SESSION["login"] = true;
+        $_SESSION["id_user"] = $data["id_user"];
+        $_SESSION["role"] = $data["role"];
+
         if ($data["role"] === "client") {
-            $_SESSION["login"] = true;
-            $_SESSION["id_user"] = $data["id_user"];
             header("Location: ../client/beranda.php");
             exit();
+
         } else if ($data["role"] === "expert") {
-            $_SESSION["login"] = true;
-            $_SESSION["id_user"] = $data["id_user"];
             header("Location: ../expert/beranda.php");
             exit();
-        }else {
-            echo "Username, password, atau role salah!";
         }
+
+    } else {
+        echo "Username atau password salah!";
+    }
     }
 }
 ?>
@@ -80,13 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
                     <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
-                    <label for="role">Daftar Sebagai:</label>
-                    <select id="role" name="role">
-                        <option value="">-- Pilih Role --</option>
-                        <option value="client" <?= (isset($role) && $role === "client") ? "selected" : "" ?>>Client</option>
-                        <option value="expert" <?= (isset($role) && $role === "expert") ? "selected" : "" ?>>Expert</option>
-                    </select>
-                    <span style="color: red;"><?= $errors["role"] ?? "" ?></span><br><br>
                     <input type="submit" value="Masuk Ke Dashbord">
                 </form>
             </div>
