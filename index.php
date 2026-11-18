@@ -14,9 +14,7 @@
 
     <nav class="menu">
       <a href="#beranda">Beranda</a>
-      <a href="#trending">Trending</a>
       <a href="#tentang">Tentang</a>
-      <a href="#kontak">Kontak</a>
     </nav>
 
     <div class="auth">
@@ -29,47 +27,6 @@
   <section id="beranda" class="hero">
     <h1>Welcome!</h1>
     <p>Sampaikan aspirasi, ide, dan masukan untuk kampus yang lebih baik.</p>
-  </section>
-
-  <!-- Trending Topik -->
-  <section id="trending" class="trending">
-    <div class="section-head">
-      <h2>🔥 Trending Topik</h2>
-      <a href="#" class="btn btn-outline-light">Lihat Semua Topik</a>
-    </div>
-
-    <!-- Filter topik -->
-    <div class="chips">
-      <span class="chip active">Semua Topik</span>
-      <span class="chip">Fasilitas Kampus</span>
-      <span class="chip">UKT</span>
-      <span class="chip">Akademik</span>
-      <span class="chip">Kemahasiswaan</span>
-      <span class="chip">Layanan Kampus</span>
-    </div>
-
-    <div class="cards">
-      <article class="card">
-        <span class="tag">Fasilitas</span>
-        <h3>Perbaikan AC di Gedung Kuliah Utama Lantai 3</h3>
-        <p>Beberapa ruang kelas di lantai 3 AC-nya tidak dingin sehingga kegiatan belajar terganggu.</p>
-        <div class="stats"><span>👍 124 Dukungan</span><span>💬 32 Komentar</span></div>
-      </article>
-
-      <article class="card">
-        <span class="tag">UKT</span>
-        <h3>Penyesuaian Pembayaran dan Keringanan UKT Semester Ini</h3>
-        <p>Mahasiswa meminta kejelasan jadwal dan syarat pengajuan keringanan UKT.</p>
-        <div class="stats"><span>👍 98 Dukungan</span><span>💬 21 Komentar</span></div>
-      </article>
-
-      <article class="card">
-        <span class="tag">Akademik</span>
-        <h3>Pemeliharaan Sistem Nilai Tepat Waktu dan Penyampaian Jadwal Ujian</h3>
-        <p>Nilai dan jadwal ujian diharapkan diumumkan lebih cepat agar mahasiswa bisa bersiap.</p>
-        <div class="stats"><span>👍 76 Dukungan</span><span>💬 18 Komentar</span></div>
-      </article>
-    </div>
   </section>
 
   <!-- Tentang -->
@@ -96,34 +53,6 @@
         <li><span class="num">3</span><div><b>Kirim &amp; Pantau</b><br>Kirim laporan lalu lihat perkembangannya.</div></li>
         <li><span class="num">4</span><div><b>Terima Tanggapan</b><br>Pihak kampus akan membalas laporanmu.</div></li>
       </ol>
-    </div>
-  </section>
-
-  <!-- kontak -->
-  <section id="kontak" class="contact">
-    <h2>Kontak &amp; Layanan Bantuan</h2>
-    <p class="sub">Butuh bantuan? Hubungi kami lewat kontak berikut atau kirim pesan langsung lewat formulir.</p>
-
-    <div class="contact-wrap">
-      <div class="contact-info">
-        <div class="info-item"><span class="icon">✉️</span><div><b>Email Resmi</b><br>layanan@rembugutm.ac.id</div></div>
-        <div class="info-item"><span class="icon">💬</span><div><b>Helpdesk WhatsApp</b><br>+62 812-3456-7890</div></div>
-        <div class="info-item"><span class="icon">📍</span><div><b>Lokasi Layanan Kampus</b><br>Gedung Layanan Mahasiswa, Kampus UTM</div></div>
-      </div>
-
-      <form class="contact-form">
-        <h3>Kirim Pesan &amp; Masukan Cepat</h3>
-        <label for="nama">Nama</label>
-        <input type="text" id="nama" placeholder="Nama lengkap">
-
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="nama@email.com">
-
-        <label for="pesan">Pesan</label>
-        <textarea id="pesan" rows="4" placeholder="Tulis pesan kamu di sini..."></textarea>
-
-        <button type="submit" class="btn">Kirim Pesan</button>
-      </form>
     </div>
   </section>
 

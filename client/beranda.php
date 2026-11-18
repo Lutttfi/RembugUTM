@@ -32,8 +32,8 @@
             </a>
         </nav>
 
-        <a href="index.php" class="logout">
-            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+        <a href="../auth/logout.php" class="logout">
+            <span>Keluar</span>
         </a>
     </aside>
 

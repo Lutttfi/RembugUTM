@@ -10,7 +10,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = valPassword($errors, $password);
 
     if (empty($errors)) {
-        $sql = "SELECT username, password, role, Id_User FROM user WHERE username = ? AND password = SHA2(?, 0)";
+        $sql = "SELECT username, password, role,
+        Id_User AS id_user
+        FROM user
+        WHERE username = ? AND password = SHA2(?, 0)";
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
