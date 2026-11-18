@@ -2,12 +2,25 @@
 session_start();
 include '../database/koneksi.php';
 
-// Ambil semua topik diskusi beserta nama pembuat dan kategorinya dari database
+// Cek apakah user sudah login
+if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
+    header("Location: ../auth/masuk.php");
+    exit;
+}
+
+$id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
+
+// Ambil data profil user yang sedang login
+$query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
+$data_user  = mysqli_fetch_assoc($query_user);
+
+// Ambil riwayat topik diskusi KHUSUS milik user yang sedang login
 $query_topik = mysqli_query($connect, "
     SELECT t.*, k.Nama_Kategori, u.Username 
     FROM topik t
     LEFT JOIN kategori k ON t.Id_Kategori = k.Id_Kategori
     LEFT JOIN user u ON t.Id_User = u.Id_User
+    WHERE t.Id_User = '$id_user'
     ORDER BY t.Created_At DESC
 ");
 ?>
@@ -25,7 +38,7 @@ $query_topik = mysqli_query($connect, "
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <a href="index.php" class="logo">
+        <a href="beranda.php" class="logo">
             <span class="logo-icon">R</span> Rembug<b>UTM</b>
         </a>
 
@@ -55,13 +68,16 @@ $query_topik = mysqli_query($connect, "
         <!-- TOPBAR -->
         <header class="topbar">
             <div class="topbar-title">
-                <a href="index.php" class="logo logo-dark">
+                <a href="beranda.php" class="logo logo-dark">
                     <span class="logo-icon">R</span> Rembug<b>UTM</b>
                 </a>
             </div>
 
-            <div class="profile">
-                <a href="profil.php" class="avatar">
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px; font-weight: 600;">
+                    <?= htmlspecialchars($data_user['Username'] ?? 'Pengguna'); ?>
+                </span>
+                <a href="profil.php" class="avatar" title="Lihat Profil">
                     <i class="fa-solid fa-user"></i>
                 </a>
             </div>
@@ -71,7 +87,7 @@ $query_topik = mysqli_query($connect, "
 
             <!-- HEADER & TOMBOL BUAT TOPIK BARU -->
             <div class="discussion-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2>Riwayat Laporan & Diskusi</h2>
+                <h2>Riwayat Diskusi Saya</h2>
                 <a href="diskusi.php" class="btn" style="text-decoration: none;">+ Buat Topik Baru</a>
             </div>
 
@@ -81,7 +97,7 @@ $query_topik = mysqli_query($connect, "
                         <?php
                         $id_topik = $topik['Id_Topik'];
                         
-                        // Ambil tanggapan Expert untuk topik ini dari tabel respon
+                        // Ambil tanggapan Expert untuk topik ini
                         $query_respon = mysqli_query($connect, "
                             SELECT r.*, u.Username AS Nama_Expert 
                             FROM respon r
@@ -107,21 +123,35 @@ $query_topik = mysqli_query($connect, "
                             <h3><?= htmlspecialchars($topik['Judul_Topik']); ?></h3>
 
                             <div class="topic-info">
-                                Oleh <strong><?= htmlspecialchars($topik['Username'] ?? 'Warga'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
+                                Oleh <strong><?= htmlspecialchars($topik['Username'] ?? 'Saya'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
                             </div>
 
                             <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
 
                             <!-- TAMPILKAN LAMPIRAN JIKA ADA -->
                             <?php if (!empty($topik['Lampiran'])) : ?>
-                                <div style="margin: 10px 0;">
-                                    <a href="../uploads/<?= htmlspecialchars($topik['Lampiran']); ?>" target="_blank" style="font-size: 13px; color: #2563eb; text-decoration: underline;">
-                                        <i class="fa-solid fa-paperclip"></i> Lihat Lampiran (<?= htmlspecialchars($topik['Lampiran']); ?>)
-                                    </a>
+                                <?php 
+                                $file_lampiran = $topik['Lampiran'];
+                                $ext_lampiran  = strtolower(pathinfo($file_lampiran, PATHINFO_EXTENSION));
+                                $path_lampiran = "../uploads/" . htmlspecialchars($file_lampiran);
+                                ?>
+                                <div style="margin: 12px 0;">
+                                    <?php if (in_array($ext_lampiran, ['jpg', 'jpeg', 'png'])) : ?>
+                                        <a href="<?= $path_lampiran; ?>" target="_blank" title="Klik untuk memperbesar gambar">
+                                            <img src="<?= $path_lampiran; ?>" 
+                                                 alt="Lampiran Diskusi" 
+                                                 style="max-width: 220px; max-height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; display: block;">
+                                        </a>
+                                        <small style="color: #64748b; font-size: 11px;">Klik gambar untuk memperbesar</small>
+                                    <?php else : ?>
+                                        <a href="<?= $path_lampiran; ?>" target="_blank" style="display: inline-block; padding: 6px 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #2563eb; text-decoration: none;">
+                                            <i class="fa-solid fa-file-pdf"></i> Buka Dokumen PDF (<?= htmlspecialchars($file_lampiran); ?>)
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             <?php endif; ?>
 
-                            <!-- AREA TANGGAPAN EXPERT (TANPA FORM REPLY) -->
+                            <!-- AREA TANGGAPAN EXPERT -->
                             <div class="response-area">
                                 <h4>Tanggapan Expert</h4>
 
@@ -151,7 +181,7 @@ $query_topik = mysqli_query($connect, "
                     <?php endwhile; ?>
                 <?php else : ?>
                     <div class="topic-card" style="text-align: center; padding: 30px;">
-                        <p>Belum ada topik diskusi yang dibuat.</p>
+                        <p>Anda belum pernah membuat topik diskusi.</p>
                         <a href="diskusi.php" class="btn" style="display: inline-block; margin-top: 10px; text-decoration: none;">Mulai Topik Pertama</a>
                     </div>
                 <?php endif; ?>

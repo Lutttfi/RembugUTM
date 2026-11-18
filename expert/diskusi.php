@@ -2,9 +2,20 @@
 session_start();
 include '../database/koneksi.php';
 
+// Cek apakah Expert sudah login
+if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
+    header("Location: ../auth/masuk.php");
+    exit;
+}
+
+$id_expert = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
+
+// Ambil data profil Expert yang sedang login
+$query_expert = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_expert'");
+$data_expert  = mysqli_fetch_assoc($query_expert);
+
 // Proses simpan tanggapan resmi dari Expert
 if (isset($_POST['balas_topik'])) {
-    $id_expert  = $_SESSION['Id_User'] ?? $_SESSION['id_user'] ?? 1; // Sesuaikan dengan session login Expert
     $id_topik   = mysqli_real_escape_string($connect, $_POST['id_topik']);
     $isi_respon = trim($_POST['isi_respon'] ?? '');
 
@@ -20,12 +31,10 @@ if (isset($_POST['balas_topik'])) {
     if ($data_cek && $data_cek['Status'] !== 'Selesai') {
         $isi_respon_safe = mysqli_real_escape_string($connect, $isi_respon);
 
-        // Simpan ke tabel respon (sesuaikan nama kolom Isi_Respon jika di db Anda berbeda)
         $query_insert = "INSERT INTO respon (Id_Topik, Id_User, Isi_Respon) 
                          VALUES ('$id_topik', '$id_expert', '$isi_respon_safe')";
 
         if (mysqli_query($connect, $query_insert)) {
-            // Otomatis ubah status topik menjadi Selesai agar diskusi ditutup
             mysqli_query($connect, "UPDATE topik SET Status = 'Selesai' WHERE Id_Topik = '$id_topik'");
 
             echo "<script>
@@ -54,7 +63,7 @@ $query_topik = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Panel Expert</title>
-    <link rel="stylesheet" href="css/diskusi.css">
+    <link rel="stylesheet" href="../client/css/diskusi.css">
 </head>
 <body>
 
@@ -94,8 +103,11 @@ $query_topik = mysqli_query($connect, "
                 </a>
             </div>
 
-            <div class="profile">
-                <a href="edit_profil.php" class="avatar">
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px; font-weight: 600;">
+                    <?= htmlspecialchars($data_expert['Username'] ?? 'Expert'); ?>
+                </span>
+                <a href="edit_profil.php" class="avatar" title="Profil Expert">
                     <i class="fa-solid fa-user-shield"></i>
                 </a>
             </div>
@@ -143,12 +155,26 @@ $query_topik = mysqli_query($connect, "
 
                             <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
 
-                            <!-- LAMPIRAN JIKA ADA -->
+                            <!-- TAMPILKAN LAMPIRAN JIKA ADA -->
                             <?php if (!empty($topik['Lampiran'])) : ?>
-                                <div style="margin: 10px 0;">
-                                    <a href="../uploads/<?= htmlspecialchars($topik['Lampiran']); ?>" target="_blank" style="font-size: 13px; color: #2563eb; text-decoration: underline;">
-                                        <i class="fa-solid fa-paperclip"></i> Lihat Lampiran (<?= htmlspecialchars($topik['Lampiran']); ?>)
-                                    </a>
+                                <?php 
+                                $file_lampiran = $topik['Lampiran'];
+                                $ext_lampiran  = strtolower(pathinfo($file_lampiran, PATHINFO_EXTENSION));
+                                $path_lampiran = "../uploads/" . htmlspecialchars($file_lampiran);
+                                ?>
+                                <div style="margin: 12px 0;">
+                                    <?php if (in_array($ext_lampiran, ['jpg', 'jpeg', 'png'])) : ?>
+                                        <a href="<?= $path_lampiran; ?>" target="_blank" title="Klik untuk memperbesar gambar">
+                                            <img src="<?= $path_lampiran; ?>" 
+                                                 alt="Lampiran Diskusi" 
+                                                 style="max-width: 220px; max-height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; display: block;">
+                                        </a>
+                                        <small style="color: #64748b; font-size: 11px;">Klik gambar untuk memperbesar</small>
+                                    <?php else : ?>
+                                        <a href="<?= $path_lampiran; ?>" target="_blank" style="display: inline-block; padding: 6px 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #2563eb; text-decoration: none;">
+                                            <i class="fa-solid fa-file-pdf"></i> Buka Dokumen PDF (<?= htmlspecialchars($file_lampiran); ?>)
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             <?php endif; ?>
 
@@ -174,7 +200,6 @@ $query_topik = mysqli_query($connect, "
                                         <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> Topik ini sudah selesai ditanggapi dan ditutup.
                                     </p>
                                 <?php else : ?>
-                                    <!-- FORM BALAS MUNCUL HANYA JIKA BELUM DITANGGAPI -->
                                     <form action="diskusi.php" method="POST" class="reply-form">
                                         <input type="hidden" name="id_topik" value="<?= $id_topik; ?>">
                                         <textarea name="isi_respon" placeholder="Tuliskan tanggapan resmi untuk menyelesaikan topik ini..." required></textarea>

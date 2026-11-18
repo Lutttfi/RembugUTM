@@ -2,6 +2,18 @@
 session_start();
 include '../database/koneksi.php';
 
+// Cek apakah user sudah login (wajib login, tanpa mode testing)
+if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
+    header("Location: ../auth/masuk.php");
+    exit;
+}
+
+$id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
+
+// Ambil data profil user yang sedang login
+$query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
+$data_user  = mysqli_fetch_assoc($query_user);
+
 // Ambil pesan error & input lama dari session (jika validasi gagal) lalu hapus
 $errors   = $_SESSION['errors'] ?? [];
 $old_data = $_SESSION['old_data'] ?? [];
@@ -22,9 +34,9 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 
 <div class="layout">
 
-    <!-- SIDEBAR WITH REMBUG UTM BRANDING -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <a href="index.php" class="logo">
+        <a href="beranda.php" class="logo">
             <span class="logo-icon">R</span> Rembug<b>UTM</b>
         </a>
 
@@ -54,13 +66,16 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
         <!-- TOPBAR -->
         <header class="topbar">
             <div class="topbar-title">
-                <a href="index.php" class="logo logo-dark">
+                <a href="beranda.php" class="logo logo-dark">
                     <span class="logo-icon">R</span> Rembug<b>UTM</b>
                 </a>
             </div>
 
-            <div class="profile">
-                <a href="profil.php" class="avatar">
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px; font-weight: 600;">
+                    <?= htmlspecialchars($data_user['Username'] ?? 'Pengguna'); ?>
+                </span>
+                <a href="profil.php" class="avatar" title="Lihat Profil">
                     <i class="fa-solid fa-user"></i>
                 </a>
             </div>
