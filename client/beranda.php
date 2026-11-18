@@ -32,7 +32,7 @@
             </a>
         </nav>
 
-        <a href="logout.php" class="logout">
+        <a href="../index.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
     </aside>
@@ -57,9 +57,7 @@
 
         <section class="content">
 
-            <!-- ========================================================
-                 VERSI 1: BERANDA CLIENT (SEPERTI FOTO PERTAMA)
-                 ======================================================== -->
+                  <!-- BERANDA CLIENT -->
             <div class="beranda-section">
                 <div class="beranda-header">
                     <h1>Beranda</h1>

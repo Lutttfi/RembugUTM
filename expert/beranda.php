@@ -32,7 +32,7 @@
             </a>
         </nav>
 
-        <a href="logout.php" class="logout">
+        <a href="../index.php" class="keluar">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
     </aside>
