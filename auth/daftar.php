@@ -1,54 +1,72 @@
 <?php
 require "../client/validasi.php";
+session_start();
+$errors = [];
+$role = "";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $errors = [];
+    $username =  htmlspecialchars($_POST["username"]?? "");
+    $email = htmlspecialchars($_POST["email"] ?? "") ;
+    $password = htmlspecialchars($_POST["password"] ?? "");
+    $confirm_password = htmlspecialchars($_POST["confirm_password"] ?? "");
+    $role = htmlspecialchars($_POST["role"] ?? "");
 
-    $username =  $_POST["username"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $confirm_password = $_POST["confirm_password"];
-    $role = $_POST["role"];
-
+    // Validasi input
     $errors = valUsername($errors, $username);
     $errors = valEmail($errors, $email);
     $errors = valPassword($errors, $password);
     $errors = valConfirmPassword($errors, $password, $confirm_password);
     $errors = valRole($errors, $role);
-    
-    // Cek username
-    $sql = "SELECT username FROM USER WHERE username = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
 
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $errors["username"] = "Username sudah digunakan!";
-    }
-
-    // Cek email
-    $sql = "SELECT email FROM USER WHERE email = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $errors["email"] = "Email sudah terdaftar!";
-    }
-
+    // Cek username dan email jika validasi berhasil
     if (empty($errors)) {
+
+        // Cek username
+        $sql = "SELECT username FROM user WHERE username = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $errors["username"] = "Username sudah digunakan!";
+        }
+
+        // Cek email
+        $sql = "SELECT email FROM user WHERE email = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $errors["email"] = "Email sudah terdaftar!";
+        }
+    }
+
+    // Jika tidak ada error
+    if (empty($errors)) {
+
         $sql = "INSERT INTO user (username, email, password, role)
-        VALUES (?, ?, SHA2(?, 0), ?)";
+                VALUES (?, ?, SHA2(?, 0), ?)";
+
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("ssss", $username, $email, $password, $role);
-        $stmt->execute();
+
+        if ($stmt->execute()) {
+
+            // Simpan pesan ke session
+            $_SESSION["pesan_daftar"] = "Pendaftaran berhasil! Silakan login.";
+
+            // Arahkan ke halaman masuk
+            header("Location: masuk.php");
+            exit();
+        }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

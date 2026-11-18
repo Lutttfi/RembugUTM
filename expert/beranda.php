@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/beranda.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>RembugUTM - Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
@@ -18,8 +17,8 @@
         </a>
 
         <nav class="menu">
-            <a href="beranda.html" class="active">
-                <i class="fa-solid fa-house"></i> <span>Beranda</span>
+            <a href="dashboard.php" class="active">
+                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
             <a href="diskusi.php">
                 <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>

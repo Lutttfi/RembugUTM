@@ -32,8 +32,13 @@
             </a>
         </nav>
 
+<<<<<<< HEAD
         <a href="../index.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+=======
+        <a href="../auth/logout.php" class="logout">
+            <span>Keluar</span>
+>>>>>>> 63c2210c19a4415b5c3df1b7fd64114230348556
         </a>
     </aside>
 
