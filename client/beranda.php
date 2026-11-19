@@ -11,7 +11,7 @@
 
 <div class="layout">
 
-    <!-- SIDEBAR WITH REMBUG UTM BRANDING -->
+    <!-- SIDEBAR DAN REMBUG RAKYAT -->
     <aside class="sidebar">
         <a href="index.php" class="logo">
             <span class="logo-icon">R</span> Rembug<b>UTM</b>
