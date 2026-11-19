@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Dashboard</title>
-    <link rel="stylesheet" href="css/dashboard.css">
+    <title>RembugUTM - Beranda</title>
+    <link rel="stylesheet" href="css/beranda.css">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
 
         <nav class="menu">
             <a href="dashboard.php" class="active">
-                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
             <a href="diskusi.php">
                 <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>

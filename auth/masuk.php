@@ -58,18 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <p class="subtitle">MULAI PERJALANAN ANDA</p>
                 <h1>
                     Suarakan aspirasi,
-                    wujudkan kampus
+                    wujudkan lingkungan
                     yang lebih baik.
                 </h1>
                 <p class="description">
-                    Bergabung bersama mahasiswa lainnya
+                    Bergabung bersama masyarakat lainnya
                     untuk menyampaikan aspirasi dan
-                    membangun lingkungan kampus yang lebih baik.
+                    membangun lingkungan masyarakat yang lebih baik.
                 </p>
                 <ul>
                     <li>Sampaikan aspirasi dengan mudah</li>
                     <li>Pantau perkembangan laporan</li>
-                    <li>Terhubung dengan mahasiswa lainnya</li>
+                    <li>Terhubung dengan masyarakat lainnya</li>
                 </ul>
             </div>
         </div>

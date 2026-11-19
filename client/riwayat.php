@@ -14,6 +14,21 @@ $id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
 $query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
 $data_user  = mysqli_fetch_assoc($query_user);
 
+// Ambil pesan sukses/error dari session
+$pesan_sukses = $_SESSION['pesan_sukses'] ?? '';
+$errors       = $_SESSION['errors'] ?? [];
+unset($_SESSION['pesan_sukses'], $_SESSION['errors']);
+
+// Cek apakah user sedang menekan tombol edit pada salah satu topik (?edit=ID)
+$edit_id = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
+
+// Ambil data kategori untuk dropdown saat edit topik
+$daftar_kategori = [];
+$q_kat = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kategori ASC");
+while ($k = mysqli_fetch_assoc($q_kat)) {
+    $daftar_kategori[] = $k;
+}
+
 // Ambil riwayat topik diskusi KHUSUS milik user yang sedang login
 $query_topik = mysqli_query($connect, "
     SELECT t.*, k.Nama_Kategori, u.Username 
@@ -85,6 +100,24 @@ $query_topik = mysqli_query($connect, "
 
         <section class="content">
 
+            <!-- NOTIFIKASI SUKSES / ERROR -->
+            <?php if (!empty($pesan_sukses)) : ?>
+                <div style="background-color: #dcfce7; border-left: 4px solid #16a34a; color: #166534; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
+                    <?= htmlspecialchars($pesan_sukses); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($errors)) : ?>
+                <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
+                    <strong>Gagal memperbarui topik:</strong>
+                    <ul style="margin: 6px 0 0 18px; padding: 0;">
+                        <?php foreach ($errors as $err) : ?>
+                            <li><?= htmlspecialchars($err); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
             <!-- HEADER & TOMBOL BUAT TOPIK BARU -->
             <div class="discussion-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>Riwayat Diskusi Saya</h2>
@@ -105,7 +138,7 @@ $query_topik = mysqli_query($connect, "
                             WHERE r.Id_Topik = '$id_topik'
                             ORDER BY r.Id_Respon ASC
                         ");
-                        $jumlah_respon = mysqli_num_rows($query_respon);
+                        $jumlah_respon    = mysqli_num_rows($query_respon);
                         $sudah_ditanggapi = ($jumlah_respon > 0 || $topik['Status'] === 'Selesai');
                         ?>
 
@@ -113,20 +146,60 @@ $query_topik = mysqli_query($connect, "
                         <div class="topic-card">
                             <div class="topic-top">
                                 <span class="topic-category"><?= htmlspecialchars($topik['Nama_Kategori'] ?? 'Umum'); ?></span>
-                                <?php if ($sudah_ditanggapi) : ?>
-                                    <span class="topic-status sudah-ditanggapi">Sudah Ditanggapi</span>
-                                <?php else : ?>
-                                    <span class="topic-status menunggu-tanggapan">Menunggu Tanggapan</span>
-                                <?php endif; ?>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <?php if ($sudah_ditanggapi) : ?>
+                                        <span class="topic-status sudah-ditanggapi">Sudah Ditanggapi</span>
+                                    <?php else : ?>
+                                        <span class="topic-status menunggu-tanggapan">Menunggu Tanggapan</span>
+                                        <!-- TOMBOL EDIT TOPIK (POIN 5 CLIENT) -->
+                                        <a href="riwayat.php?edit=<?= $id_topik; ?>" style="font-size: 13px; color: #2563eb; text-decoration: underline;">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit Topik
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
                             </div>
 
-                            <h3><?= htmlspecialchars($topik['Judul_Topik']); ?></h3>
+                            <?php if ($edit_id == $id_topik && !$sudah_ditanggapi) : ?>
+                                <!-- FORM EDIT TOPIK CLIENT (TANPA ATRIBUT REQUIRED) -->
+                                <form action="validasi.php" method="POST" style="margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                    <input type="hidden" name="id_topik" value="<?= $id_topik; ?>">
+                                    
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Judul Topik</label>
+                                        <input type="text" name="judul" value="<?= htmlspecialchars($topik['Judul_Topik']); ?>" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                                    </div>
 
-                            <div class="topic-info">
-                                Oleh <strong><?= htmlspecialchars($topik['Username'] ?? 'Saya'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
-                            </div>
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Kategori</label>
+                                        <select name="kategori" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                                            <?php foreach ($daftar_kategori as $kat) : ?>
+                                                <option value="<?= $kat['Id_Kategori']; ?>" <?= ($topik['Id_Kategori'] == $kat['Id_Kategori']) ? 'selected' : ''; ?>>
+                                                    <?= htmlspecialchars($kat['Nama_Kategori']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
 
-                            <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Isi Diskusi</label>
+                                        <textarea name="isi" rows="4" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;"><?= htmlspecialchars($topik['Isi_Diskusi']); ?></textarea>
+                                    </div>
+
+                                    <div style="display: flex; gap: 10px;">
+                                        <button type="submit" name="update_topik" class="btn">Simpan Perubahan</button>
+                                        <a href="riwayat.php" class="btn btn-outline-cancel" style="text-decoration: none;">Batal</a>
+                                    </div>
+                                </form>
+                            <?php else : ?>
+                                <!-- TAMPILAN NORMAL TOPIK -->
+                                <h3><?= htmlspecialchars($topik['Judul_Topik']); ?></h3>
+
+                                <div class="topic-info">
+                                    Oleh <strong><?= htmlspecialchars($topik['Username'] ?? 'Saya'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
+                                </div>
+
+                                <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
+                            <?php endif; ?>
 
                             <!-- TAMPILKAN LAMPIRAN JIKA ADA -->
                             <?php if (!empty($topik['Lampiran'])) : ?>
