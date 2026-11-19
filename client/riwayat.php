@@ -59,7 +59,7 @@ $query_topik = mysqli_query($connect, "
 
         <nav class="menu">
             <a href="beranda.php">
-                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
             <a href="diskusi.php">
                 <i class="fa-solid fa-comments"></i> <span>Forum Diskusi</span>
