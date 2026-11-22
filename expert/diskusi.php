@@ -125,7 +125,7 @@ if ($filter === 'saya') {
 
         <nav class="menu">
             <a href="beranda.php">
-                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
             <a href="diskusi.php" class="active">
                 <i class="fa-solid fa-comments"></i> <span>Tanggapi Diskusi</span>
