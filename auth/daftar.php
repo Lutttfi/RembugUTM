@@ -1,4 +1,5 @@
 <?php
+require "../database/koneksi.php";
 require "../client/validasi.php";
 session_start();
 $errors = [];
@@ -11,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = htmlspecialchars($_POST["password"] ?? "");
     $confirm_password = htmlspecialchars($_POST["confirm_password"] ?? "");
     $role = htmlspecialchars($_POST["role"] ?? "");
+    $nomor = htmlspecialchars($_POST["nomor"] ?? "");
 
     // Validasi input
     $errors = valUsername($errors, $username);
@@ -18,52 +20,57 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = valPassword($errors, $password);
     $errors = valConfirmPassword($errors, $password, $confirm_password);
     $errors = valRole($errors, $role);
+    $errors = valNomor($errors, $nomor);
 
-    // Cek username dan email jika validasi berhasil
-    if (empty($errors)) {
+  // Cek username jika validasi username berhasil
+if (!isset($errors["username"])) {
 
-        // Cek username
-        $sql = "SELECT username FROM user WHERE username = ?";
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $sql = "SELECT username FROM user WHERE username = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $errors["username"] = "Username sudah digunakan!";
-        }
-
-        // Cek email
-        $sql = "SELECT email FROM user WHERE email = ?";
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $errors["email"] = "Email sudah terdaftar!";
-        }
+    if ($result->num_rows > 0) {
+        $errors["username"] = "Username sudah digunakan!";
     }
 
-    // Jika tidak ada error
-    if (empty($errors)) {
+    $stmt->close();
+}
 
-        $sql = "INSERT INTO user (username, email, password, role)
-                VALUES (?, ?, SHA2(?, 0), ?)";
+// Cek email jika validasi email berhasil
+if (!isset($errors["email"])) {
 
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("ssss", $username, $email, $password, $role);
+    $sql = "SELECT email FROM user WHERE email = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($stmt->execute()) {
-
-            // Simpan pesan ke session
-            $_SESSION["pesan_daftar"] = "Pendaftaran berhasil! Silakan login.";
-
-            // Arahkan ke halaman masuk
-            header("Location: masuk.php");
-            exit();
-        }
+    if ($result->num_rows > 0) {
+        $errors["email"] = "Email sudah terdaftar!";
     }
+
+    $stmt->close();
+}
+
+// Jika tidak ada error, simpan data
+if (empty($errors)) {
+
+    $sql = "INSERT INTO user (username, email, password, role)
+            VALUES (?, ?, SHA2(?, 0), ?)";
+
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("ssss", $username, $email, $password, $role);
+
+    if ($stmt->execute()) {
+
+        $_SESSION["pesan_daftar"] = "Pendaftaran berhasil! Silakan login.";
+
+        header("Location: masuk.php");
+        exit();
+    }
+}
 }
 ?>
 
@@ -110,24 +117,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <form action="daftar.php" method="post">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["username"] ?? "" ?></span><br><br>
+                    <span class="error"><?= $errors["username"] ?? "" ?></span>
                     <label for="email">Email:</label>
                     <input type="text" id="email" name="email" value="<?= isset($errors["email"]) ? "" : trim($_POST["email"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["email"] ?? "" ?></span><br><br>    
+                    <span class="error"><?= $errors["email"] ?? "" ?></span><br><br>    
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
+                    <span class="error"><?= $errors["password"] ?? "" ?></span><br><br> 
                     <label for="confirm_password">Confirm Password:</label>
                     <input type="password" id="confirm_password" name="confirm_password" value="<?= isset($errors["confirm_password"]) ? "" : trim($_POST["confirm_password"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["confirm_password"] ?? "" ?></span><br><br> 
+                    <span class="error"><?= $errors["confirm_password"] ?? "" ?></span><br><br> 
+                    <label for="nomor">Nomor Telepon:</label>
+                    <input type="text" id="nomor" name="nomor" value="<?= isset($errors["nomor"]) ? "" : trim($_POST["nomor"] ?? "") ?>">
+                    <span class="error"><?= $errors["nomor"] ?? "" ?></span><br><br> 
                     <label for="role">Daftar Sebagai:</label>
                     <select id="role" name="role">
                         <option value="">-- Pilih Role --</option>
                         <option value="client" <?= (isset($role) && $role === "client") ? "selected" : "" ?>>Client</option>
                         <option value="expert" <?= (isset($role) && $role === "expert") ? "selected" : "" ?>>Expert</option>
                     </select>
-                    <span style="color: red;"><?= $errors["role"] ?? "" ?></span><br><br>
+                    <span class="error"><?= $errors["role"] ?? "" ?></span><br><br>
                     <input type="submit" value="Daftar">
+                    <a href="../index.php" class="btn-kembali">Kembali ke Halaman Utama</a>
                 </form>
             </div>
         </div>

@@ -140,12 +140,7 @@ $query_laporan = mysqli_query($connect, "
 
             <!-- kotak putih besar untuk bagian daftar laporan terbaru -->
             <div class="kotak-laporan">
-                <!-- bagian atas kotak laporan (memisahkan judul di kiri & link "Lihat Semua" di kanan) -->
-                <div class="kepala-kotak">
-                    <h2>Laporan Terbaru</h2>
-                    <a href="diskusi.php" class="lihat-semua">Lihat Semua</a>
-                </div>
-
+                
             <div class="list-item">
                 <!-- Ambil semua data laporan satu per satu dari database, lalu cetak ke layar -->
                 <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
