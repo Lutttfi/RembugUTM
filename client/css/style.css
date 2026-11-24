@@ -516,3 +516,45 @@ button, input, select, textarea { font-family: Arial, sans-serif; }
   .profile-buttons, .form-buttons, .modal-buttons, .form-row { flex-direction: column; }
   .profile-buttons a, .modal-buttons a { width: 100%; }
 }
+
+/* Membuat setiap laporan jadi kotak terpisah dengan jarak di bawahnya */
+.item-laporan-lengkap {
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+/* Mengatur judul laporan di kiri dan status (Selesai/Proses) di kanan */
+.atas-laporan {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Teks isi laporan */
+.isi-singkat {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 6px;
+}
+
+/* Kotak biru muda untuk balasan dari expert */
+.kotak-jawaban {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background-color: #f0f7ff;
+  border-left: 4px solid #2f6fd0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+/* Judul nama expert di dalam kotak jawaban */
+.kotak-jawaban b {
+  color: #0d2447;
+  display: block;
+  margin-bottom: 4px;
+}

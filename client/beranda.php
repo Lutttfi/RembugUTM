@@ -2,18 +2,46 @@
 session_start();
 require "../client/validasi.php";
 
-// CEK LOGIN: Kalau belum login, paksa pindah ke halaman masuk.php
+// Cek login
 if (!isset($_SESSION["login"])) {
-    header("Location: ../auth/masuk.php"); // sesuaikan letak folder masuk.php kamu
+    header("Location: ../auth/masuk.php");
     exit();
 }
 
-// Ambil username dari database berdasarkan id_user yang login
-$id_user = $_SESSION["id_user"];
-$query   = mysqli_query($connect, "SELECT username FROM user WHERE Id_User = '$id_user'");
-$data    = mysqli_fetch_assoc($query);
+// mengambil nama user yang login
+$id_user    = $_SESSION["id_user"];
+$query_user = mysqli_query($connect, "SELECT Username FROM user WHERE Id_User = '$id_user'");
+$data_user  = mysqli_fetch_assoc($query_user);
+$nama_user  = $data_user["Username"] ?? "Mahasiswa";
 
-$nama_user = $data["username"] ?? "Mahasiswa";
+// menghitung total laporan
+$q_total       = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik");
+$total_laporan = mysqli_fetch_assoc($q_total)["total"];
+// menghitung total yang sedang di proses
+$q_proses      = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik WHERE Status = 'Terbuka'");
+$total_proses  = mysqli_fetch_assoc($q_proses)["total"];
+// menghitung total laporan yang sudah selesai
+$q_selesai     = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik WHERE Status = 'Selesai'");
+$total_selesai = mysqli_fetch_assoc($q_selesai)["total"];
+
+// mengambil semua laporan + nama pelapor + kategori + jawaban expert
+$query_laporan = mysqli_query($connect, "
+    SELECT 
+        topik.Judul_Topik,
+        topik.Isi_Diskusi,
+        topik.Status,
+        topik.Created_At,
+        pelapor.Username AS nama_pelapor,
+        kategori.Nama_Kategori,
+        respon.Isi_Respon,
+        expert.Username AS nama_expert
+    FROM topik
+    JOIN user AS pelapor ON topik.Id_User = pelapor.Id_User
+    JOIN kategori ON topik.Id_Kategori = kategori.Id_Kategori
+    LEFT JOIN respon ON topik.Id_Topik = respon.Id_Topik
+    LEFT JOIN user AS expert ON respon.Id_User = expert.Id_User
+    ORDER BY topik.Id_Topik DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -21,7 +49,7 @@ $nama_user = $data["username"] ?? "Mahasiswa";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 
@@ -84,32 +112,30 @@ $nama_user = $data["username"] ?? "Mahasiswa";
                 <p>Selamat Datang <?php echo htmlspecialchars($nama_user); ?>!</p>
             </div>
 
-            <!-- wadah baris untuk menjajarkan 3 kotak angka statistik ke samping -->
-            <div class="baris-statistik">
-                <!-- kotak putih pertama: total laporan -->
+
+                <!-- kotak pertama yang berisi total seluruh laporan -->
+                <div class="baris-statistik">
                 <div class="kotak-stat">
-                    <!-- pembungkus teks angka dan keterangannya -->
                     <div class="info-stat">
-                        <h2>1</h2>
+                        <h2><?php echo $total_laporan; ?></h2>
                         <span>Total Laporan</span>
                     </div>
                 </div>
-
-                <!-- kotak putih kedua: laporan dalam proses -->
+                <!-- kotak kedua yang berisi laporan sedang dalam proses -->
                 <div class="kotak-stat">
                     <div class="info-stat">
-                        <h2>1</h2>
+                        <h2><?php echo $total_proses; ?></h2>
                         <span>Dalam Proses</span>
                     </div>
                 </div>
-
-                <!-- kotak putih ketiga: laporan selesai -->
+                <!-- kotak ketiga yang berisi bahwa laporan sudah selesai -->
                 <div class="kotak-stat">
                     <div class="info-stat">
-                        <h2>0</h2>
+                        <h2><?php echo $total_selesai; ?></h2>
                         <span>Selesai</span>
                     </div>
                 </div>
+            </div>
             </div>
 
             <!-- kotak putih besar untuk bagian daftar laporan terbaru -->
@@ -120,21 +146,45 @@ $nama_user = $data["username"] ?? "Mahasiswa";
                     <a href="diskusi.php" class="lihat-semua">Lihat Semua</a>
                 </div>
 
-                <!-- wadah kumpulan baris laporan (kalau nanti datanya lebih dari 1, ngumpul di sini) -->
-                <div class="list-item">
-                    <!-- kotak untuk satu baris laporan (memisahkan judul di kiri & status di kanan) -->
-                    <div class="item-laporan">
-                        <!-- pembungkus sebelah kiri khusus judul laporan dan tanggal -->
-                        <div class="bagian-kiri">
-                            <!-- kotak teks judul dan tanggal biar tersusun atas-bawah -->
+            <div class="list-item">
+                <!-- Ambil semua data laporan satu per satu dari database, lalu cetak ke layar -->
+                <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
+                    
+                    <div class="item-laporan-lengkap">
+                        <div class="atas-laporan">
                             <div class="teks-laporan">
-                                <h3>Masalah fasilitas perpustakaan</h3>
-                                <span class="tanggal">10 Nov 2026</span>
+                                <!-- Tampilkan judul laporannya -->
+                                <h3><?= $row["Judul_Topik"] ?></h3>
+                                
+                                <!-- Tampilkan info siapa yang lapor, kategorinya apa, dan kapan dibuat -->
+                                <span class="tanggal">
+                                    Oleh <b><?= $row["nama_pelapor"] ?></b> • 
+                                    Kategori: <?= $row["Nama_Kategori"] ?> • 
+                                    <?= $row["Created_At"] ?>
+                                </span>
+                                
+                                <!-- Tampilkan isi cerita/keluhan laporannya -->
+                                <p class="isi-singkat"><?= $row["Isi_Diskusi"] ?></p>
                             </div>
+
+                            <!-- Cek status nya kalau di database tulisannya 'Selesai', kasih label hijau. Kalau belum, kasih label biru 'Dalam Proses' -->
+                            <?php if ($row["Status"] == "Selesai") { ?>
+                                <span class="label-status status-selesai">Selesai</span>
+                            <?php } else { ?>
+                                <span class="label-status status-proses">Dalam Proses</span>
+                            <?php } ?>
                         </div>
-                        <span class="label-status status-proses">Dalam Proses</span>
+
+                        <!-- Cek apakah laporan ini sudah dibalas sama expert? Kalau balasannya nggak kosong, munculkan kotak biru jawabannya -->
+                        <?php if ($row["Isi_Respon"] != "") { ?>
+                            <div class="kotak-jawaban">
+                                <b>Jawaban Expert (<?= $row["nama_expert"] ?>):</b>
+                                <p><?= $row["Isi_Respon"] ?></p>
+                            </div>
+                        <?php } ?>
                     </div>
-                </div>
+
+                <?php } ?>
             </div>
 
             <!-- kotak biru muda paling bawah untuk info/tips -->
