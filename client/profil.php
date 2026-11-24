@@ -268,7 +268,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
                 <h3>
                     <?= htmlspecialchars($user["username"]); ?>
                 </h3>
-
+                
                 <span class="role">
                     <?= htmlspecialchars(ucfirst($user["role"])); ?>
                 </span>
@@ -290,7 +290,6 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
                 <!-- INFORMASI PROFIL -->
                 <div class="profile-info">
-
                     <div class="info-group">
                         <label>Username</label>
                         <p>
@@ -311,9 +310,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
                             <?= htmlspecialchars(ucfirst($user["role"])); ?>
                         </p>
                     </div>
-
                 </div>
-
 
                 <!-- TOMBOL PROFIL -->
                 <div class="profile-buttons">
@@ -325,21 +322,11 @@ $berhasil_password = isset($_GET["berhasil"]) &&
                     <a href="#ubah-password" class="btn-password">
                         Ubah Password
                     </a>
-
                 </div>
-
             </div>
-
         </section>
-
     </main>
-
 </div>
-
-
-<!-- =====================================
-     MODAL EDIT PROFIL
-===================================== -->
 
 <div id="edit-profil"
      class="modal <?= $modal_aktif === 'edit-profil' ? 'tampil' : ''; ?>">

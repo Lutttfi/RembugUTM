@@ -1,7 +1,8 @@
-
 <?php
 session_start();
-require_once __DIR__ . "/validasi.php";
+
+// validasi.php hanya ada di folder client, jadi dipanggil dari sana
+require_once __DIR__ . "/../client/validasi.php";
 
 // Periksa login
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
@@ -40,9 +41,14 @@ if (!$user) {
     exit();
 }
 
+// Hanya expert yang boleh membuka halaman ini
+if (strtolower($user["role"]) !== "expert") {
+    header("Location: ../client/profil.php");
+    exit();
+}
+
 $error = "";
 $modal_aktif = "";
-$berhasil = isset($_GET["berhasil"]);
 
 // =====================================
 // PROSES EDIT PROFIL
@@ -174,7 +180,10 @@ if (isset($_POST["ubah_password"])) {
 
 
 // Ambil ulang data terbaru dari database
-$user = ambilProfil($connect, $id_user);
+// (kalau ada error edit profil, tetap tampilkan input terakhir pengguna)
+if ($modal_aktif !== "edit-profil") {
+    $user = ambilProfil($connect, $id_user);
+}
 
 // Notifikasi
 $berhasil_profil = isset($_GET["berhasil"]) &&
@@ -194,7 +203,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
     <title>Profil Saya - RembugUTM</title>
 
-    <link rel="stylesheet" href="css/profil.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -204,7 +213,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-        <a href="index.php" class="logo">
+        <a href="../index.php" class="logo">
             <span class="logo-icon">R</span>
             Rembug<b>UTM</b>
         </a>
@@ -217,10 +226,6 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
             <a href="diskusi.php">
                 <span>Laporan</span>
-            </a>
-
-            <a href="riwayat.php">
-                <span>Riwayat Laporan</span>
             </a>
 
             <a href="profil.php" class="active">
@@ -239,7 +244,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
     <main class="main-content">
         <header class="topbar">
             <div class="topbar-title">
-                <a href="index.php" class="logo logo-dark">
+                <a href="../index.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
                     Rembug<b>UTM</b>
                 </a>
