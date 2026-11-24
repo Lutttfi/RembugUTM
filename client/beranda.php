@@ -1,141 +1,157 @@
+<?php
+session_start();
+require "../client/validasi.php";
+
+// CEK LOGIN: Kalau belum login, paksa pindah ke halaman masuk.php
+if (!isset($_SESSION["login"])) {
+    header("Location: ../auth/masuk.php"); // sesuaikan letak folder masuk.php kamu
+    exit();
+}
+
+// Ambil username dari database berdasarkan id_user yang login
+$id_user = $_SESSION["id_user"];
+$query   = mysqli_query($connect, "SELECT username FROM user WHERE Id_User = '$id_user'");
+$data    = mysqli_fetch_assoc($query);
+
+$nama_user = $data["username"] ?? "Mahasiswa";
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/beranda.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/beranda.css?v=2">
 </head>
 <body>
 
-<div class="layout">
+<!-- wadah paling luar untuk membungkus seluruh isi halaman (kiri & kanan) -->
+<div class="bungkus-utama">
 
-    <!-- SIDEBAR WITH REMBUG UTM BRANDING -->
-    <aside class="sidebar">
+    <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
+    <div class="sidebar">
         <a href="index.php" class="logo">
-            <span class="logo-icon">R</span> Rembug<b>UTM</b>
+            <span class="ikon-logo">R</span> Rembug<b>UTM</b>
         </a>
 
-        <nav class="menu">
-            <a href="beranda.html" class="active">
-                <i class="fa-solid fa-house"></i> <span>Beranda</span>
+        <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
+        <div class="daftar-menu">
+            <a href="beranda.php" class="aktif">
+                <span>Beranda</span>
             </a>
             <a href="diskusi.php">
-                <i class="fa-solid fa-file-lines"></i> <span>Laporan</span>
+                <span>Laporan</span>
             </a>
             <a href="riwayat.php">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
+                <span>Riwayat Laporan</span>
             </a>
             <a href="profil.php">
-                <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
+                <span>Profil Saya</span>
             </a>
-        </nav>
+        </div>
 
-        <a href="../auth/logout.php" class="logout">
+        <a href="../auth/logout.php" class="tombol-keluar">
             <span>Keluar</span>
         </a>
-    </aside>
+    </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <!-- wadah utama bagian kanan (dikasih jarak kiri 260px biar tidak ketutup sidebar) -->
+    <div class="konten-kanan">
 
-        <!-- TOPBAR -->
-        <header class="topbar">
-            <div class="topbar-title">
-                <a href="index.php" class="logo logo-dark">
-                    <span class="logo-icon">R</span> Rembug<b>UTM</b>
+        <!-- bar putih paling atas untuk judul dan tombol profil -->
+        <div class="topbar">
+            <!-- kotak bagian kiri di topbar (tempat logo) -->
+            <div class="judul-atas">
+                <a href="index.php" class="logo logo-gelap">
+                    <span class="ikon-logo">R</span> Rembug<b>UTM</b>
                 </a>
             </div>
 
-            <div class="profile">
-                <a href="profil.php" class="avatar">
-                    <i class="fa-solid fa-user"></i>
+            <!-- kotak bagian kanan di topbar (tempat tombol profil) -->
+            <div class="profil-user">
+                <a href="profil.php" class="foto-profil">
+                    Profil
                 </a>
             </div>
-        </header>
+        </div>
 
-        <section class="content">
+        <!-- wadah isi konten tengah biar lebarnya rapi (maksimal 1000px) dan ada jarak pinggir -->
+        <div class="isi-halaman">
 
-                  <!-- BERANDA CLIENT -->
-            <div class="beranda-section">
-                <div class="beranda-header">
-                    <h1>Beranda</h1>
-                    <p>Selamat Datang Ririn! </p>
-                </div>
+            <!-- kotak khusus judul halaman "Beranda" dan sapaan selamat datang -->
+            <div class="header-beranda">
+                <h1>Beranda</h1>
+                <p>Selamat Datang <?php echo htmlspecialchars($nama_user); ?>!</p>
+            </div>
 
-                <!-- STATS CARDS -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue">
-                            <i class="fa-solid fa-message"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>1</h2>
-                            <span>Total Laporan</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue-light">
-                            <i class="fa-regular fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>1</h2>
-                            <span>Dalam Proses</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon icon-green">
-                            <i class="fa-solid fa-square-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h2>0</h2>
-                            <span>Selesai</span>
-                        </div>
+            <!-- wadah baris untuk menjajarkan 3 kotak angka statistik ke samping -->
+            <div class="baris-statistik">
+                <!-- kotak putih pertama: total laporan -->
+                <div class="kotak-stat">
+                    <!-- pembungkus teks angka dan keterangannya -->
+                    <div class="info-stat">
+                        <h2>1</h2>
+                        <span>Total Laporan</span>
                     </div>
                 </div>
 
-                <!-- LAPORAN TERBARU CARD -->
-                <div class="beranda-card">
-                    <div class="card-header">
-                        <h2>Laporan Terbaru</h2>
-                        <a href="diskusi.php" class="link-more">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
+                <!-- kotak putih kedua: laporan dalam proses -->
+                <div class="kotak-stat">
+                    <div class="info-stat">
+                        <h2>1</h2>
+                        <span>Dalam Proses</span>
                     </div>
+                </div>
 
-                    <div class="report-list">
-                        <div class="report-item">
-                            <div class="report-main">
-                                <div class="report-icon">
-                                    <i class="fa-solid fa-file-lines"></i>
-                                </div>
-                                <div class="report-details">
-                                    <h3>Masalah fasilitas perpustakaan</h3>
-                                    <span class="report-date">10 Nov 2026</span>
-                                </div>
+                <!-- kotak putih ketiga: laporan selesai -->
+                <div class="kotak-stat">
+                    <div class="info-stat">
+                        <h2>0</h2>
+                        <span>Selesai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- kotak putih besar untuk bagian daftar laporan terbaru -->
+            <div class="kotak-laporan">
+                <!-- bagian atas kotak laporan (memisahkan judul di kiri & link "Lihat Semua" di kanan) -->
+                <div class="kepala-kotak">
+                    <h2>Laporan Terbaru</h2>
+                    <a href="diskusi.php" class="lihat-semua">Lihat Semua</a>
+                </div>
+
+                <!-- wadah kumpulan baris laporan (kalau nanti datanya lebih dari 1, ngumpul di sini) -->
+                <div class="list-item">
+                    <!-- kotak untuk satu baris laporan (memisahkan judul di kiri & status di kanan) -->
+                    <div class="item-laporan">
+                        <!-- pembungkus sebelah kiri khusus judul laporan dan tanggal -->
+                        <div class="bagian-kiri">
+                            <!-- kotak teks judul dan tanggal biar tersusun atas-bawah -->
+                            <div class="teks-laporan">
+                                <h3>Masalah fasilitas perpustakaan</h3>
+                                <span class="tanggal">10 Nov 2026</span>
                             </div>
-                            <span class="badge badge-process">Dalam Proses</span>
                         </div>
-                    </div>
-                </div>
-
-                <!-- TIPS BOX -->
-                <div class="tips-box">
-                    <div class="tips-icon">
-                        <i class="fa-solid fa-lightbulb"></i>
-                    </div>
-                    <div class="tips-content">
-                        <h4>Tips</h4>
-                        <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
+                        <span class="label-status status-proses">Dalam Proses</span>
                     </div>
                 </div>
             </div>
 
-            <br><hr style="border: 1px dashed #c5d3ea; margin: 40px 0;"><br>
-        </section>
+            <!-- kotak biru muda paling bawah untuk info/tips -->
+            <div class="kotak-tips">
+                <!-- pembungkus teks judul dan isi tips -->
+                <div class="isi-tips">
+                    <h4>Tips</h4>
+                    <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
+                </div>
+            </div>
 
-    </main>
+            <!-- <br>
+            <hr style="border: 1px dashed #c5d3ea; margin: 30px 0;"> -->
+
+        </div>
+
+    </div>
 
 </div>
 

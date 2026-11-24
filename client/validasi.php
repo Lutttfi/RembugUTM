@@ -78,10 +78,10 @@ function valRole(&$errors, $field)
     return $errors;
 }
 
-// --- VALIDASI & PROSES FORM DISKUSI ---
-function valDiskusi($errors, $jenis, $judul, $kategori, $isi)
+// Validasi server-side untuk form diskusi
+function valDiskusi($errors, $jenis, $judul, $kategori, $isi, $cek_jenis = true)
 {
-    if (requiredCheck($jenis) || !in_array($jenis, ['Diskusi', 'Pertanyaan'])) {
+    if ($cek_jenis && (requiredCheck($jenis) || !in_array($jenis, ['Diskusi', 'Pertanyaan']))) {
         $errors["jenis"] = "Jenis topik wajib dipilih.";
     }
 
@@ -93,6 +93,8 @@ function valDiskusi($errors, $jenis, $judul, $kategori, $isi)
 
     if (requiredCheck($kategori)) {
         $errors["kategori"] = "Kategori wajib dipilih.";
+    } elseif (!is_numeric($kategori)) {
+        $errors["kategori"] = "Format kategori tidak valid.";
     }
 
     if (requiredCheck($isi)) {
@@ -104,22 +106,28 @@ function valDiskusi($errors, $jenis, $judul, $kategori, $isi)
     return $errors;
 }
 
+// 1. PROSES BUAT TOPIK BARU
 if (isset($_POST['buat_topik'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     include '../database/koneksi.php';
 
-    $id_user     = $_SESSION['Id_User'] ?? $_SESSION['id_user'] ?? 1;
+    if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
+        header("Location: ../auth/masuk.php");
+        exit;
+    }
+
+    $id_user     = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
     $jenis       = trim($_POST['jenis_laporan'] ?? '');
     $judul_input = trim($_POST['judul'] ?? '');
     $id_kategori = trim($_POST['kategori'] ?? '');
     $isi         = trim($_POST['isi'] ?? '');
 
     $errors = [];
-    $errors = valDiskusi($errors, $jenis, $judul_input, $id_kategori, $isi);
+    $errors = valDiskusi($errors, $jenis, $judul_input, $id_kategori, $isi, true);
 
-    // Validasi & Upload Lampiran (Opsional)
+    // Validasi & Upload Lampiran
     $nama_lampiran = NULL;
     if (empty($errors) && isset($_FILES['lampiran']) && $_FILES['lampiran']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['lampiran']['error'] === UPLOAD_ERR_OK) {
@@ -129,7 +137,7 @@ if (isset($_POST['buat_topik'])) {
             $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
             $allowed_ext = ['jpg', 'jpeg', 'png', 'pdf'];
-            $max_size    = 5 * 1024 * 1024; // 5MB
+            $max_size    = 5 * 1024 * 1024;
 
             if (!in_array($file_ext, $allowed_ext)) {
                 $errors["lampiran"] = "Format lampiran tidak didukung! Gunakan JPG, PNG, atau PDF.";
@@ -153,7 +161,6 @@ if (isset($_POST['buat_topik'])) {
         }
     }
 
-    // Kembalikan ke diskusi.php jika ada error
     if (!empty($errors)) {
         $_SESSION['errors']   = $errors;
         $_SESSION['old_data'] = [
@@ -166,7 +173,6 @@ if (isset($_POST['buat_topik'])) {
         exit;
     }
 
-    // Simpan ke database jika lolos validasi
     $jenis_safe       = mysqli_real_escape_string($connect, $jenis);
     $judul_safe       = mysqli_real_escape_string($connect, $judul_input);
     $id_kategori_safe = mysqli_real_escape_string($connect, $id_kategori);
@@ -180,15 +186,58 @@ if (isset($_POST['buat_topik'])) {
                      VALUES ('$id_user', '$id_kategori_safe', '$judul_topik', '$isi_safe', $lampiran_sql, '$status')";
 
     if (mysqli_query($connect, $query_insert)) {
-        echo "<script>
-                alert('Topik diskusi berhasil diterbitkan!');
-                window.location.href = 'riwayat.php';
-              </script>";
+        $_SESSION['pesan_sukses'] = "Topik diskusi baru berhasil diterbitkan!";
+        header("Location: riwayat.php");
         exit;
     } else {
         $_SESSION['errors'] = ["database" => "Gagal menyimpan ke database: " . mysqli_error($connect)];
         header("Location: diskusi.php");
         exit;
     }
+}
+
+// 2. PROSES EDIT TOPIK CLIENT (POIN 5 CLIENT)
+if (isset($_POST['update_topik'])) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    include '../database/koneksi.php';
+
+    if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
+        header("Location: ../auth/masuk.php");
+        exit;
+    }
+
+    $id_user     = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
+    $id_topik    = (int)($_POST['id_topik'] ?? 0);
+    $judul_input = trim($_POST['judul'] ?? '');
+    $id_kategori = trim($_POST['kategori'] ?? '');
+    $isi         = trim($_POST['isi'] ?? '');
+
+    $errors = [];
+    $errors = valDiskusi($errors, '', $judul_input, $id_kategori, $isi, false);
+
+    if (!empty($errors)) {
+        $_SESSION['errors'] = $errors;
+        header("Location: riwayat.php?edit=" . $id_topik);
+        exit;
+    }
+
+    $judul_safe       = mysqli_real_escape_string($connect, $judul_input);
+    $id_kategori_safe = mysqli_real_escape_string($connect, $id_kategori);
+    $isi_safe         = mysqli_real_escape_string($connect, $isi);
+
+    $query_update = "UPDATE topik 
+                     SET Judul_Topik = '$judul_safe', Id_Kategori = '$id_kategori_safe', Isi_Diskusi = '$isi_safe' 
+                     WHERE Id_Topik = '$id_topik' AND Id_User = '$id_user' AND Status != 'Selesai'";
+
+    if (mysqli_query($connect, $query_update)) {
+        $_SESSION['pesan_sukses'] = "Topik diskusi berhasil diperbarui!";
+    } else {
+        $_SESSION['errors'] = ["database" => "Gagal memperbarui topik: " . mysqli_error($connect)];
+    }
+
+    header("Location: riwayat.php");
+    exit;
 }
 ?>

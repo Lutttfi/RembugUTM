@@ -21,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $data = $result->fetch_assoc();
             
     if ($data) {
-
         $_SESSION["login"] = true;
         $_SESSION["id_user"] = $data["id_user"];
         $_SESSION["role"] = $data["role"];
@@ -29,12 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($data["role"] === "client") {
             header("Location: ../client/beranda.php");
             exit();
-
         } else if ($data["role"] === "expert") {
             header("Location: ../expert/beranda.php");
             exit();
         }
-
     } else {
         echo "Username atau password salah!";
     }
@@ -58,18 +55,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <p class="subtitle">MULAI PERJALANAN ANDA</p>
                 <h1>
                     Suarakan aspirasi,
-                    wujudkan kampus
+                    wujudkan lingkungan
                     yang lebih baik.
                 </h1>
                 <p class="description">
-                    Bergabung bersama mahasiswa lainnya
+                    Bergabung bersama masyarakat lainnya
                     untuk menyampaikan aspirasi dan
-                    membangun lingkungan kampus yang lebih baik.
+                    membangun lingkungan masyarakat yang lebih baik.
                 </p>
                 <ul>
                     <li>Sampaikan aspirasi dengan mudah</li>
                     <li>Pantau perkembangan laporan</li>
-                    <li>Terhubung dengan mahasiswa lainnya</li>
+                    <li>Terhubung dengan masyarakat lainnya</li>
                 </ul>
             </div>
         </div>
@@ -84,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
                     <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
-                    <input type="submit" value="Masuk Ke Dashbord">
+                    <input type="submit" value="Masuk Ke Beranda">
                 </form>
             </div>
         </div>
