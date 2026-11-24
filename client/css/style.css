@@ -1,0 +1,1190 @@
+/* =========================================================
+   1. RESET & GLOBAL
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #eaf2ff;
+  color: #1b2a41;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: Arial, sans-serif;
+}
+
+/* =========================================================
+   2. LOGO & BRANDING (beranda, diskusi, profil, riwayat)
+========================================================= */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.logo b {
+  color: #2f6fd0;
+}
+
+.ikon-logo,
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  background: #2f6fd0;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.logo-gelap,
+.logo-dark {
+  color: #0d2447;
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   3. LAYOUT UTAMA (SIDEBAR, TOPBAR, CONTENT)
+========================================================= */
+.bungkus-utama,
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: #0d2447;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar .logo {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #25406f;
+  margin-bottom: 24px;
+}
+
+.daftar-menu,
+.sidebar .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.daftar-menu a,
+.sidebar .menu a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 12px 16px;
+  color: #b9c8e4;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.sidebar .menu a i,
+.sidebar .logout i {
+  display: none;
+}
+
+.daftar-menu a:hover,
+.daftar-menu a.aktif,
+.sidebar .menu a:hover,
+.sidebar .menu a.active {
+  background: #2f6fd0;
+  color: white;
+}
+
+.tombol-keluar,
+.logout {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: auto;
+  padding: 12px 16px;
+  color: #f87171;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.tombol-keluar:hover,
+.logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.konten-kanan,
+.main-content {
+  margin-left: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  background: white;
+  height: 70px;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #c5d3ea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.topbar-title,
+.judul-atas,
+.profile,
+.profil-user {
+  display: flex;
+  align-items: center;
+}
+
+.foto-profil {
+  padding: 8px 16px;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.isi-halaman,
+.content {
+  padding: 32px 40px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   4. SEMUA KOTAK DISAMAKAN TAMPILANNYA
+========================================================= */
+.kotak-stat,
+.kotak-laporan,
+.form-container,
+.topic-card,
+.profile-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #c5d3ea;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(13, 36, 71, 0.05);
+  margin-bottom: 24px;
+}
+
+.password-modal,
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #c5d3ea;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(13, 36, 71, 0.15);
+  width: 100%;
+}
+
+/* =========================================================
+   5. TOMBOL, STATUS & NOTIFIKASI
+========================================================= */
+.btn,
+.btn-save {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #2f6fd0;
+  color: white;
+  border: 2px solid #2f6fd0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn:hover,
+.btn-save:hover {
+  background: #2358aa;
+  border-color: #2358aa;
+}
+
+.btn-outline-cancel {
+  background: transparent;
+  color: #52617a;
+  border: 2px solid #c5d3ea;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-outline-cancel:hover {
+  background: #eaf2ff;
+}
+
+.btn-back,
+.btn-password {
+  display: inline-block;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.btn-back:hover,
+.btn-password:hover {
+  background: #dce9fc;
+}
+
+.label-status,
+.topic-status {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-proses {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.status-baru {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.status-selesai,
+.topic-status.sudah-ditanggapi {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.topic-status.menunggu-tanggapan {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* =========================================================
+   6. BERANDA (beranda.php)
+========================================================= */
+.header-beranda {
+  margin-bottom: 24px;
+}
+
+.header-beranda h1 {
+  font-size: 24px;
+  color: #0d2447;
+  margin-bottom: 4px;
+}
+
+.header-beranda p {
+  font-size: 14px;
+  color: #52617a;
+}
+
+.baris-statistik {
+  display: flex;
+  gap: 20px;
+}
+
+.kotak-stat {
+  flex: 1;
+}
+
+.info-stat h2 {
+  font-size: 26px;
+  color: #0d2447;
+  margin-bottom: 4px;
+}
+
+.info-stat span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.kepala-kotak {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.kepala-kotak h2 {
+  font-size: 18px;
+  color: #0d2447;
+}
+
+.lihat-semua {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.lihat-semua:hover {
+  text-decoration: underline;
+}
+
+.item-laporan {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.item-laporan:first-child {
+  padding-top: 0;
+}
+
+.item-laporan:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.teks-laporan h3 {
+  font-size: 15px;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.tanggal {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.kotak-tips {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.isi-tips h4 {
+  font-size: 15px;
+  color: #0369a1;
+  margin-bottom: 4px;
+}
+
+.isi-tips p {
+  font-size: 13px;
+  color: #0369a1;
+}
+
+/* =========================================================
+   7. DISKUSI & RIWAYAT (diskusi.php, riwayat.php)
+========================================================= */
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #c5d3ea;
+  margin-bottom: 24px;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.header-text h1 {
+  font-size: 22px;
+  color: #0d2447;
+}
+
+.header-text p {
+  font-size: 14px;
+  color: #52617a;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: start;
+  gap: 16px;
+}
+
+.form-label {
+  font-weight: bold;
+  font-size: 14px;
+  padding-top: 10px;
+  color: #1b2a41;
+}
+
+.form-input input[type="text"],
+.form-input select,
+.form-input textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #c5d3ea;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+.form-input input[type="text"]:focus,
+.form-input select:focus,
+.form-input textarea:focus {
+  border-color: #2f6fd0;
+  box-shadow: 0 0 0 3px rgba(47, 111, 208, 0.15);
+}
+
+.form-input textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.radio-group {
+  display: flex;
+  gap: 24px;
+  padding-top: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.input-hint {
+  display: block;
+  font-size: 12px;
+  color: #52617a;
+  margin-top: 6px;
+}
+
+.form-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #c5d3ea;
+  margin-top: 8px;
+}
+
+.discussion-heading h2 {
+  font-size: 24px;
+  color: #0d2447;
+  margin-bottom: 16px;
+}
+
+.topic-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.topic-category {
+  background: #eaf2ff;
+  color: #2f6fd0;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.topic-card h3 {
+  font-size: 18px;
+  color: #0d2447;
+  margin-bottom: 6px;
+}
+
+.topic-info {
+  font-size: 13px;
+  color: #52617a;
+  margin-bottom: 16px;
+}
+
+.topic-content {
+  font-size: 14px;
+  color: #1b2a41;
+  margin-bottom: 20px;
+}
+
+.response-area {
+  border-top: 1px dashed #c5d3ea;
+  padding-top: 16px;
+}
+
+.response-area h4 {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #52617a;
+  text-transform: uppercase;
+}
+
+.response-card {
+  background: #eaf2ff;
+  border-left: 4px solid #2f6fd0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.expert-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.expert-avatar {
+  color: #2f6fd0;
+}
+
+.expert-label {
+  background: #2f6fd0;
+  color: white;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.empty-response {
+  font-size: 13px;
+  color: #52617a;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.reply-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 14px;
+  border: 1px solid #c5d3ea;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.reply-form .btn {
+  align-self: flex-end;
+}
+
+/* =========================================================
+   8. PROFIL & MODAL (profil.php)
+========================================================= */
+.profile-header {
+  margin-bottom: 24px;
+}
+
+.profile-header h1 {
+  font-size: 24px;
+  color: #0d2447;
+  margin-bottom: 4px;
+}
+
+.profile-header p {
+  color: #52617a;
+  font-size: 14px;
+}
+
+.profile-card {
+  max-width: 650px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0 auto 15px;
+}
+
+.profile-card h3 {
+  color: #0d2447;
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+.role {
+  display: inline-block;
+  padding: 5px 16px;
+  background: #eaf2ff;
+  color: #2f6fd0;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.profile-info {
+  width: 100%;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.info-group {
+  padding: 14px 0;
+  border-bottom: 1px solid #e1e8f5;
+}
+
+.info-group:last-child {
+  border-bottom: none;
+}
+
+.info-group label {
+  display: block;
+  color: #718096;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.info-group p {
+  color: #1b2a41;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.profile-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 36, 71, 0.55);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal:target,
+.modal.tampil {
+  display: flex;
+}
+
+.password-modal {
+  max-width: 430px;
+}
+
+.password-modal h2 {
+  color: #0d2447;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.password-modal > p {
+  color: #718096;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  color: #1b2a41;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #c5d3ea;
+  border-radius: 8px;
+  background: white;
+  color: #1b2a41;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #2f6fd0;
+  box-shadow: 0 0 0 3px rgba(47, 111, 208, 0.15);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-buttons .btn-save,
+.form-buttons .btn-back {
+  flex: 1;
+  font-size: 13px;
+}
+
+.modal-content {
+  max-width: 380px;
+  text-align: center;
+}
+
+.modal-content h2 {
+  color: #0d2447;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.modal-content p {
+  color: #718096;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.modal-buttons a {
+  padding: 10px 17px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.btn-batal {
+  background: #eaf2ff;
+  color: #2f6fd0;
+}
+
+.btn-keluar {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-batal:hover {
+  background: #dce9fc;
+}
+
+.btn-keluar:hover {
+  background: #bd2635;
+}
+
+/* =========================================================
+   9. HALAMAN DAFTAR / REGISTER (daftar.css)
+========================================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background: #0d2447;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+
+.navbar .menu {
+  display: flex;
+  flex-direction: row;
+  gap: 26px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar .menu a:hover {
+  color: #2f6fd0;
+}
+
+.auth {
+  display: flex;
+  gap: 10px;
+}
+
+.register-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.footer-register {
+  width: 100%;
+  position: static;
+  flex-shrink: 0;
+}
+
+.register-left {
+  width: 42%;
+  min-height: 100vh;
+  background: #1b2a41;
+  color: white;
+  padding: 45px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-left::before,
+.register-left::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+}
+
+.register-left::before {
+  width: 400px;
+  height: 400px;
+  top: -150px;
+  right: -180px;
+}
+
+.register-left::after {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  right: -100px;
+}
+
+.register-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: white;
+  font-size: 23px;
+  font-weight: bold;
+  position: relative;
+  z-index: 1;
+}
+
+.register-logo span {
+  background: #3478d4;
+  padding: 7px 12px;
+  border-radius: 10px;
+}
+
+.register-logo b {
+  color: #4b91ed;
+}
+
+.left-content {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+
+.subtitle {
+  color: #79adf4;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+.left-content h1 {
+  font-size: 42px;
+  line-height: 1.2;
+  margin-bottom: 25px;
+  max-width: 480px;
+}
+
+.description {
+  color: #c5d4e9;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 430px;
+  margin-bottom: 30px;
+}
+
+.left-content ul li {
+  margin-bottom: 18px;
+  font-size: 15px;
+  color: #e0eaff;
+}
+
+.left-content ul li::before {
+  content: "●";
+  color: #68a6ff;
+  margin-right: 12px;
+}
+
+.register-right {
+  width: 58%;
+  min-height: 100vh;
+  background: #f5f7fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 45px 60px;
+}
+
+.form-content {
+  width: 100%;
+  max-width: 460px;
+}
+
+.form-content h1 {
+  font-size: 32px;
+  color: #102748;
+  margin-bottom: 12px;
+}
+
+.form-subtitle {
+  color: #777;
+  margin-bottom: 35px;
+  font-size: 14px;
+}
+
+.form-subtitle a {
+  color: #3478d4;
+  font-weight: bold;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.register-right .error {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.btn-register {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2467b8;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-register:hover {
+  background: #18549c;
+}
+
+.register-right .btn-back {
+  display: block;
+  background: transparent;
+  border: 1px solid #c5d3ea;
+  color: #52647c;
+  margin-top: 20px;
+  padding: 15px;
+  font-weight: normal;
+}
+
+.register-right .btn-back:hover {
+  background: #e9eef6;
+}
+
+/* =========================================================
+   10. RESPONSIVE (HP & TABLET)
+========================================================= */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .konten-kanan,
+  .main-content {
+    margin-left: 0;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+
+  .isi-halaman,
+  .content {
+    padding: 20px;
+  }
+
+  .baris-statistik,
+  .register-container {
+    flex-direction: column;
+  }
+
+  .register-left,
+  .register-right {
+    width: 100%;
+    min-height: auto;
+    padding: 30px 20px;
+  }
+
+  .form-group-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .form-label {
+    padding-top: 0;
+  }
+
+  .profile-card {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    height: 65px;
+  }
+
+  .logo {
+    font-size: 19px;
+  }
+
+  .profile-buttons,
+  .form-buttons,
+  .modal-buttons,
+  .form-row {
+    flex-direction: column;
+  }
+
+  .profile-buttons a,
+  .modal-buttons a {
+    width: 100%;
+    text-align: center;
+  }
+
+  .password-modal,
+  .modal-content {
+    padding: 20px;
+  }
+}
