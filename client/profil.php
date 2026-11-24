@@ -229,19 +229,15 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
         </nav>
 
-        <a href="#konfirmasi-logout" class="logout">
+        <a href="../auth/logout.php" class="logout">
             <span>Keluar</span>
         </a>
 
     </aside>
 
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
-
-        <!-- TOPBAR -->
         <header class="topbar">
-
             <div class="topbar-title">
                 <a href="index.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
@@ -254,11 +250,8 @@ $berhasil_password = isset($_GET["berhasil"]) &&
                     <?= strtoupper(substr(htmlspecialchars($user["username"]), 0, 1)); ?>
                 </a>
             </div>
-
         </header>
 
-
-        <!-- CONTENT -->
         <section class="content">
 
             <div class="profile-header">
@@ -267,9 +260,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
             </div>
 
 
-            <!-- PROFILE CARD -->
             <div class="profile-card">
-
                 <div class="profile-avatar">
                     <?= strtoupper(substr(htmlspecialchars($user["username"]), 0, 1)); ?>
                 </div>

@@ -88,7 +88,7 @@ $query_topik = mysqli_query($connect, "
         </nav>
 
         <a href="../auth/logout.php" class="logout">
-            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+            <span>Keluar</span>
         </a>
     </aside>
 
