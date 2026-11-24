@@ -84,8 +84,10 @@ function valNomor(&$errors, $field)
         $errors["nomor"] = "Nomor telepon tidak boleh kosong";
     } else if (!preg_match($pattern, $field)) {
         $errors["nomor"] = "Nomor telepon tidak valid";
-    } else if (strlen($field) < 12) {
-        $errors["nomor"] = "Nomor telepon minimal 12 karakter";
+    } else if (strlen($field) < 10) {
+        $errors["nomor"] = "Nomor telepon minimal 10 karakter";
+    } else if (strlen($field) > 12) {
+        $errors["nomor"] = "Nomor telepon maksimal 12 karakter";
     }
     return $errors;
 }
