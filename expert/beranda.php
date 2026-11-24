@@ -44,9 +44,9 @@ $nama_expert = $data["username"] ?? "Expert";
             <a href="diskusi.php">
                 <span>Laporan</span>
             </a>
-            <a href="riwayat.php">
+            <!-- <a href="riwayat.php">
                 <span>Riwayat Laporan</span>
-            </a>
+            </a> -->
             <a href="profil.php">
                 <span>Profil Saya</span>
             </a>

@@ -28,7 +28,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Form Diskusi</title>
-    <link rel="stylesheet" href="css/diskusi.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 

@@ -194,7 +194,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
     <title>Profil Saya - RembugUTM</title>
 
-    <link rel="stylesheet" href="css/profil.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>

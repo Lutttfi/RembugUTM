@@ -21,7 +21,7 @@ $nama_user = $data["username"] ?? "Mahasiswa";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/beranda.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 

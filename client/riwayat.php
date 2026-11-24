@@ -45,7 +45,7 @@ $query_topik = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Riwayat Diskusi</title>
-    <link rel="stylesheet" href="css/diskusi.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
