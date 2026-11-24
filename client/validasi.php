@@ -78,6 +78,20 @@ function valRole(&$errors, $field)
     return $errors;
 }
 
+function valNomor(&$errors, $field)
+{
+    $pattern = "/^[0-9+]+$/";
+    if (requiredCheck($field)) {
+        $errors["nomor"] = "Nomor telepon tidak boleh kosong";
+    } else if (!preg_match($pattern, $field)) {
+        $errors["nomor"] = "Nomor telepon tidak valid";
+    } else if (strlen($field) < 12) {
+        $errors["nomor"] = "Nomor telepon minimal 12 karakter";
+    }
+    return $errors;
+}
+
+
 // Validasi server-side untuk form diskusi
 function valDiskusi($errors, $jenis, $judul, $kategori, $isi, $cek_jenis = true)
 {

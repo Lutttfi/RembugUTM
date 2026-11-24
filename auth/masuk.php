@@ -77,11 +77,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <form action="masuk.php" method="post">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["username"] ?? "" ?></span><br><br>
+                    <span class="error"><?= $errors["username"] ?? "" ?></span><br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-                    <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
+                    <span class="error"><?= $errors["password"] ?? "" ?></span><br>
                     <input type="submit" value="Masuk Ke Beranda">
+                    <a href="../index.php" class="btn-kembali">Kembali ke Halaman Utama</a>
                 </form>
             </div>
         </div>

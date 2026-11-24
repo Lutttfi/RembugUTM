@@ -1,101 +1,40 @@
 
-/* MENGATUR POSISI HALAMAN */
-body {
+/* =========================
+   RESET CSS
+========================= */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
+}
+
+body {
     font-family: Arial, sans-serif;
-    background: #eaf2ff;
+    background: #f5f7fb;
     color: #1b2a41;
 }
 
-/* BAGIAN REGISTER */
-.register-container {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-    flex-shrink: 0;
-}
-
-/* navbar */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 70px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px;
-  background: #0d2447;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
-}
-.menu {
-  display: flex;
-  gap: 26px;
-  font-size: 14px;
-  font-weight: bold;
-  color: white;
-}
-.menu a:hover {
-  color: #2f6fd0;
-}
-.auth {
-  display: flex;
-  gap: 10px;
-}
-
-/* FOOTER DI BAWAH REGISTER */
-.footer-register {
-    width: 100%;
-    box-sizing: border-box;
-    position: static;
-    flex-shrink: 0;
-}* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 70px;
-}
-a {
-  text-decoration: none;
-  color: inherit;
-}
-ul,
-ol {
-  list-style: none;
-}
-h2 {
-  font-size: 26px;
-  margin-bottom: 8px;
-}
 /* =========================
-   HALAMAN DAFTAR
+   CONTAINER UTAMA
 ========================= */
-
 .register-container {
     display: flex;
     min-height: 100vh;
     width: 100%;
-    font-family: Arial, sans-serif;
 }
 
-/* BAGIAN KIRI */
+/* =========================
+   BAGIAN KIRI
+========================= */
 .register-left {
     width: 42%;
     min-height: 100vh;
     background: #1b2a41;
     color: white;
-    padding: 45px 50px;
+    padding: 60px 55px;
 
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
 
     position: relative;
     overflow: hidden;
@@ -124,34 +63,10 @@ h2 {
     right: -100px;
 }
 
-/* LOGO */
-.register-logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: white;
-    text-decoration: none;
-    font-size: 23px;
-    font-weight: bold;
-    position: relative;
-    z-index: 1;
-}
-
-.register-logo span {
-    background: #3478d4;
-    padding: 7px 12px;
-    border-radius: 10px;
-}
-
-.register-logo b {
-    color: #4b91ed;
-}
-
-/* KONTEN KIRI */
 .left-content {
     position: relative;
     z-index: 1;
-    margin-bottom: 40px;
+    max-width: 480px;
 }
 
 .subtitle {
@@ -163,17 +78,15 @@ h2 {
 }
 
 .left-content h1 {
-    font-size: 42px;
-    line-height: 1.2;
+    font-size: 40px;
+    line-height: 1.25;
     margin-bottom: 25px;
-    max-width: 480px;
 }
 
 .description {
     color: #c5d4e9;
     font-size: 15px;
-    line-height: 1.7;
-    max-width: 430px;
+    line-height: 1.8;
     margin-bottom: 30px;
 }
 
@@ -193,7 +106,9 @@ h2 {
     margin-right: 12px;
 }
 
-/* BAGIAN KANAN */
+/* =========================
+   BAGIAN KANAN
+========================= */
 .register-right {
     width: 58%;
     min-height: 100vh;
@@ -208,7 +123,7 @@ h2 {
 
 .form-content {
     width: 100%;
-    max-width: 460px;
+    max-width: 470px;
 }
 
 .form-content h1 {
@@ -219,95 +134,155 @@ h2 {
 
 .form-subtitle {
     color: #777;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     font-size: 14px;
 }
 
 .form-subtitle a {
     color: #3478d4;
-    text-decoration: none;
     font-weight: bold;
+    text-decoration: none;
 }
 
-/* INPUT FORM */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    margin-bottom: 20px;
+.form-subtitle a:hover {
+    color: #18549c;
 }
 
-.form-group label {
+/* =========================
+   FORM PENDAFTARAN
+========================= */
+.form-content form {
+    width: 100%;
+}
+
+.form-content form br {
+    display: none;
+}
+
+.form-content form label {
+    display: block;
     font-size: 14px;
     font-weight: bold;
     color: #253c5b;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
 }
 
-.form-group input {
+.form-content form input[type="text"],
+.form-content form input[type="password"],
+.form-content form select {
     width: 100%;
-    padding: 15px;
+    height: 45px;
+    padding: 0 14px;
     border: 1px solid #d8dce5;
-    border-radius: 8px;
+    border-radius: 7px;
     outline: none;
-    font-size: 14px;
     background: white;
+    font-size: 14px;
+    color: #253c5b;
+    margin-bottom: 5px;
+    transition: 0.3s;
 }
 
-.form-group input:focus {
+.form-content form input:focus,
+.form-content form select:focus {
     border-color: #3478d4;
-    box-shadow: 0 0 0 3px rgba(52, 120, 212, 0.1);
+    box-shadow: 0 0 0 3px rgba(52, 120, 212, 0.12);
 }
 
-.form-group input::placeholder {
-    color: #aaa;
-}
-
-/* PASSWORD BERDAMPINGAN */
-.form-row {
-    display: flex;
-    gap: 15px;
-}
-
-/* PESAN ERROR */
+/* =========================
+   PESAN ERROR
+========================= */
 .error {
-    color: red;
+    display: block;
+    color: #e53935;
     font-size: 12px;
-    margin-top: 5px;
+    margin-bottom: 16px;
+    min-height: 0;
 }
 
-
-/* TOMBOL DAFTAR */
-.btn-register {
+/* =========================
+   TOMBOL DAFTAR
+========================= */
+.form-content form input[type="submit"] {
     width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 8px;
+    height: 46px;
     background: #2467b8;
     color: white;
+    border: none;
+    border-radius: 7px;
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 8px;
+    transition: 0.3s;
 }
 
-.btn-register:hover {
+.form-content form input[type="submit"]:hover {
     background: #18549c;
+    box-shadow: 0 4px 12px rgba(36, 103, 184, 0.2);
 }
 
-/* TOMBOL KEMBALI */
-.btn-back {
+/* =========================
+   TOMBOL KEMBALI
+========================= */
+.btn-kembali {
     display: block;
+    width: 100%;
+    padding: 14px;
     text-align: center;
-    padding: 15px;
     border: 1px solid #d8dce5;
-    border-radius: 8px;
+    border-radius: 7px;
     color: #52647c;
+    background: white;
     text-decoration: none;
-    margin-top: 20px;
     font-size: 14px;
+    margin-top: 12px;
+    transition: 0.3s;
 }
 
-.btn-back:hover {
+.btn-kembali:hover {
     background: #e9eef6;
+    border-color: #b8c9df;
+    color: #2467b8;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+    .register-left {
+        width: 40%;
+        padding: 35px;
+    }
+
+    .register-right {
+        width: 60%;
+        padding: 35px;
+    }
+
+    .left-content h1 {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 650px) {
+    .register-container {
+        flex-direction: column;
+    }
+
+    .register-left {
+        width: 100%;
+        min-height: auto;
+        padding: 45px 30px;
+    }
+
+    .register-right {
+        width: 100%;
+        min-height: auto;
+        padding: 45px 25px;
+    }
+
+    .left-content h1 {
+        font-size: 30px;
+    }
 }
