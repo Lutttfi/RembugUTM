@@ -1,0 +1,313 @@
+
+/* MENGATUR POSISI HALAMAN */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background: #eaf2ff;
+    color: #1b2a41;
+}
+
+/* BAGIAN REGISTER */
+.register-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background: #0d2447;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+.menu {
+  display: flex;
+  gap: 26px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+.menu a:hover {
+  color: #2f6fd0;
+}
+.auth {
+  display: flex;
+  gap: 10px;
+}
+
+/* FOOTER DI BAWAH REGISTER */
+.footer-register {
+    width: 100%;
+    box-sizing: border-box;
+    position: static;
+    flex-shrink: 0;
+}* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+ul,
+ol {
+  list-style: none;
+}
+h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+/* =========================
+   HALAMAN DAFTAR
+========================= */
+
+.register-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+/* BAGIAN KIRI */
+.register-left {
+    width: 42%;
+    min-height: 100vh;
+    background: #1b2a41;
+    color: white;
+    padding: 45px 50px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.register-left::before,
+.register-left::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.035);
+    pointer-events: none;
+}
+
+.register-left::before {
+    width: 400px;
+    height: 400px;
+    top: -150px;
+    right: -180px;
+}
+
+.register-left::after {
+    width: 300px;
+    height: 300px;
+    bottom: -100px;
+    right: -100px;
+}
+
+/* LOGO */
+.register-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: white;
+    text-decoration: none;
+    font-size: 23px;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+}
+
+.register-logo span {
+    background: #3478d4;
+    padding: 7px 12px;
+    border-radius: 10px;
+}
+
+.register-logo b {
+    color: #4b91ed;
+}
+
+/* KONTEN KIRI */
+.left-content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 40px;
+}
+
+.subtitle {
+    color: #79adf4;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+.left-content h1 {
+    font-size: 42px;
+    line-height: 1.2;
+    margin-bottom: 25px;
+    max-width: 480px;
+}
+
+.description {
+    color: #c5d4e9;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 430px;
+    margin-bottom: 30px;
+}
+
+.left-content ul {
+    list-style: none;
+}
+
+.left-content ul li {
+    margin-bottom: 18px;
+    font-size: 15px;
+    color: #e0eaff;
+}
+
+.left-content ul li::before {
+    content: "●";
+    color: #68a6ff;
+    margin-right: 12px;
+}
+
+/* BAGIAN KANAN */
+.register-right {
+    width: 58%;
+    min-height: 100vh;
+    background: #f5f7fb;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 45px 60px;
+}
+
+.form-content {
+    width: 100%;
+    max-width: 460px;
+}
+
+.form-content h1 {
+    font-size: 32px;
+    color: #102748;
+    margin-bottom: 12px;
+}
+
+.form-subtitle {
+    color: #777;
+    margin-bottom: 35px;
+    font-size: 14px;
+}
+
+.form-subtitle a {
+    color: #3478d4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* INPUT FORM */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #253c5b;
+    margin-bottom: 10px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #d8dce5;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+.form-group input:focus {
+    border-color: #3478d4;
+    box-shadow: 0 0 0 3px rgba(52, 120, 212, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+/* PASSWORD BERDAMPINGAN */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+/* PESAN ERROR */
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+/* TOMBOL DAFTAR */
+.btn-register {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #2467b8;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    background: #18549c;
+}
+
+/* TOMBOL KEMBALI */
+.btn-back {
+    display: block;
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #d8dce5;
+    border-radius: 8px;
+    color: #52647c;
+    text-decoration: none;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.btn-back:hover {
+    background: #e9eef6;
+}

@@ -14,6 +14,19 @@ $id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
 $query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
 $data_user  = mysqli_fetch_assoc($query_user);
 
+if (!$data_user) {
+    session_destroy();
+    header("Location: ../auth/masuk.php");
+    exit;
+}
+
+// Proteksi Role: Hanya 'client' yang boleh mengakses halaman ini
+$role = strtolower($data_user['Role'] ?? $data_user['role'] ?? '');
+if ($role !== 'client') {
+    header("Location: ../expert/beranda.php");
+    exit;
+}
+
 // Ambil pesan sukses/error dari session
 $pesan_sukses = $_SESSION['pesan_sukses'] ?? '';
 $errors       = $_SESSION['errors'] ?? [];
@@ -29,7 +42,7 @@ while ($k = mysqli_fetch_assoc($q_kat)) {
     $daftar_kategori[] = $k;
 }
 
-// Ambil riwayat topik diskusi KHUSUS milik user yang sedang login
+// Ambil riwayat topik/laporan KHUSUS milik user yang sedang login
 $query_topik = mysqli_query($connect, "
     SELECT t.*, k.Nama_Kategori, u.Username 
     FROM topik t
@@ -45,6 +58,7 @@ $query_topik = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Riwayat Diskusi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -62,10 +76,10 @@ $query_topik = mysqli_query($connect, "
                 <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
             <a href="diskusi.php">
-                <i class="fa-solid fa-comments"></i> <span>Forum Diskusi</span>
+                <i class="fa-solid fa-comments"></i> <span>Laporan</span>
             </a>
             <a href="riwayat.php" class="active">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Diskusi</span>
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
             </a>
             <a href="profil.php">
                 <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
@@ -90,7 +104,7 @@ $query_topik = mysqli_query($connect, "
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($data_user['Username'] ?? 'Pengguna'); ?>
+                    <?= htmlspecialchars($data_user['Username'] ?? $data_user['username'] ?? 'Pengguna'); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
                     <i class="fa-solid fa-user"></i>
@@ -109,7 +123,7 @@ $query_topik = mysqli_query($connect, "
 
             <?php if (!empty($errors)) : ?>
                 <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
-                    <strong>Gagal memperbarui topik:</strong>
+                    <strong>Gagal memperbarui laporan/topik:</strong>
                     <ul style="margin: 6px 0 0 18px; padding: 0;">
                         <?php foreach ($errors as $err) : ?>
                             <li><?= htmlspecialchars($err); ?></li>
@@ -120,7 +134,7 @@ $query_topik = mysqli_query($connect, "
 
             <!-- HEADER & TOMBOL BUAT TOPIK BARU -->
             <div class="discussion-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2>Riwayat Diskusi Saya</h2>
+                <h2>Riwayat Laporan & Diskusi Saya</h2>
                 <a href="diskusi.php" class="btn" style="text-decoration: none;">+ Buat Topik Baru</a>
             </div>
 
@@ -139,7 +153,7 @@ $query_topik = mysqli_query($connect, "
                             ORDER BY r.Id_Respon ASC
                         ");
                         $jumlah_respon    = mysqli_num_rows($query_respon);
-                        $sudah_ditanggapi = ($jumlah_respon > 0 || $topik['Status'] === 'Selesai');
+                        $sudah_ditanggapi = ($jumlah_respon > 0 || ($topik['Status'] ?? '') === 'Selesai');
                         ?>
 
                         <!-- TOPIC CARD DINAMIS -->
@@ -151,21 +165,20 @@ $query_topik = mysqli_query($connect, "
                                         <span class="topic-status sudah-ditanggapi">Sudah Ditanggapi</span>
                                     <?php else : ?>
                                         <span class="topic-status menunggu-tanggapan">Menunggu Tanggapan</span>
-                                        <!-- TOMBOL EDIT TOPIK (POIN 5 CLIENT) -->
                                         <a href="riwayat.php?edit=<?= $id_topik; ?>" style="font-size: 13px; color: #2563eb; text-decoration: underline;">
-                                            <i class="fa-solid fa-pen-to-square"></i> Edit Topik
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit Laporan
                                         </a>
                                     <?php endif; ?>
                                 </div>
                             </div>
 
                             <?php if ($edit_id == $id_topik && !$sudah_ditanggapi) : ?>
-                                <!-- FORM EDIT TOPIK CLIENT (TANPA ATRIBUT REQUIRED) -->
-                                <form action="validasi.php" method="POST" style="margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                <!-- FORM EDIT LAPORAN CLIENT -->
+                                <form action="validasi.php" method="POST" enctype="multipart/form-data" style="margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
                                     <input type="hidden" name="id_topik" value="<?= $id_topik; ?>">
                                     
                                     <div style="margin-bottom: 10px;">
-                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Judul Topik</label>
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Judul Laporan / Topik</label>
                                         <input type="text" name="judul" value="<?= htmlspecialchars($topik['Judul_Topik']); ?>" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
                                     </div>
 
@@ -181,8 +194,13 @@ $query_topik = mysqli_query($connect, "
                                     </div>
 
                                     <div style="margin-bottom: 10px;">
-                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Isi Diskusi</label>
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Isi Laporan / Diskusi</label>
                                         <textarea name="isi" rows="4" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;"><?= htmlspecialchars($topik['Isi_Diskusi']); ?></textarea>
+                                    </div>
+
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Ganti Lampiran <small style="font-weight: normal; color: #64748b;">(Opsional)</small></label>
+                                        <input type="file" name="lampiran">
                                     </div>
 
                                     <div style="display: flex; gap: 10px;">

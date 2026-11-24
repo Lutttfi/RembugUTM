@@ -1,14 +1,8 @@
-
 <?php
 session_start();
 require_once __DIR__ . "/validasi.php";
 
 // Periksa login
-if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
-    header("Location: ../auth/masuk.php");
-    exit();
-}
-
 $id_user = $_SESSION["id_user"] ?? $_SESSION["Id_User"] ?? null;
 
 if (!$id_user) {
@@ -37,6 +31,12 @@ $user = ambilProfil($connect, $id_user);
 if (!$user) {
     session_destroy();
     header("Location: ../auth/masuk.php");
+    exit();
+}
+
+// Proteksi Role: Hanya 'client' yang boleh mengakses halaman ini
+if (strtolower($user["role"] ?? "") !== "client") {
+    header("Location: ../expert/beranda.php");
     exit();
 }
 
@@ -194,6 +194,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
 
     <title>Profil Saya - RembugUTM</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -204,7 +205,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-        <a href="index.php" class="logo">
+        <a href="beranda.php" class="logo">
             <span class="logo-icon">R</span>
             Rembug<b>UTM</b>
         </a>
@@ -212,25 +213,25 @@ $berhasil_password = isset($_GET["berhasil"]) &&
         <nav class="menu">
 
             <a href="beranda.php">
-                <span>Beranda</span>
+                <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
 
             <a href="diskusi.php">
-                <span>Laporan</span>
+                <i class="fa-solid fa-comments"></i> <span>Laporan</span>
             </a>
 
             <a href="riwayat.php">
-                <span>Riwayat Laporan</span>
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
             </a>
 
             <a href="profil.php" class="active">
-                <span>Profil Saya</span>
+                <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
             </a>
 
         </nav>
 
         <a href="#konfirmasi-logout" class="logout">
-            <span>Keluar</span>
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
         </a>
 
     </aside>
@@ -243,7 +244,7 @@ $berhasil_password = isset($_GET["berhasil"]) &&
         <header class="topbar">
 
             <div class="topbar-title">
-                <a href="index.php" class="logo logo-dark">
+                <a href="beranda.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
                     Rembug<b>UTM</b>
                 </a>
