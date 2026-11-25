@@ -298,3 +298,37 @@ a {
     flex-direction: column;
   }
 }
+/* Membuat setiap laporan + jawabannya jadi kotak terpisah */
+.item-laporan-lengkap {
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+/* Mengatur judul laporan di kiri dan label status di kanan */
+.atas-laporan {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Teks isi laporan client */
+.isi-singkat {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 6px;
+}
+
+/* Kotak biru muda khusus untuk tanggapan/jawaban dari Expert */
+.kotak-jawaban {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background-color: #f0f9ff;
+  border-left: 4px solid #0284c7;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #0f172a;
+}
