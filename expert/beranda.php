@@ -33,7 +33,7 @@ $query_laporan = mysqli_query($connect, "
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Beranda</title>
     <!-- ditambah ?v=2 biar browser langsung muat CSS yang terbaru -->
-    <link rel="stylesheet" href="css/beranda.css?v=3">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 

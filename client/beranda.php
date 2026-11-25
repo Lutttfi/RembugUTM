@@ -38,7 +38,7 @@ $query_laporan = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
@@ -140,7 +140,6 @@ $query_laporan = mysqli_query($connect, "
                         <?php } ?>
                     </div>
 
-                <?php?>
             </div>
 
             <!-- kotak biru muda paling bawah untuk info/tips -->
