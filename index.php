@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RembugUTM</title>
+  <title>RembugRakyat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- Navbar -->
   <header class="navbar">
-    <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
+    <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>Rakyat</b></a>
 
     <nav class="menu">
       <a href="#beranda">Beranda</a>
@@ -33,8 +33,8 @@
   <section id="tentang" class="about">
 
     <div class="about-box light">
-      <h2>Tentang RembugUTM</h2>
-      <p>RembugUTM adalah ruang terbuka bagi mahasiswa untuk menyampaikan laporan, ide, dan masukan kepada pihak kampus dengan mudah, aman, dan transparan.</p>
+      <h2>Tentang RembugRakyat</h2>
+      <p>RembugRakyat adalah ruang terbuka bagi Masyarakat untuk menyampaikan laporan, ide, dan masukan dengan mudah, aman, dan transparan.</p>
 
       <ul class="features">
         <li><span class="icon">🔒</span><div><b>Aman &amp; Privat</b><br>Identitas pelapor dijaga kerahasiaannya.</div></li>
@@ -60,7 +60,7 @@
   <footer class="footer">
     <div class="footer-wrap">
       <div class="footer-brand">
-        <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>UTM</b></a>
+        <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>Rakyat</b></a>
         <p>Platform aspirasi dan laporan mahasiswa untuk kampus yang lebih baik.</p>
       </div>
 
