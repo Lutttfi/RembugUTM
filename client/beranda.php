@@ -18,10 +18,8 @@ $nama_user  = $data_user["Username"] ?? "Mahasiswa";
 // mengambil semua laporan + nama pelapor + kategori + jawaban expert
 $query_laporan = mysqli_query($connect, "
     SELECT 
-        topik.Judul_Topik,
-        topik.Isi_Diskusi,
-        topik.Status,
-        topik.Created_At,
+        topik.Judul_Topik,topik.Isi_Diskusi,
+        topik.Status,topik.Created_At,
         pelapor.Username AS nama_pelapor,
         kategori.Nama_Kategori,
         respon.Isi_Respon,
@@ -44,10 +42,10 @@ $query_laporan = mysqli_query($connect, "
 </head>
 <body>
 
-<!-- wadah paling luar untuk membungkus seluruh isi halaman (kiri & kanan) -->
+<!-- wadah paling luar untuk membungkus seluruh isi halaman-->
 <div class="bungkus-utama">
 
-    <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
+    <!-- kotak menu samping sebelah kiri  -->
     <div class="sidebar">
         <a href="index.php" class="logo">
             <span class="ikon-logo">R</span> Rembug<b>UTM</b>
@@ -74,7 +72,7 @@ $query_laporan = mysqli_query($connect, "
         </a>
     </div>
 
-    <!-- wadah utama bagian kanan (dikasih jarak kiri 260px biar tidak ketutup sidebar) -->
+    <!-- wadah utama bagian kanan -->
     <div class="konten-kanan">
 
         <!-- bar putih paling atas untuk judul dan tombol profil -->
@@ -127,15 +125,14 @@ $query_laporan = mysqli_query($connect, "
                                 <p class="isi-singkat"><?= $row["Isi_Diskusi"] ?></p>
                             </div>
 
-                            <!-- Cek status nya kalau di database tulisannya 'Selesai', kasih label hijau. Kalau belum, kasih label biru 'Dalam Proses' -->
+                            <!-- Cek status nya kalau di database tulisannya 'Selesai' dikasih label hijau-->
                             <?php if ($row["Status"] == "Selesai") { ?>
                                 <span class="label-status status-selesai">Selesai</span>
-                            <?php } else { ?>
-                                <span class="label-status status-proses">Dalam Proses</span>
-                            <?php } ?>
+                            <?php }?>
+                        
                         </div>
 
-                        <!-- Cek apakah laporan ini sudah dibalas sama expert? Kalau balasannya nggak kosong, munculkan kotak biru jawabannya -->
+                        <!-- menampilkan laporan yang sudah dibalas sama expert-->
                             <div class="kotak-jawaban">
                                 <b>Jawaban Expert (<?= $row["nama_expert"] ?>):</b>
                                 <p><?= $row["Isi_Respon"] ?></p>
@@ -154,9 +151,6 @@ $query_laporan = mysqli_query($connect, "
                     <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
                 </div>
             </div>
-
-            <!-- <br>
-            <hr style="border: 1px dashed #c5d3ea; margin: 30px 0;"> -->
 
         </div>
 
