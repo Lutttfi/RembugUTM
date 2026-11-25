@@ -27,6 +27,8 @@ if ($role !== 'client') {
     exit;
 }
 
+$nama_tampil = $data_user['Username'] ?? $data_user['username'] ?? 'Pengguna';
+
 // Ambil pesan sukses/error dari session
 $pesan_sukses = $_SESSION['pesan_sukses'] ?? '';
 $errors       = $_SESSION['errors'] ?? [];
@@ -104,10 +106,10 @@ $query_topik = mysqli_query($connect, "
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($data_user['Username'] ?? $data_user['username'] ?? 'Pengguna'); ?>
+                    <?= htmlspecialchars($nama_tampil); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
-                    <i class="fa-solid fa-user"></i>
+                    <?= strtoupper(substr(htmlspecialchars($nama_tampil), 0, 1)); ?>
                 </a>
             </div>
         </header>

@@ -3,22 +3,22 @@ require_once __DIR__ . "/../client/validasi.php";
 
 // Cek login + pastikan role expert
 $user = wajibLogin($connect, "expert");
-$id_expert = (int) $user["Id_User"];
+$id_expert = (int)$user["Id_User"];
 
 // 1. PROSES TAMBAH TANGGAPAN BARU & OTOMATIS UBAH STATUS JADI 'Selesai'
 if (isset($_POST["kirim_respon"])) {
     $id_topik   = (int) ($_POST["id_topik"] ?? 0);
     $isi_respon = trim($_POST["isi_respon"] ?? "");
 
-    if ($id_topik > 0 && $isi_respon !== "") {
+    if ($id_topik > 0 &&$isi_respon !== "") {
         $stmt_ins = mysqli_prepare($connect, "INSERT INTO respon (Id_User, Id_Topik, Isi_Respon) VALUES (?, ?, ?)");
-        mysqli_stmt_bind_param($stmt_ins, "iis", $id_expert, $id_topik, $isi_respon);
+        mysqli_stmt_bind_param($stmt_ins, "iis", $id_expert, $id_topik,$isi_respon);
         mysqli_stmt_execute($stmt_ins);
 
         // Sesuaikan dengan standar status temanmu ('Selesai') agar langsung hijau di beranda client
         $status_baru = "Selesai";
         $stmt_status = mysqli_prepare($connect, "UPDATE topik SET Status = ? WHERE Id_Topik = ?");
-        mysqli_stmt_bind_param($stmt_status, "si", $status_baru, $id_topik);
+        mysqli_stmt_bind_param($stmt_status, "si", $status_baru,$id_topik);
         mysqli_stmt_execute($stmt_status);
 
         header("Location: diskusi.php?berhasil=tambah#topik-" . $id_topik);
@@ -32,9 +32,9 @@ if (isset($_POST["simpan_edit_respon"])) {
     $id_topik   = (int) ($_POST["id_topik"] ?? 0);
     $isi_respon = trim($_POST["isi_respon"] ?? "");
 
-    if ($id_respon > 0 && $isi_respon !== "") {
+    if ($id_respon > 0 &&$isi_respon !== "") {
         $stmt_upd = mysqli_prepare($connect, "UPDATE respon SET Isi_Respon = ? WHERE Id_Respon = ? AND Id_User = ?");
-        mysqli_stmt_bind_param($stmt_upd, "sii", $isi_respon, $id_respon, $id_expert);
+        mysqli_stmt_bind_param($stmt_upd, "sii", $isi_respon, $id_respon,$id_expert);
         mysqli_stmt_execute($stmt_upd);
 
         header("Location: diskusi.php?berhasil=edit#topik-" . $id_topik);
@@ -49,7 +49,7 @@ if (isset($_POST["hapus_respon"])) {
 
     if ($id_respon > 0) {
         $stmt_del = mysqli_prepare($connect, "DELETE FROM respon WHERE Id_Respon = ? AND Id_User = ?");
-        mysqli_stmt_bind_param($stmt_del, "ii", $id_respon, $id_expert);
+        mysqli_stmt_bind_param($stmt_del, "ii", $id_respon,$id_expert);
         mysqli_stmt_execute($stmt_del);
 
         // Cek sisa tanggapan pada topik ini; jika kosong (0), kembalikan status ke 'Terbuka'
@@ -63,7 +63,7 @@ if (isset($_POST["hapus_respon"])) {
             if ((int) ($data_cek["total"] ?? 0) === 0) {
                 $status_kembali = "Terbuka";
                 $stmt_status = mysqli_prepare($connect, "UPDATE topik SET Status = ? WHERE Id_Topik = ?");
-                mysqli_stmt_bind_param($stmt_status, "si", $status_kembali, $id_topik);
+                mysqli_stmt_bind_param($stmt_status, "si", $status_kembali,$id_topik);
                 mysqli_stmt_execute($stmt_status);
             }
         }
@@ -111,6 +111,9 @@ $query_topik = mysqli_query($connect, "
             <a href="diskusi.php" class="active">
                 <i class="fa-solid fa-comments"></i> <span>Laporan</span>
             </a>
+            <a href="riwayat.php">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Tanggapan</span>
+            </a>
             <a href="profil.php">
                 <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
             </a>
@@ -156,8 +159,8 @@ $query_topik = mysqli_query($connect, "
             <?php if (isset($_GET['berhasil'])): ?>
                 <?php
                     $pesan_sukses = "Tanggapan berhasil dikirim.";
-                    if ($_GET['berhasil'] === 'edit')  $pesan_sukses = "Tanggapan berhasil diperbarui.";
-                    if ($_GET['berhasil'] === 'hapus') $pesan_sukses = "Tanggapan berhasil dihapus.";
+                    if ($_GET['berhasil'] === 'edit')$pesan_sukses = "Tanggapan berhasil diperbarui.";
+                    if ($_GET['berhasil'] === 'hapus')$pesan_sukses = "Tanggapan berhasil dihapus.";
                 ?>
                 <div style="background-color: #dcfce7; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
                     <?= $pesan_sukses; ?>
@@ -168,8 +171,8 @@ $query_topik = mysqli_query($connect, "
             <?php if ($query_topik && mysqli_num_rows($query_topik) > 0): ?>
                 <?php while ($topik = mysqli_fetch_assoc($query_topik)): ?>
                     <?php
-                        $id_topik_cur  = (int) $topik['Id_Topik'];
-                        $status_cur    = $topik['Status'] ?? 'Terbuka';
+                        $id_topik_cur  = (int)$topik['Id_Topik'];
+                        $status_cur    =$topik['Status'] ?? 'Terbuka';
                         $sudah_dijawab = ($status_cur === 'Selesai');
 
                         // Ambil semua tanggapan dari seluruh expert untuk topik ini
@@ -211,8 +214,7 @@ $query_topik = mysqli_query($connect, "
                         <!-- LAMPIRAN (DETEKSI FOLDER OTOMATIS) -->
                         <?php if (!empty($topik['Lampiran'])): ?>
                             <?php
-                                $nama_file = $topik['Lampiran'];
-                                $lokasi_cek = [
+                                $nama_file = $topik['Lampiran'];$lokasi_cek = [
                                     "../uploads/" . $nama_file,
                                     "../client/uploads/" . $nama_file,
                                     "../assets/uploads/" . $nama_file,
@@ -221,9 +223,9 @@ $query_topik = mysqli_query($connect, "
                                 ];
 
                                 $url_lampiran = "../uploads/" . $nama_file;
-                                foreach ($lokasi_cek as $path) {
+                                foreach ($lokasi_cek as$path) {
                                     if (file_exists(__DIR__ . "/" . $path)) {
-                                        $url_lampiran = $path;
+                                        $url_lampiran =$path;
                                         break;
                                     }
                                 }
@@ -244,9 +246,8 @@ $query_topik = mysqli_query($connect, "
 
                                 <?php while ($resp = mysqli_fetch_assoc($query_respon)): ?>
                                     <?php
-                                        $id_resp_cur   = (int) $resp['Id_Respon'];
-                                        $milik_sendiri = ((int) $resp['Id_User'] === $id_expert);
-                                        $sudah_diedit  = (!empty($resp['Updated_At']) && $resp['Updated_At'] !== $resp['Created_At']);
+                                        $id_resp_cur   = (int) $resp['Id_Respon'];$milik_sendiri = ((int) $resp['Id_User'] ===$id_expert);
+                                        $sudah_diedit  = (!empty($resp['Updated_At']) && $resp['Updated_At'] !==$resp['Created_At']);
                                     ?>
                                     <div style="border-left: 3px solid <?= $milik_sendiri ? '#2563eb' : '#94a3b8'; ?>; padding-left: 12px; margin-bottom: 14px;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
@@ -262,7 +263,7 @@ $query_topik = mysqli_query($connect, "
                                             </span>
 
                                             <!-- TOMBOL EDIT & HAPUS (Hanya tampil jika tanggapan milik expert yang login) -->
-                                            <?php if ($milik_sendiri && $edit_id !== $id_resp_cur): ?>
+                                            <?php if ($milik_sendiri && $edit_id !==$id_resp_cur): ?>
                                                 <div style="display: flex; align-items: center; gap: 10px;">
                                                     <a href="diskusi.php?edit=<?= $id_resp_cur; ?>#topik-<?= $id_topik_cur; ?>" style="font-size: 12px; color: #2563eb; text-decoration: none;">
                                                         <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -279,7 +280,7 @@ $query_topik = mysqli_query($connect, "
                                             <?php endif; ?>
                                         </div>
 
-                                        <?php if ($milik_sendiri && $edit_id === $id_resp_cur): ?>
+                                        <?php if ($milik_sendiri && $edit_id ===$id_resp_cur): ?>
                                             <!-- FORM INLINE EDIT TANGGAPAN -->
                                             <form method="POST" action="diskusi.php" style="margin-top: 8px;">
                                                 <input type="hidden" name="id_respon" value="<?= $id_resp_cur; ?>">

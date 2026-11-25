@@ -27,6 +27,7 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
@@ -38,15 +39,19 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
         </a>
         <nav class="menu">
             <a href="beranda.php">
-                <span>Beranda</span>
+                <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
 
             <a href="diskusi.php">
-                <span>Laporan</span>
+                <i class="fa-solid fa-comments"></i> <span>Laporan</span>
+            </a>
+            
+            <a href="riwayat.php">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Tanggapan</span>
             </a>
 
             <a href="profil.php" class="active">
-                <span>Profil Saya</span>
+                <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
             </a>
         </nav>
         <a href="../auth/logout.php" class="logout">
@@ -62,8 +67,11 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
                 </a>
             </div>
 
-            <div class="profile">
-                <a href="profil.php" class="avatar">
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px; font-weight: 600;">
+                    <?= htmlspecialchars($user["username"]); ?>
+                </span>
+                <a href="profil.php" class="avatar" title="Lihat Profil">
                     <?= strtoupper(substr(htmlspecialchars($user["username"]), 0, 1)); ?>
                 </a>
             </div>

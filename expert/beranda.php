@@ -53,9 +53,9 @@ $query_laporan = mysqli_query($connect, "
             <a href="diskusi.php">
                 <span>Laporan</span>
             </a>
-            <!-- <a href="riwayat.php">
-                <span>Riwayat Laporan</span>
-            </a> -->
+            <a href="riwayat.php" class="active">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Tanggapan</span>
+            </a>
             <a href="profil.php">
                 <span>Profil Saya</span>
             </a>

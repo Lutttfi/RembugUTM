@@ -27,10 +27,12 @@ if ($role !== 'client') {
     exit;
 }
 
+$nama_tampil = $data_user['Username'] ?? $data_user['username'] ?? 'Pengguna';
+
 // Ambil pesan error & input lama dari session (validasi server-side PHP)
-$errors   = $_SESSION['errors'] ?? [];
-$old_data = $_SESSION['old_data'] ?? [];
-unset($_SESSION['errors'], $_SESSION['old_data']);
+$errors   =$_SESSION['errors'] ?? [];
+$old_data =$_SESSION['old_data'] ?? [];
+unset($_SESSION['errors'],$_SESSION['old_data']);
 
 // Ambil data kategori dari database untuk dropdown
 $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kategori ASC");
@@ -51,7 +53,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <a href="beranda.php" class="logo">
-            <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
+            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <nav class="menu">
@@ -87,10 +89,10 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($data_user['Username'] ?? $data_user['username'] ?? 'Pengguna'); ?>
+                    <?= htmlspecialchars($nama_tampil); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
-                    <i class="fa-solid fa-user"></i>
+                    <?= strtoupper(substr(htmlspecialchars($nama_tampil), 0, 1)); ?>
                 </a>
             </div>
         </header>
@@ -114,7 +116,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                     <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
                         <strong>Periksa kembali isian Anda:</strong>
                         <ul style="margin: 6px 0 0 18px; padding: 0;">
-                            <?php foreach ($errors as $err) : ?>
+                            <?php foreach ($errors as$err) : ?>
                                 <li><?= htmlspecialchars($err); ?></li>
                             <?php endforeach; ?>
                         </ul>
@@ -138,7 +140,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                             <select id="kategori" name="kategori">
                                 <option value="">Pilih kategori diskusi...</option>
                                 <?php while ($row = mysqli_fetch_assoc($query_kategori)) : ?>
-                                    <option value="<?= $row['Id_Kategori']; ?>" <?= (isset($old_data['kategori']) && $old_data['kategori'] == $row['Id_Kategori']) ? 'selected' : ''; ?>>
+                                    <option value="<?= $row['Id_Kategori']; ?>" <?= (isset($old_data['kategori']) && $old_data['kategori'] ==$row['Id_Kategori']) ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($row['Nama_Kategori']); ?>
                                     </option>
                                 <?php endwhile; ?>
