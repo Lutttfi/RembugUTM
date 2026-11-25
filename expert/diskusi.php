@@ -101,7 +101,7 @@ $query_topik = mysqli_query($connect, "
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <a href="../index.php" class="logo">
-            <span class="logo-icon">R</span> Rembug<b>UTM</b>
+            <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <nav class="menu">
@@ -128,7 +128,7 @@ $query_topik = mysqli_query($connect, "
         <header class="topbar">
             <div class="topbar-title">
                 <a href="../index.php" class="logo logo-dark">
-                    <span class="logo-icon">R</span> Rembug<b>UTM</b>
+                    <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 

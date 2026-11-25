@@ -26,7 +26,7 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya - RembugUTM</title>
+    <title>Profil Saya</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
@@ -35,7 +35,7 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
     <aside class="sidebar">
         <a href="../index.php" class="logo">
             <span class="logo-icon">R</span>
-            Rembug<b>UTM</b>
+            Rembug<b>Rakyat</b>
         </a>
         <nav class="menu">
             <a href="beranda.php">
@@ -60,7 +60,7 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
             <div class="topbar-title">
                 <a href="../index.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
-                    Rembug<b>UTM</b>
+                    Rembug<b>Rakyat</b>
                 </a>
             </div>
 
@@ -74,7 +74,7 @@ $berhasil_password = ($_GET["berhasil"] ?? "") === "password";
         <section class="content">
             <div class="profile-header">
                 <h1>Profil Saya</h1>
-                <p>Lihat dan kelola informasi akun RembugUTM kamu.</p>
+                <p>Lihat dan kelola informasi akun RembugRakyat kamu.</p>
             </div>
 
             <div class="profile-card">
