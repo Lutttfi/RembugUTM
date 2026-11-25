@@ -40,7 +40,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Form Laporan</title>
+    <title>RembugRakyat - Form Laporan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -51,7 +51,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <a href="beranda.php" class="logo">
-            <span class="logo-icon">R</span> Rembug<b>UTM</b>
+            <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <nav class="menu">
@@ -81,7 +81,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
         <header class="topbar">
             <div class="topbar-title">
                 <a href="beranda.php" class="logo logo-dark">
-                    <span class="logo-icon">R</span> Rembug<b>UTM</b>
+                    <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
