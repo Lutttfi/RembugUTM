@@ -270,4 +270,140 @@ if (isset($_POST['update_topik'])) {
     header("Location: riwayat.php");
     exit;
 }
+
+
+// Ambil data pengguna dari database
+function ambilProfil($connect, $id_user)
+{
+    $query = mysqli_prepare(
+        $connect,
+        "SELECT Id_User, username, email, role
+         FROM user WHERE Id_User = ?"
+    );
+
+    mysqli_stmt_bind_param($query, "i", $id_user);
+    mysqli_stmt_execute($query);
+
+    $result = mysqli_stmt_get_result($query);
+    return mysqli_fetch_assoc($result);
+}
+
+
+function wajibLogin($connect, $role_wajib)
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $id_user = null;
+
+    if (($_SESSION["login"] ?? false) === true) {
+        $id_user = $_SESSION["id_user"] ?? $_SESSION["Id_User"] ?? null;
+    }
+
+    if (!$id_user) {
+        header("Location: ../auth/masuk.php");
+        exit();
+    }
+
+    $user = ambilProfil($connect, $id_user);
+
+    // Akun sudah tidak ada di database
+    if (!$user) {
+        session_destroy();
+        header("Location: ../auth/masuk.php");
+        exit();
+    }
+
+    // Role tidak sesuai halaman: arahkan ke profil milik role-nya
+    $role = strtolower($user["role"]);
+
+    if ($role !== $role_wajib) {
+        if (in_array($role, ["client", "expert"], true)) {
+            header("Location: ../" . $role . "/profil.php");
+        } else {
+            header("Location: ../auth/masuk.php");
+        }
+        exit();
+    }
+
+    return $user;
+}
+
+function prosesEditProfil($connect, $id_user, &$form, &$error)
+{
+    $username = trim($_POST["username"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+
+    $form = ["username" => $username, "email" => $email];
+    $errors = [];
+
+    valUsername($errors, $username);
+    valEmail($errors, $email);
+
+    // Username / email tidak boleh dipakai akun lain
+    if (empty($errors)) {
+        $cek = mysqli_prepare(
+            $connect,
+            "SELECT Id_User FROM user
+             WHERE (username = ? OR email = ?)
+             AND Id_User != ?"
+        );
+
+        mysqli_stmt_bind_param($cek, "ssi", $username, $email, $id_user);
+        mysqli_stmt_execute($cek);
+        $hasil_cek = mysqli_stmt_get_result($cek);
+
+        if (mysqli_num_rows($hasil_cek) > 0) {
+            $errors["akun"] = "Username atau email sudah digunakan akun lain.";
+        }
+    }
+
+    if (empty($errors)) {
+        $update = mysqli_prepare(
+            $connect,
+            "UPDATE user SET username = ?, email = ? WHERE Id_User = ?"
+        );
+
+        mysqli_stmt_bind_param($update, "ssi", $username, $email, $id_user);
+
+        if (mysqli_stmt_execute($update)) {
+            return true;
+        }
+
+        $errors["db"] = "Gagal memperbarui profil.";
+    }
+
+    $error = implode("<br>", array_map("htmlspecialchars", array_values($errors)));
+    return false;
+}
+
+function prosesUbahPassword($connect, $id_user, &$error)
+{
+    $password = $_POST["password"] ?? "";
+    $confirm_password = $_POST["confirm_password"] ?? "";
+
+    $errors = [];
+
+    valPassword($errors, $password);
+    valConfirmPassword($errors, $password, $confirm_password);
+
+    if (empty($errors)) {
+        $update = mysqli_prepare(
+            $connect,
+            "UPDATE user SET password = SHA2(?, 0) WHERE Id_User = ?"
+        );
+
+        mysqli_stmt_bind_param($update, "si", $password, $id_user);
+
+        if (mysqli_stmt_execute($update)) {
+            return true;
+        }
+
+        $errors["db"] = "Gagal mengubah password.";
+    }
+
+    $error = implode("<br>", array_map("htmlspecialchars", array_values($errors)));
+    return false;
+}
 ?>

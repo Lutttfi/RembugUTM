@@ -1,61 +1,129 @@
 <?php
-require "../client/validasi.php";
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+require_once __DIR__ . "/validasi.php";
 
-    $errors = [];
+// Cek login + pastikan role expert (data pengguna dikembalikan)
+$user = wajibLogin($connect, "client");
 
-    $username =  $_POST["username"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $confirm_password = $_POST["confirm_password"];
-    $role = $_POST["role"];
+$error = "";
+$form = [
+    "username" => $user["username"],
+    "email" => $user["email"],
+];
 
-    $errors = valUsername($errors, $username);
-    $errors = valEmail($errors, $email);
-    $errors = valPassword($errors, $password);
-    $errors = valConfirmPassword($errors, $password, $confirm_password);
-    $errors = valRole($errors, $role);
-
-    if (empty($errors)) {
-        $sql = "INSERT INTO user (username, email, password, role)
-        VALUES (?, ?, SHA2(?, 0), ?)";
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("ssss", $username, $email, $password, $role);
-        $stmt->execute();
+// Proses simpan: kalau berhasil langsung kembali ke profil.php
+if (isset($_POST["ubah_profil"])) {
+    if (prosesEditProfil($connect, $user["Id_User"], $form, $error)) {
+        header("Location: profil.php?berhasil=profil");
+        exit();
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Edit Buku</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil - RembugUTM</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Edit Profil</h1>
-    <form action="daftar.php" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
-        <span style="color: red;"><?= $errors["username"] ?? "" ?></span><br><br>
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" value="<?= isset($errors["email"]) ? "" : trim($_POST["email"] ?? "") ?>">
-        <span style="color: red;"><?= $errors["email"] ?? "" ?></span><br><br>    
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-        <span style="color: red;"><?= $errors["password"] ?? "" ?></span><br><br> 
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" value="<?= isset($errors["confirm_password"]) ? "" : trim($_POST["confirm_password"] ?? "") ?>">
-        <span style="color: red;"><?= $errors["confirm_password"] ?? "" ?></span><br><br> 
-        <label for="role">Daftar Sebagai:</label>
-        <select id="role" name="role">
-            <option value="">-- Pilih Role --</option>
-            <option value="client" <?= (isset($role) && $role === "client") ? "selected" : "" ?>>Client</option>
-            <option value="expert" <?= (isset($role) && $role === "expert") ? "selected" : "" ?>>Expert</option>
-        </select>
-        <span style="color: red;"><?= $errors["role"] ?? "" ?></span><br><br>
-        <input type="submit" value="Daftar">
-    </form>
+<div class="layout">
+    <aside class="sidebar">
+        <a href="../index.php" class="logo">
+            <span class="logo-icon">R</span>
+            Rembug<b>UTM</b>
+        </a>
+
+        <nav class="menu">
+            <a href="beranda.php">
+                <span>Beranda</span>
+            </a>
+            <a href="diskusi.php">
+                <span>Laporan</span>
+            </a>
+            <a href="riwayat.php">
+                <span>Riwayat Laporan</span>
+            </a>
+            <a href="profil.php" class="active">
+                <span>Profil Saya</span>
+            </a>
+        </nav>
+
+        <a href="../auth/logout.php" class="logout">
+            <span>Keluar</span>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-title">
+                <a href="../index.php" class="logo logo-dark">
+                    <span class="logo-icon">R</span>
+                    Rembug<b>UTM</b>
+                </a>
+            </div>
+
+            <div class="profile">
+                <a href="profil.php" class="avatar">
+                    <?= strtoupper(substr(htmlspecialchars($user["username"]), 0, 1)); ?>
+                </a>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="profile-header">
+                <h1>Profil Saya</h1>
+                <p>Lihat dan kelola informasi akun RembugUTM kamu.</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal tampil">
+    <div class="password-modal">
+        <div class="modal-head">
+            <h2>Edit Profil</h2>
+            <a href="profil.php" class="btn-close" aria-label="Kembali ke profil">
+                &times;
+            </a>
+        </div>
+        <p>Perbarui informasi akun RembugUTM kamu.</p>
+        <?php if (!empty($error)): ?>
+            <div class="error">
+                <?= $error; ?>
+            </div>
+        <?php endif; ?>
+        <form method="POST" action="edit_profil.php">
+            <div class="form-group">
+                <label>Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    value="<?= htmlspecialchars($form["username"]); ?>"
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    value="<?= htmlspecialchars($form["email"]); ?>"
+                    required
+                >
+            </div>
+            <div class="form-buttons">
+                <button
+                    type="submit"
+                    name="ubah_profil"
+                    class="btn-save">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

@@ -73,7 +73,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
         </nav>
 
         <a href="../auth/logout.php" class="logout">
-            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+            <span>Keluar</span>
         </a>
     </aside>
 
