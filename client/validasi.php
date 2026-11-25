@@ -15,11 +15,13 @@ function update_buku($Id_User, $Username, $Password, $Email, $Role)
     mysqli_query($connect, $query);
 }
 
+#VALIDASI FORM INPUTAN WAJIB FORM
 function requiredCheck($field)
 {
     return trim($field) === "";
 }
 
+#VALIDASI FORM USERNAME INPUTAN WAJIB DAN HANYA STRING
 function valUsername(&$errors, $field)
 {
     $pattern = "/^[a-zA-Z]+$/";
@@ -31,6 +33,7 @@ function valUsername(&$errors, $field)
     return $errors;
 }
 
+#VALIDASI FORM EMAIL INPUTAN WAJIB DAN HARUS BERFORMAT EMAIL
 function valEmail(&$errors, $field)
 {
     $pattern = "/^[a-z0-9]+@[a-z]+\.[a-z]{3}$/i"; 
@@ -42,6 +45,7 @@ function valEmail(&$errors, $field)
     return $errors;
 }
 
+#VALIDASI FORM ASSWORD INPUTAN WAJIB, HANYA ALFANUMERIK, MINIMAL 8 KARAKTER
 function valPassword(&$errors, $field)
 {
     $pattern = "/^[a-zA-Z0-9]+$/";
@@ -56,6 +60,7 @@ function valPassword(&$errors, $field)
     return $errors;
 }
 
+#VALIDASI FORM KONFIRMASI PASSWORD INPUTAN WAJIB DAN HARUS SAMA DENGAN PASSWORD
 function valConfirmPassword(&$errors, $password, $confirm_password)
 {
     if (requiredCheck($confirm_password)) {
@@ -66,6 +71,7 @@ function valConfirmPassword(&$errors, $password, $confirm_password)
     return $errors;
 }
 
+#VALIDASI FORM ROLE INPUTAN WAJIB DAN HARUS BERISI "client" ATAU "expert"
 function valRole(&$errors, $field)
 {
     $allowed_roles = ["client", "expert"];
@@ -77,17 +83,18 @@ function valRole(&$errors, $field)
     return $errors;
 }
 
+#VALIDASI FORM NOMOR TELEPON INPUTAN WAJIB, HANYA ANGKA, MINIMAL 10 DIGIT DAN MAKSIMAL 12 DIGIT
 function valNomor(&$errors, $field)
 {
-    $pattern = "/^[0-9+]+$/";
+    $pattern = "/^[0-9]+$/";
     if (requiredCheck($field)) {
         $errors["nomor"] = "Nomor telepon tidak boleh kosong";
     } else if (!preg_match($pattern, $field)) {
         $errors["nomor"] = "Nomor telepon tidak valid";
     } else if (strlen($field) < 10) {
-        $errors["nomor"] = "Nomor telepon minimal 10 karakter";
+        $errors["nomor"] = "Nomor telepon minimal 10 digit";
     } else if (strlen($field) > 12) {
-        $errors["nomor"] = "Nomor telepon maksimal 12 karakter";
+        $errors["nomor"] = "Nomor telepon maksimal 12 digit";
     }
     return $errors;
 }
