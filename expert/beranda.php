@@ -31,9 +31,8 @@ $query_laporan = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Beranda</title>
-    <!-- ditambah ?v=2 biar browser langsung muat CSS yang terbaru -->
-    <link rel="stylesheet" href="../css/style.css">
+    <title>RembugRakyat- Beranda</title>
+    <link rel="stylesheet" href="css/beranda.css">
 </head>
 <body>
 
@@ -43,7 +42,7 @@ $query_laporan = mysqli_query($connect, "
     <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
     <div class="sidebar">
         <a href="index.php" class="logo">
-            <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
@@ -75,7 +74,7 @@ $query_laporan = mysqli_query($connect, "
             <!-- kotak bagian kiri di topbar (tempat logo) -->
             <div class="judul-atas">
                 <a href="index.php" class="logo logo-gelap">
-                    <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+                    <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
@@ -93,7 +92,7 @@ $query_laporan = mysqli_query($connect, "
             <!-- kotak khusus judul halaman "Beranda - Expert" dan keterangan -->
             <div class="header-beranda">
                 <h1>Beranda - Expert</h1>
-                <p>Selamat Datang <?php echo htmlspecialchars($nama_expert); ?>! Kelola laporan dan tanggapi aspirasi mahasiswa.</p>
+                <p>Selamat Datang <?php echo htmlspecialchars($nama_expert); ?>! Kelola laporan dan tanggapi aspirasi masyarakat.</p>
             </div>
 
             <!-- kotak putih besar untuk bagian daftar laporan terbaru -->

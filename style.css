@@ -265,6 +265,34 @@ h2 {
   }
 }
 
+/* =========================================
+   KARTU LAPORAN BERANDA (EXPERT & CLIENT)
+   ========================================= */
+
+/* Membuat setiap kiriman laporan jadi kotak kartu terpisah */
+.item-laporan-lengkap {
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+/* Mengatur judul & isi laporan di kiri, label status di kanan */
+.atas-laporan {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Teks isi keluhan/diskusi client */
+.isi-singkat {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 6px;
+}
+
 /* login */
 
 /* daftar */
