@@ -2,18 +2,28 @@
 session_start();
 require "../client/validasi.php";
 
-// CEK LOGIN: Kalau belum login, paksa pindah ke halaman masuk.php
+// Cek apakah user sudah login, kalau belum arahkan ke halaman masuk
 if (!isset($_SESSION["login"])) {
-    header("Location: ../auth/masuk.php"); // sesuaikan letak folder masuk.php kamu
+    header("Location: ../auth/masuk.php");
     exit();
 }
 
-// Ambil username dari database berdasarkan id_user yang login
-$id_user = $_SESSION["id_user"];
-$query   = mysqli_query($connect, "SELECT username FROM user WHERE Id_User = '$id_user'");
-$data    = mysqli_fetch_assoc($query);
+// mengambil nama expert yang sedang login untuk sapaan di atas
+$id_user     = $_SESSION["id_user"];
+$query_user  = mysqli_query($connect, "SELECT Username FROM user WHERE Id_User = '$id_user'");
+$data_user   = mysqli_fetch_assoc($query_user);
+$nama_expert = $data_user["Username"] ?? "Expert";
 
-$nama_expert = $data["username"] ?? "Expert";
+// mengambil semua kiriman laporan dari client dengan menggabungkan tabel topik, user, dan kategori
+$query_laporan = mysqli_query($connect, "
+    SELECT topik.Judul_Topik, topik.Isi_Diskusi,
+        topik.Status,topik.Created_At,
+        user.Username AS nama_pelapor,
+        kategori.Nama_Kategori
+    FROM topik JOIN user ON topik.Id_User = user.Id_User
+    JOIN kategori ON topik.Id_Kategori = kategori.Id_Kategori
+    ORDER BY topik.Id_Topik DESC
+");
 ?>
 
 <!DOCTYPE html>
@@ -21,9 +31,8 @@ $nama_expert = $data["username"] ?? "Expert";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Beranda</title>
-    <!-- ditambah ?v=2 biar browser langsung muat CSS yang terbaru -->
-    <link rel="stylesheet" href="css/beranda.css?v=2">
+    <title>RembugRakyat- Beranda</title>
+    <link rel="stylesheet" href="css/beranda.css">
 </head>
 <body>
 
@@ -33,7 +42,7 @@ $nama_expert = $data["username"] ?? "Expert";
     <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
     <div class="sidebar">
         <a href="index.php" class="logo">
-            <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
@@ -65,7 +74,7 @@ $nama_expert = $data["username"] ?? "Expert";
             <!-- kotak bagian kiri di topbar (tempat logo) -->
             <div class="judul-atas">
                 <a href="index.php" class="logo logo-gelap">
-                    <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+                    <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
@@ -83,35 +92,7 @@ $nama_expert = $data["username"] ?? "Expert";
             <!-- kotak khusus judul halaman "Beranda - Expert" dan keterangan -->
             <div class="header-beranda">
                 <h1>Beranda - Expert</h1>
-                <p>Selamat Datang <?php echo htmlspecialchars($nama_expert); ?>! Kelola laporan dan tanggapi aspirasi mahasiswa.</p>
-            </div>
-
-            <!-- wadah baris untuk menjajarkan 3 kotak angka statistik ke samping -->
-            <div class="baris-statistik">
-                <!-- kotak putih pertama: total laporan -->
-                <div class="kotak-stat">
-                    <!-- pembungkus teks angka dan keterangannya -->
-                    <div class="info-stat">
-                        <h2>5</h2>
-                        <span>Total Laporan</span>
-                    </div>
-                </div>
-
-                <!-- kotak putih kedua: laporan dalam proses -->
-                <div class="kotak-stat">
-                    <div class="info-stat">
-                        <h2>3</h2>
-                        <span>Dalam Proses</span>
-                    </div>
-                </div>
-
-                <!-- kotak putih ketiga: laporan selesai -->
-                <div class="kotak-stat">
-                    <div class="info-stat">
-                        <h2>2</h2>
-                        <span>Selesai</span>
-                    </div>
-                </div>
+                <p>Selamat Datang <?php echo htmlspecialchars($nama_expert); ?>! Kelola laporan dan tanggapi aspirasi masyarakat.</p>
             </div>
 
             <!-- kotak putih besar untuk bagian daftar laporan terbaru -->
@@ -119,48 +100,41 @@ $nama_expert = $data["username"] ?? "Expert";
                 <!-- bagian atas kotak laporan (memisahkan judul di kiri & link "Lihat Semua" di kanan) -->
                 <div class="kepala-kotak">
                     <h2>Laporan Terbaru</h2>
-                    <a href="diskusi.php" class="lihat-semua">Lihat Semua</a>
                 </div>
 
                 <!-- wadah kumpulan baris laporan -->
                 <div class="list-item">
+                 <!-- Ambil semua kiriman laporan client satu per satu dari database -->
+                <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
                     
-                    <!-- baris laporan ke-1 -->
-                    <div class="item-laporan">
-                        <!-- pembungkus sebelah kiri khusus judul laporan dan tanggal -->
-                        <div class="bagian-kiri">
-                            <!-- kotak teks judul dan tanggal biar tersusun atas-bawah -->
+                    <div class="item-laporan-lengkap">
+                        <div class="atas-laporan">
                             <div class="teks-laporan">
-                                <h3>Permintaan penambahan ruang belajar</h3>
-                                <span class="tanggal">10 Nov 2026</span>
+                                <!-- Judul laporan dari client -->
+                                <h3><?= $row["Judul_Topik"] ?></h3>
+                                
+                                <!-- Info nama client yang melapor, kategori, dan tanggal -->
+                                <span class="tanggal">
+                                    Oleh <b><?= $row["nama_pelapor"] ?></b> • 
+                                    Kategori: <?= $row["Nama_Kategori"] ?> • 
+                                    <?= $row["Created_At"] ?>
+                                </span>
+                                
+                                <!-- Isi keluhan/aspirasi dari client -->
+                                <p class="isi-singkat"><?= $row["Isi_Diskusi"] ?></p>
                             </div>
+
+                            <!-- Label status laporan -->
+                            <?php if ($row["Status"] == "Selesai") { ?>
+                                <span class="label-status status-selesai">Selesai</span>
+                            <?php } else { ?>
+                                <span class="label-status status-proses">Dalam Proses</span>
+                            <?php } ?>
                         </div>
-                        <span class="label-status status-proses">Dalam Proses</span>
                     </div>
 
-                    <!-- baris laporan ke-2 -->
-                    <div class="item-laporan">
-                        <div class="bagian-kiri">
-                            <div class="teks-laporan">
-                                <h3>Keluhan fasilitas AC</h3>
-                                <span class="tanggal">09 Nov 2026</span>
-                            </div>
-                        </div>
-                        <span class="label-status status-baru">Baru</span>
-                    </div>
-
-                    <!-- baris laporan ke-3 -->
-                    <div class="item-laporan">
-                        <div class="bagian-kiri">
-                            <div class="teks-laporan">
-                                <h3>Saran peningkatan WiFi</h3>
-                                <span class="tanggal">08 Nov 2026</span>
-                            </div>
-                        </div>
-                        <span class="label-status status-selesai">Selesai</span>
-                    </div>
-
-                </div>
+                <?php } ?>
+            </div>
             </div>
 
         </div>

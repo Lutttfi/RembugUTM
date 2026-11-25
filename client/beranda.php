@@ -12,25 +12,14 @@ if (!isset($_SESSION["login"])) {
 $id_user    = $_SESSION["id_user"];
 $query_user = mysqli_query($connect, "SELECT Username FROM user WHERE Id_User = '$id_user'");
 $data_user  = mysqli_fetch_assoc($query_user);
-$nama_user  = $data_user["Username"] ?? "Mahasiswa";
+$nama_user  = $data_user["Username"] ?? "Manusia";
 
-// menghitung total laporan
-$q_total       = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik");
-$total_laporan = mysqli_fetch_assoc($q_total)["total"];
-// menghitung total yang sedang di proses
-$q_proses      = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik WHERE Status = 'Terbuka'");
-$total_proses  = mysqli_fetch_assoc($q_proses)["total"];
-// menghitung total laporan yang sudah selesai
-$q_selesai     = mysqli_query($connect, "SELECT COUNT(*) AS total FROM topik WHERE Status = 'Selesai'");
-$total_selesai = mysqli_fetch_assoc($q_selesai)["total"];
 
 // mengambil semua laporan + nama pelapor + kategori + jawaban expert
 $query_laporan = mysqli_query($connect, "
     SELECT 
-        topik.Judul_Topik,
-        topik.Isi_Diskusi,
-        topik.Status,
-        topik.Created_At,
+        topik.Judul_Topik,topik.Isi_Diskusi,
+        topik.Status,topik.Created_At,
         pelapor.Username AS nama_pelapor,
         kategori.Nama_Kategori,
         respon.Isi_Respon,
@@ -38,8 +27,8 @@ $query_laporan = mysqli_query($connect, "
     FROM topik
     JOIN user AS pelapor ON topik.Id_User = pelapor.Id_User
     JOIN kategori ON topik.Id_Kategori = kategori.Id_Kategori
-    LEFT JOIN respon ON topik.Id_Topik = respon.Id_Topik
-    LEFT JOIN user AS expert ON respon.Id_User = expert.Id_User
+    JOIN respon ON topik.Id_Topik = respon.Id_Topik
+    JOIN user AS expert ON respon.Id_User = expert.Id_User
     ORDER BY topik.Id_Topik DESC
 ");
 ?>
@@ -48,18 +37,18 @@ $query_laporan = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>RembugRakyat - Beranda</title>
+    <link rel="stylesheet" href="css/beranda.css?v=2">
 </head>
 <body>
 
-<!-- wadah paling luar untuk membungkus seluruh isi halaman (kiri & kanan) -->
+<!-- wadah paling luar untuk membungkus seluruh isi halaman-->
 <div class="bungkus-utama">
 
-    <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
+    <!-- kotak menu samping sebelah kiri  -->
     <div class="sidebar">
         <a href="index.php" class="logo">
-            <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
@@ -83,7 +72,7 @@ $query_laporan = mysqli_query($connect, "
         </a>
     </div>
 
-    <!-- wadah utama bagian kanan (dikasih jarak kiri 260px biar tidak ketutup sidebar) -->
+    <!-- wadah utama bagian kanan -->
     <div class="konten-kanan">
 
         <!-- bar putih paling atas untuk judul dan tombol profil -->
@@ -91,7 +80,7 @@ $query_laporan = mysqli_query($connect, "
             <!-- kotak bagian kiri di topbar (tempat logo) -->
             <div class="judul-atas">
                 <a href="index.php" class="logo logo-gelap">
-                    <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+                    <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
@@ -103,39 +92,13 @@ $query_laporan = mysqli_query($connect, "
             </div>
         </div>
 
-        <!-- wadah isi konten tengah biar lebarnya rapi (maksimal 1000px) dan ada jarak pinggir -->
+        <!-- wadah isi konten tengah -->
         <div class="isi-halaman">
 
-            <!-- kotak khusus judul halaman "Beranda" dan sapaan selamat datang -->
+            <!-- kotak judul halaman "Beranda" dan sapaan selamat datang -->
             <div class="header-beranda">
                 <h1>Beranda</h1>
                 <p>Selamat Datang <?php echo htmlspecialchars($nama_user); ?>!</p>
-            </div>
-
-
-                <!-- kotak pertama yang berisi total seluruh laporan -->
-                <div class="baris-statistik">
-                <div class="kotak-stat">
-                    <div class="info-stat">
-                        <h2><?php echo $total_laporan; ?></h2>
-                        <span>Total Laporan</span>
-                    </div>
-                </div>
-                <!-- kotak kedua yang berisi laporan sedang dalam proses -->
-                <div class="kotak-stat">
-                    <div class="info-stat">
-                        <h2><?php echo $total_proses; ?></h2>
-                        <span>Dalam Proses</span>
-                    </div>
-                </div>
-                <!-- kotak ketiga yang berisi bahwa laporan sudah selesai -->
-                <div class="kotak-stat">
-                    <div class="info-stat">
-                        <h2><?php echo $total_selesai; ?></h2>
-                        <span>Selesai</span>
-                    </div>
-                </div>
-            </div>
             </div>
 
             <!-- kotak putih besar untuk bagian daftar laporan terbaru -->
@@ -162,16 +125,14 @@ $query_laporan = mysqli_query($connect, "
                                 <p class="isi-singkat"><?= $row["Isi_Diskusi"] ?></p>
                             </div>
 
-                            <!-- Cek status nya kalau di database tulisannya 'Selesai', kasih label hijau. Kalau belum, kasih label biru 'Dalam Proses' -->
+                            <!-- Cek status nya kalau di database tulisannya 'Selesai' dikasih label hijau-->
                             <?php if ($row["Status"] == "Selesai") { ?>
                                 <span class="label-status status-selesai">Selesai</span>
-                            <?php } else { ?>
-                                <span class="label-status status-proses">Dalam Proses</span>
-                            <?php } ?>
+                            <?php }?>
+                        
                         </div>
 
-                        <!-- Cek apakah laporan ini sudah dibalas sama expert? Kalau balasannya nggak kosong, munculkan kotak biru jawabannya -->
-                        <?php if ($row["Isi_Respon"] != "") { ?>
+                        <!-- menampilkan laporan yang sudah dibalas sama expert-->
                             <div class="kotak-jawaban">
                                 <b>Jawaban Expert (<?= $row["nama_expert"] ?>):</b>
                                 <p><?= $row["Isi_Respon"] ?></p>
@@ -179,7 +140,6 @@ $query_laporan = mysqli_query($connect, "
                         <?php } ?>
                     </div>
 
-                <?php } ?>
             </div>
 
             <!-- kotak biru muda paling bawah untuk info/tips -->
@@ -190,9 +150,6 @@ $query_laporan = mysqli_query($connect, "
                     <p>Pastikan laporan Anda jelas dan sesuai dengan kategori yang tersedia.</p>
                 </div>
             </div>
-
-            <!-- <br>
-            <hr style="border: 1px dashed #c5d3ea; margin: 30px 0;"> -->
 
         </div>
 
