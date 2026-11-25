@@ -33,7 +33,7 @@ if (isset($_POST["ubah_profil"])) {
     <aside class="sidebar">
         <a href="../index.php" class="logo">
             <span class="logo-icon">R</span>
-            Rembug<b>UTM</b>
+            Rembug<b>Rakyat</b>
         </a>
         <nav class="menu">
             <a href="beranda.php">
@@ -56,7 +56,7 @@ if (isset($_POST["ubah_profil"])) {
             <div class="topbar-title">
                 <a href="../index.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
-                    Rembug<b>UTM</b>
+                    Rembug<b>Rakyat</b>
                 </a>
             </div>
             <div class="profile">

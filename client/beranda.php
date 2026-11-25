@@ -12,7 +12,7 @@ if (!isset($_SESSION["login"])) {
 $id_user    = $_SESSION["id_user"];
 $query_user = mysqli_query($connect, "SELECT Username FROM user WHERE Id_User = '$id_user'");
 $data_user  = mysqli_fetch_assoc($query_user);
-$nama_user  = $data_user["Username"] ?? "Mahasiswa";
+$nama_user  = $data_user["Username"] ?? "Manusia";
 
 
 // mengambil semua laporan + nama pelapor + kategori + jawaban expert
@@ -37,8 +37,8 @@ $query_laporan = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Beranda</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>RembugRakyat - Beranda</title>
+    <link rel="stylesheet" href="../css/beranda.css">
 </head>
 <body>
 
@@ -48,7 +48,7 @@ $query_laporan = mysqli_query($connect, "
     <!-- kotak menu samping sebelah kiri  -->
     <div class="sidebar">
         <a href="index.php" class="logo">
-            <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
@@ -80,7 +80,7 @@ $query_laporan = mysqli_query($connect, "
             <!-- kotak bagian kiri di topbar (tempat logo) -->
             <div class="judul-atas">
                 <a href="index.php" class="logo logo-gelap">
-                    <span class="ikon-logo">R</span> Rembug<b>UTM</b>
+                    <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
