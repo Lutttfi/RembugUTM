@@ -32,7 +32,7 @@ $query_laporan = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RembugRakyat- Beranda</title>
-    <link rel="stylesheet" href="css/beranda.css">
+    <link rel="stylesheet" href="../css/beranda.css">
 </head>
 <body>
 

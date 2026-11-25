@@ -57,7 +57,7 @@ $query_topik = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugRakyat - Riwayat Diskusi</title>
+    <title>Rembug Rakyat - Riwayat Diskusi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -68,7 +68,7 @@ $query_topik = mysqli_query($connect, "
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <a href="beranda.php" class="logo">
-            <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
+           <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
         <nav class="menu">
@@ -98,7 +98,7 @@ $query_topik = mysqli_query($connect, "
         <header class="topbar">
             <div class="topbar-title">
                 <a href="beranda.php" class="logo logo-dark">
-                    <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
+                    <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 

@@ -81,7 +81,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
         <header class="topbar">
             <div class="topbar-title">
                 <a href="beranda.php" class="logo logo-dark">
-                    <span class="logo-icon">R</span> Rembug<b>Rakyat</b>
+                   <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
