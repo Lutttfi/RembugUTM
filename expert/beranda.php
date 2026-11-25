@@ -17,7 +17,7 @@ $nama_expert = $data_user["Username"] ?? "Expert";
 // mengambil semua kiriman laporan dari client dengan menggabungkan tabel topik, user, dan kategori
 $query_laporan = mysqli_query($connect, "
     SELECT topik.Judul_Topik, topik.Isi_Diskusi,
-        topik.Status,topik.Created_At,
+        topik.Status, topik.Created_At,
         user.Username AS nama_pelapor,
         kategori.Nama_Kategori
     FROM topik JOIN user ON topik.Id_User = user.Id_User
@@ -31,7 +31,7 @@ $query_laporan = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugRakyat- Beranda</title>
+    <title>RembugRakyat - Beranda</title>
     <link rel="stylesheet" href="../css/beranda.css">
 </head>
 <body>
@@ -41,7 +41,7 @@ $query_laporan = mysqli_query($connect, "
 
     <!-- kotak menu samping sebelah kiri yang posisinya diam/tetap -->
     <div class="sidebar">
-        <a href="index.php" class="logo">
+        <a href="beranda.php" class="logo">
             <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
@@ -53,12 +53,9 @@ $query_laporan = mysqli_query($connect, "
             <a href="diskusi.php">
                 <span>Laporan</span>
             </a>
-<<<<<<< HEAD
-            <a href="riwayat.php" class="active">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Tanggapan</span>
+            <a href="riwayat.php">
+                <span>Riwayat Tanggapan</span>
             </a>
-=======
->>>>>>> 21ca9a5e3c138e74e00886ae4efa529c7020f081
             <a href="profil.php">
                 <span>Profil Saya</span>
             </a>
@@ -76,15 +73,18 @@ $query_laporan = mysqli_query($connect, "
         <div class="topbar">
             <!-- kotak bagian kiri di topbar (tempat logo) -->
             <div class="judul-atas">
-                <a href="index.php" class="logo logo-gelap">
+                <a href="beranda.php" class="logo logo-gelap">
                     <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
                 </a>
             </div>
 
             <!-- kotak bagian kanan di topbar (tempat tombol profil) -->
-            <div class="profil-user">
-                <a href="profil.php" class="foto-profil">
-                    Profil
+            <div class="profil-user" style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px; font-weight: 600;">
+                    <?= htmlspecialchars($nama_expert); ?>
+                </span>
+                <a href="profil.php" class="foto-profil" title="Lihat Profil">
+                    <?= strtoupper(substr(htmlspecialchars($nama_expert), 0, 1)); ?>
                 </a>
             </div>
         </div>
@@ -107,37 +107,37 @@ $query_laporan = mysqli_query($connect, "
 
                 <!-- wadah kumpulan baris laporan -->
                 <div class="list-item">
-                 <!-- Ambil semua kiriman laporan client satu per satu dari database -->
-                <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
-                    
-                    <div class="item-laporan-lengkap">
-                        <div class="atas-laporan">
-                            <div class="teks-laporan">
-                                <!-- Judul laporan dari client -->
-                                <h3><?= $row["Judul_Topik"] ?></h3>
-                                
-                                <!-- Info nama client yang melapor, kategori, dan tanggal -->
-                                <span class="tanggal">
-                                    Oleh <b><?= $row["nama_pelapor"] ?></b> • 
-                                    Kategori: <?= $row["Nama_Kategori"] ?> • 
-                                    <?= $row["Created_At"] ?>
-                                </span>
-                                
-                                <!-- Isi keluhan/aspirasi dari client -->
-                                <p class="isi-singkat"><?= $row["Isi_Diskusi"] ?></p>
+                    <!-- Ambil semua kiriman laporan client satu per satu dari database -->
+                    <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
+                        
+                        <div class="item-laporan-lengkap">
+                            <div class="atas-laporan">
+                                <div class="teks-laporan">
+                                    <!-- Judul laporan dari client -->
+                                    <h3><?= htmlspecialchars($row["Judul_Topik"]) ?></h3>
+                                    
+                                    <!-- Info nama client yang melapor, kategori, dan tanggal -->
+                                    <span class="tanggal">
+                                        Oleh <b><?= htmlspecialchars($row["nama_pelapor"]) ?></b> • 
+                                        Kategori: <?= htmlspecialchars($row["Nama_Kategori"]) ?> • 
+                                        <?= htmlspecialchars($row["Created_At"]) ?>
+                                    </span>
+                                    
+                                    <!-- Isi keluhan/aspirasi dari client -->
+                                    <p class="isi-singkat"><?= nl2br(htmlspecialchars($row["Isi_Diskusi"])) ?></p>
+                                </div>
+
+                                <!-- Label status laporan -->
+                                <?php if ($row["Status"] == "Selesai") { ?>
+                                    <span class="label-status status-selesai">Selesai</span>
+                                <?php } else { ?>
+                                    <span class="label-status status-proses">Dalam Proses</span>
+                                <?php } ?>
                             </div>
-
-                            <!-- Label status laporan -->
-                            <?php if ($row["Status"] == "Selesai") { ?>
-                                <span class="label-status status-selesai">Selesai</span>
-                            <?php } else { ?>
-                                <span class="label-status status-proses">Dalam Proses</span>
-                            <?php } ?>
                         </div>
-                    </div>
 
-                <?php } ?>
-            </div>
+                    <?php } ?>
+                </div>
             </div>
 
         </div>
