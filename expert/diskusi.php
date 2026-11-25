@@ -10,8 +10,11 @@ if (!isset($_SESSION['Id_User']) && !isset($_SESSION['id_user'])) {
 
 $id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
 
-// Ambil data profil user & cek role
-$query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
+// Ambil data profil user & cek role dengan aman
+$stmt = mysqli_prepare($connect, "SELECT * FROM user WHERE Id_User = ?");
+mysqli_stmt_bind_param($stmt, "s", $id_user);
+mysqli_stmt_execute($stmt);
+$query_user = mysqli_stmt_get_result($stmt);
 $data_user  = mysqli_fetch_assoc($query_user);
 
 if (!$data_user) {
@@ -20,14 +23,14 @@ if (!$data_user) {
     exit;
 }
 
-// Proteksi Role: Hanya 'client' yang boleh mengakses halaman ini
-$role = strtolower($data_user['Role'] ?? $data_user['role'] ?? '');
+// Proteksi Role: Pastikan nilai 'client' sesuai dengan isi kolom Role di database
+$role = strtolower(trim($data_user['Role'] ?? $data_user['role'] ?? ''));
 if ($role !== 'client') {
     header("Location: ../expert/beranda.php");
     exit;
 }
 
-// Ambil pesan error & input lama dari session (validasi server-side PHP)
+// Ambil pesan error & input lama dari session
 $errors   = $_SESSION['errors'] ?? [];
 $old_data = $_SESSION['old_data'] ?? [];
 unset($_SESSION['errors'], $_SESSION['old_data']);
@@ -97,7 +100,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 
         <section class="content">
 
-            <!-- FORM CLIENT (TANPA ATRIBUT VALIDASI HTML) -->
+            <!-- FORM CLIENT -->
             <div class="form-container">
                 <div class="form-header">
                     <div class="header-icon">
