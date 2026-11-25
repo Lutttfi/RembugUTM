@@ -353,9 +353,9 @@ textarea {
   border: 1px solid #bbf7d0;
 }
 .error {
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+    color: red;
+    font-size: 14px;
+    margin-bottom: 16px;
 }
 
 /* =========================================================
@@ -738,204 +738,140 @@ textarea {
 /* =========================================================
    9. HALAMAN DAFTAR / REGISTER
 ========================================================= */
+/* CSS DAFTAR DAN MASUK*/
+/* Navbar */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 10;
   height: 70px;
-  padding: 0 40px;
-  background: #0d2447;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 40px;
+  background: #0d2447;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
 }
-.navbar .menu {
-  display: flex;
-  gap: 26px;
-  font-size: 14px;
+
+.logo {
+  font-size: 20px;
   font-weight: bold;
   color: white;
 }
-.navbar .menu a:hover {
+
+.logo b {
   color: #2f6fd0;
 }
-.auth {
-  display: flex;
-  gap: 10px;
+
+.logo-icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: #2f6fd0;
+  color: white;
+  border-radius: 8px;
 }
 
 .register-container {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-}
-.register-left {
-  width: 42%;
-  padding: 45px 50px;
-  background: #1b2a41;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.register-logo {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 23px;
-  font-weight: bold;
-}
-.register-logo span {
-  background: #3478d4;
-  padding: 7px 12px;
-  border-radius: 10px;
-}
-.register-logo b {
-  color: #4b91ed;
+    display: flex;
 }
 
-.subtitle {
-  color: #79adf4;
-  font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  margin-bottom: 25px;
-}
-.left-content h1 {
-  font-size: 42px;
-  line-height: 1.2;
-  margin-bottom: 25px;
-}
-.description {
-  color: #c5d4e9;
-  font-size: 15px;
-  margin-bottom: 30px;
-}
-.left-content ul li {
-  margin-bottom: 18px;
-  font-size: 15px;
-  color: #e0eaff;
-}
-.left-content ul li::before {
-  content: "●";
-  color: #68a6ff;
-  margin-right: 12px;
+.register{
+    width: 100%;
+    min-height: 100vh;
+    background: #f5f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 45px 60px;
 }
 
-.register-right {
-  width: 58%;
-  padding: 45px 60px;
-  background: #f5f7fb;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .form-content {
-  width: 100%;
-  max-width: 460px;
+    width: 100%;
+    max-width: 470px;
+    margin: 0 auto;
 }
+
 .form-content h1 {
-  font-size: 32px;
-  color: #102748;
-  margin-bottom: 12px;
+    font-size: 32px;
+    color: #102748;
+    margin-bottom: 12px;
 }
+
 .form-subtitle {
-  color: #777;
-  margin-bottom: 35px;
-  font-size: 14px;
+    color: #777;
+    margin-bottom: 30px;
+    font-size: 14px;
 }
+
 .form-subtitle a {
-  color: #3478d4;
-  font-weight: bold;
-}
-.form-row {
-  display: flex;
-  gap: 15px;
-}
-.register-right .error {
-  background: transparent;
-  border: none;
-  padding: 0;
-  color: red;
-  font-size: 12px;
-  margin: 5px 0 0;
+    color: #3478d4;
+    font-weight: bold;
 }
 
-.btn-register {
-  width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2467b8;
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-.btn-register:hover {
-  background: #18549c;
-}
-.register-right .btn-back {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
-  padding: 15px;
-  background: transparent;
-  border: 1px solid #c5d3ea;
-  color: #52647c;
-  font-weight: normal;
-}
-.register-right .btn-back:hover {
-  background: #e9eef6;
+/* FORM PENDAFTARAN */
+.form-content form {
+    width: 100%;
 }
 
-/* =========================================================
-   10. RESPONSIVE (HP & TABLET)
-========================================================= */
-@media (max-width: 768px) {
-  .sidebar {
+.form-content form br {
     display: none;
-  }
-  .konten-kanan,
-  .main-content {
-    margin-left: 0;
-  }
-  .topbar {
-    padding: 0 20px;
-  }
-  .isi-halaman,
-  .content {
-    padding: 20px;
-  }
-  .baris-statistik,
-  .register-container {
-    flex-direction: column;
-  }
-  .register-left,
-  .register-right {
-    width: 100%;
-    padding: 30px 20px;
-  }
-  .form-group-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .form-label {
-    padding-top: 0;
-  }
 }
 
-@media (max-width: 480px) {
-  .profile-buttons,
-  .form-buttons,
-  .modal-buttons,
-  .form-row {
-    flex-direction: column;
-  }
-  .profile-buttons a,
-  .modal-buttons a {
+.form-content form label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #253c5b;
+    margin-bottom: 7px;
+}
+
+.form-content form input[type="text"],
+.form-content form input[type="password"],
+.form-content form select {
     width: 100%;
-  }
+    height: 45px;
+    padding: 0 14px;
+    border: 1px solid #d8dce5;
+    border-radius: 7px;
+    outline: none;
+    background: white;
+    font-size: 14px;
+    color: #253c5b;
+    margin-bottom: 5px;
+    transition: 0.3s;
+}
+
+/* PESAN ERROR */
+.form-content .error-login {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+/* TOMBOL DAFTAR */
+.form-content form input[type="submit"] {
+    width: 100%;
+    height: 46px;
+    background: #2467b8;
+    color: white;
+    border-radius: 7px;
+    font-size: 15px;
+    margin-top: 8px;
+}
+
+/* TOMBOL KEMBALI */
+.btn-kembali {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    border: 1px solid #d8dce5;
+    border-radius: 7px;
+    color: #52647c;
+    background: white;
+    font-size: 14px;
+    margin-top: 12px;
 }

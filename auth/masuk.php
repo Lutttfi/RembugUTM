@@ -50,55 +50,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Masuk</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <div class="register-container">
-        <!-- BAGIAN KIRI -->
-        <div class="register-left">
-            <div class="left-content">
-                <p class="subtitle">MULAI PERJALANAN ANDA</p>
-                <h1>
-                    Suarakan aspirasi,
-                    wujudkan lingkungan
-                    yang lebih baik.
-                </h1>
-                <p class="description">
-                    Bergabung bersama masyarakat lainnya
-                    untuk menyampaikan aspirasi dan
-                    membangun lingkungan masyarakat yang lebih baik.
-                </p>
-                <ul>
-                    <li>Sampaikan aspirasi dengan mudah</li>
-                    <li>Pantau perkembangan laporan</li>
-                    <li>Terhubung dengan masyarakat lainnya</li>
-                </ul>
-            </div>
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>Rakyat</b></a>
+    </header>
+    <!-- CONTENT -->
+    <content class="register">
+        <div class="form-content">
+            <h1>Masuk ke Akun</h1>
+            <p class="form-subtitle"> Belum punya akun? <a href="daftar.php">Daftar di sini</a></p>
+            <p class="error-login"><?= $pesan_error ?></p>
+            <form action="masuk.php" method="post">
+                <!-- FORM MASUKAN USERNAME -->
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Masukkan username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
+                <span class="error"><?= $errors["username"] ?? "" ?></span><br>
+                <!-- FORM MASUKAN PASSWORD -->
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Masukkan password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
+                <span class="error"><?= $errors["password"] ?? "" ?></span><br>
+                <input type="submit" value="Masuk Ke Beranda">
+                <a href="../index.php" class="btn-kembali">Kembali ke Halaman Utama</a>
+            </form>
         </div>
-        <!-- BAGIAN KANAN -->
-        <div class="register-right">
-            <div class="form-content">
-                <h1>Masuk ke Akun</h1>
-                <p class="form-subtitle">
-                    Belum punya akun?
-                    <a href="daftar.php">Daftar di sini</a>
-                </p>
-                <p class="error-login"><?= $pesan_error ?></p>
-                <form action="masuk.php" method="post">
-                    <!-- FORM MASUKAN USERNAME -->
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" placeholder="Masukkan username" value="<?= isset($errors["username"]) ? "" : trim($_POST["username"] ?? "") ?>">
-                    <span class="error"><?= $errors["username"] ?? "" ?></span><br>
-                    <!-- FORM MASUKAN PASSWORD -->
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" placeholder="Masukkan password" value="<?= isset($errors["password"]) ? "" : trim($_POST["password"] ?? "") ?>">
-                    <span class="error"><?= $errors["password"] ?? "" ?></span><br>
-                    <input type="submit" value="Masuk Ke Beranda">
-                    <a href="../index.php" class="btn-kembali">Kembali ke Halaman Utama</a>
-                </form>
-            </div>
-        </div>
-    </div>
+    </content>
 </body>
 </html>

@@ -26,7 +26,7 @@
   <!-- Beranda -->
   <section id="beranda" class="hero">
     <h1>Welcome!</h1>
-    <p>Sampaikan aspirasi, ide, dan masukan untuk kampus yang lebih baik.</p>
+    <p>Sampaikan aspirasi, ide, dan masukan untuk lingkungan yang lebih baik.</p>
   </section>
 
   <!-- Tentang -->
@@ -48,10 +48,10 @@
       <p>Ikuti 4 langkah mudah berikut untuk menyampaikan laporan.</p>
 
       <ol class="steps">
-        <li><span class="num">1</span><div><b>Buat Akun / Masuk</b><br>Daftar dengan email kampus kamu.</div></li>
+        <li><span class="num">1</span><div><b>Buat Akun / Masuk</b><br>Daftar dengan email kamu.</div></li>
         <li><span class="num">2</span><div><b>Tulis Laporan</b><br>Isi judul, kategori, dan detail masalah.</div></li>
         <li><span class="num">3</span><div><b>Kirim &amp; Pantau</b><br>Kirim laporan lalu lihat perkembangannya.</div></li>
-        <li><span class="num">4</span><div><b>Terima Tanggapan</b><br>Pihak kampus akan membalas laporanmu.</div></li>
+        <li><span class="num">4</span><div><b>Terima Tanggapan</b><br>Pihak expert akan membalas laporanmu.</div></li>
       </ol>
     </div>
   </section>
@@ -61,7 +61,7 @@
     <div class="footer-wrap">
       <div class="footer-brand">
         <a href="#beranda" class="logo"><span class="logo-icon">R</span> Rembug<b>Rakyat</b></a>
-        <p>Platform aspirasi dan laporan mahasiswa untuk kampus yang lebih baik.</p>
+        <p>Platform aspirasi dan laporan masyarakat untuk lingkungan yang lebih baik.</p>
       </div>
 
       <div class="footer-col">
@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <p class="copyright">© 2026 RembugUTM. Semua hak dilindungi.</p>
+    <p class="copyright">© 2026 RembugRakyat. Semua hak dilindungi.</p>
   </footer>
 
 </body>
