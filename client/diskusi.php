@@ -14,6 +14,19 @@ $id_user = $_SESSION['Id_User'] ?? $_SESSION['id_user'];
 $query_user = mysqli_query($connect, "SELECT * FROM user WHERE Id_User = '$id_user'");
 $data_user  = mysqli_fetch_assoc($query_user);
 
+if (!$data_user) {
+    session_destroy();
+    header("Location: ../auth/masuk.php");
+    exit;
+}
+
+// Proteksi Role: Hanya 'client' yang boleh mengakses halaman ini
+$role = strtolower($data_user['Role'] ?? $data_user['role'] ?? '');
+if ($role !== 'client') {
+    header("Location: ../expert/beranda.php");
+    exit;
+}
+
 // Ambil pesan error & input lama dari session (validasi server-side PHP)
 $errors   = $_SESSION['errors'] ?? [];
 $old_data = $_SESSION['old_data'] ?? [];
@@ -27,7 +40,8 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RembugUTM - Form Diskusi</title>
+    <title>RembugUTM - Form Laporan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -45,10 +59,10 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                 <i class="fa-solid fa-house"></i> <span>Beranda</span>
             </a>
             <a href="diskusi.php" class="active">
-                <i class="fa-solid fa-comments"></i> <span>Forum Diskusi</span>
+                <i class="fa-solid fa-comments"></i> <span>Laporan</span>
             </a>
             <a href="riwayat.php">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Diskusi</span>
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Laporan</span>
             </a>
             <a href="profil.php">
                 <i class="fa-solid fa-user-gear"></i> <span>Profil Saya</span>
@@ -73,7 +87,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($data_user['Username'] ?? 'Pengguna'); ?>
+                    <?= htmlspecialchars($data_user['Username'] ?? $data_user['username'] ?? 'Pengguna'); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
                     <i class="fa-solid fa-user"></i>
@@ -83,7 +97,7 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
 
         <section class="content">
 
-            <!-- FORM CLIENT (TANPA ATRIBUT VALIDASI HTML) -->
+            <!-- FORM CLIENT -->
             <div class="form-container">
                 <div class="form-header">
                     <div class="header-icon">
@@ -108,19 +122,6 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                 <?php endif; ?>
 
                 <form action="validasi.php" method="POST" enctype="multipart/form-data" class="form-body">
-
-                    <!-- JENIS TOPIK -->
-                    <div class="form-group-row">
-                        <label class="form-label">Jenis Topik <span style="color: #ef4444;">*</span></label>
-                        <div class="form-input radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="jenis_laporan" value="Diskusi" <?= (!isset($old_data['jenis_laporan']) || $old_data['jenis_laporan'] === 'Diskusi') ? 'checked' : ''; ?>> Diskusi Umum
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="jenis_laporan" value="Pertanyaan" <?= (isset($old_data['jenis_laporan']) && $old_data['jenis_laporan'] === 'Pertanyaan') ? 'checked' : ''; ?>> Pertanyaan / Tanya Jawab
-                            </label>
-                        </div>
-                    </div>
 
                     <!-- JUDUL -->
                     <div class="form-group-row">
