@@ -149,7 +149,7 @@ $query_topik = mysqli_query($connect, "
                 </div>
                 <div class="header-text">
                     <h1>Laporan & Diskusi Masuk</h1>
-                    <p>Tinjau laporan dari mahasiswa dan berikan tanggapan resmi.</p>
+                    <p>Tinjau laporan dari masyarakat dan berikan tanggapan resmi.</p>
                 </div>
             </div>
 
