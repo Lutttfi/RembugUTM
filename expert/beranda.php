@@ -45,7 +45,7 @@ $query_laporan = mysqli_query($connect, "
             <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
         </a>
 
-        <!-- wadah untuk menyusun daftar tombol menu secara menurun ke bawah -->
+        <!-- daftar menu untuk berpindah-pindah halaman -->
         <div class="daftar-menu">
             <a href="beranda.php" class="aktif">
                 <span>Beranda</span>
@@ -53,9 +53,12 @@ $query_laporan = mysqli_query($connect, "
             <a href="diskusi.php">
                 <span>Laporan</span>
             </a>
+<<<<<<< HEAD
             <a href="riwayat.php" class="active">
                 <i class="fa-solid fa-clock-rotate-left"></i> <span>Riwayat Tanggapan</span>
             </a>
+=======
+>>>>>>> 21ca9a5e3c138e74e00886ae4efa529c7020f081
             <a href="profil.php">
                 <span>Profil Saya</span>
             </a>
@@ -66,7 +69,7 @@ $query_laporan = mysqli_query($connect, "
         </a>
     </div>
 
-    <!-- wadah utama bagian kanan (dikasih jarak kiri 260px biar tidak ketutup sidebar) -->
+    <!-- wadah utama bagian kanan  -->
     <div class="konten-kanan">
 
         <!-- bar putih paling atas untuk judul dan tombol profil -->
