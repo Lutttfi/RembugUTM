@@ -86,11 +86,11 @@ function valRole(&$errors, $field)
 #VALIDASI FORM NOMOR TELEPON INPUTAN WAJIB, HANYA ANGKA, MINIMAL 10 DIGIT DAN MAKSIMAL 12 DIGIT
 function valNomor(&$errors, $field)
 {
-    $pattern = "/^[0-9]+$/";
+    $pattern = "/^08[0-9]+$/";
     if (requiredCheck($field)) {
         $errors["nomor"] = "Nomor telepon tidak boleh kosong";
     } else if (!preg_match($pattern, $field)) {
-        $errors["nomor"] = "Nomor telepon tidak valid";
+        $errors["nomor"] = "Nomor telepon tidak valid, harus diawali '08' dan hanya berisi angka";
     } else if (strlen($field) < 10) {
         $errors["nomor"] = "Nomor telepon minimal 10 digit";
     } else if (strlen($field) > 12) {
