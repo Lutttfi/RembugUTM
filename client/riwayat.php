@@ -116,21 +116,16 @@ $query_topik = mysqli_query($connect, "
 
         <section class="content">
 
-            <!-- NOTIFIKASI SUKSES / ERROR -->
+            <!-- NOTIFIKASI SUKSES / ERROR DATABASE -->
             <?php if (!empty($pesan_sukses)) : ?>
                 <div style="background-color: #dcfce7; border-left: 4px solid #16a34a; color: #166534; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
                     <?= htmlspecialchars($pesan_sukses); ?>
                 </div>
             <?php endif; ?>
 
-            <?php if (!empty($errors)) : ?>
+            <?php if (!empty($errors['database'])) : ?>
                 <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
-                    <strong>Gagal memperbarui laporan/topik:</strong>
-                    <ul style="margin: 6px 0 0 18px; padding: 0;">
-                        <?php foreach ($errors as $err) : ?>
-                            <li><?= htmlspecialchars($err); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?= htmlspecialchars($errors['database']); ?>
                 </div>
             <?php endif; ?>
 
@@ -176,33 +171,43 @@ $query_topik = mysqli_query($connect, "
 
                             <?php if ($edit_id == $id_topik && !$sudah_ditanggapi) : ?>
                                 <!-- FORM EDIT LAPORAN CLIENT -->
-                                <form action="validasi.php" method="POST" enctype="multipart/form-data" style="margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                <form action="validasi.php" method="POST" style="margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
                                     <input type="hidden" name="id_topik" value="<?= $id_topik; ?>">
                                     
                                     <div style="margin-bottom: 10px;">
                                         <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Judul Laporan / Topik</label>
-                                        <input type="text" name="judul" value="<?= htmlspecialchars($topik['Judul_Topik']); ?>" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                                        <input type="text" name="judul" value="<?= htmlspecialchars($topik['Judul_Topik']); ?>" style="width: 100%; padding: 8px; border: 1px solid <?= !empty($errors['judul']) ? '#ef4444' : '#cbd5e1'; ?>; border-radius: 6px;">
+                                        <?php if (!empty($errors['judul'])) : ?>
+                                            <small style="color: #ef4444; display: block; margin-top: 4px; font-size: 12px;">
+                                                <?= htmlspecialchars($errors['judul']); ?>
+                                            </small>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div style="margin-bottom: 10px;">
                                         <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Kategori</label>
-                                        <select name="kategori" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                                        <select name="kategori" style="width: 100%; padding: 8px; border: 1px solid <?= !empty($errors['kategori']) ? '#ef4444' : '#cbd5e1'; ?>; border-radius: 6px;">
                                             <?php foreach ($daftar_kategori as $kat) : ?>
                                                 <option value="<?= $kat['Id_Kategori']; ?>" <?= ($topik['Id_Kategori'] == $kat['Id_Kategori']) ? 'selected' : ''; ?>>
                                                     <?= htmlspecialchars($kat['Nama_Kategori']); ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
+                                        <?php if (!empty($errors['kategori'])) : ?>
+                                            <small style="color: #ef4444; display: block; margin-top: 4px; font-size: 12px;">
+                                                <?= htmlspecialchars($errors['kategori']); ?>
+                                            </small>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div style="margin-bottom: 10px;">
                                         <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Isi Laporan / Diskusi</label>
-                                        <textarea name="isi" rows="4" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;"><?= htmlspecialchars($topik['Isi_Diskusi']); ?></textarea>
-                                    </div>
-
-                                    <div style="margin-bottom: 10px;">
-                                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Ganti Lampiran <small style="font-weight: normal; color: #64748b;">(Opsional)</small></label>
-                                        <input type="file" name="lampiran">
+                                        <textarea name="isi" rows="4" style="width: 100%; padding: 8px; border: 1px solid <?= !empty($errors['isi']) ? '#ef4444' : '#cbd5e1'; ?>; border-radius: 6px;"><?= htmlspecialchars($topik['Isi_Diskusi']); ?></textarea>
+                                        <?php if (!empty($errors['isi'])) : ?>
+                                            <small style="color: #ef4444; display: block; margin-top: 4px; font-size: 12px;">
+                                                <?= htmlspecialchars($errors['isi']); ?>
+                                            </small>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div style="display: flex; gap: 10px;">
@@ -219,29 +224,6 @@ $query_topik = mysqli_query($connect, "
                                 </div>
 
                                 <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
-                            <?php endif; ?>
-
-                            <!-- TAMPILKAN LAMPIRAN JIKA ADA -->
-                            <?php if (!empty($topik['Lampiran'])) : ?>
-                                <?php 
-                                $file_lampiran = $topik['Lampiran'];
-                                $ext_lampiran  = strtolower(pathinfo($file_lampiran, PATHINFO_EXTENSION));
-                                $path_lampiran = "../uploads/" . htmlspecialchars($file_lampiran);
-                                ?>
-                                <div style="margin: 12px 0;">
-                                    <?php if (in_array($ext_lampiran, ['jpg', 'jpeg', 'png'])) : ?>
-                                        <a href="<?= $path_lampiran; ?>" target="_blank" title="Klik untuk memperbesar gambar">
-                                            <img src="<?= $path_lampiran; ?>" 
-                                                 alt="Lampiran Diskusi" 
-                                                 style="max-width: 220px; max-height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; display: block;">
-                                        </a>
-                                        <small style="color: #64748b; font-size: 11px;">Klik gambar untuk memperbesar</small>
-                                    <?php else : ?>
-                                        <a href="<?= $path_lampiran; ?>" target="_blank" style="display: inline-block; padding: 6px 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #2563eb; text-decoration: none;">
-                                            <i class="fa-solid fa-file-pdf"></i> Buka Dokumen PDF (<?= htmlspecialchars($file_lampiran); ?>)
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
                             <?php endif; ?>
 
                             <!-- AREA TANGGAPAN EXPERT -->

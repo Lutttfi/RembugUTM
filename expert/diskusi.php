@@ -1,24 +1,36 @@
 <?php
 require_once __DIR__ . "/../client/validasi.php";
 
-// Cek login + pastikan role expert
+// Cek login dan pastikan role pengguna adalah expert
 $user = wajibLogin($connect, "expert");
-$id_expert = (int)$user["Id_User"];
+$id_expert = (int) $user["Id_User"];
+$nama_expert = $user["Username"] ?? $user["username"] ?? "Expert";
 
-// 1. PROSES TAMBAH TANGGAPAN BARU & OTOMATIS UBAH STATUS JADI 'Selesai'
+// Variabel penampung pesan error validasi server-side dan ID topik terkait
+$error_respon = "";
+$error_topik_id = 0;
+$error_edit_respon = "";
+$error_edit_id = 0;
+
+// 1. PROSES TAMBAH TANGGAPAN BARU & OTOMATIS UBAH STATUS TOPIK MENJADI 'Selesai'
 if (isset($_POST["kirim_respon"])) {
     $id_topik   = (int) ($_POST["id_topik"] ?? 0);
     $isi_respon = trim($_POST["isi_respon"] ?? "");
 
-    if ($id_topik > 0 &&$isi_respon !== "") {
+    // Validasi server-side PHP: masukan wajib (tanpa atribut 'required' di HTML)
+    if ($isi_respon === "") {
+        $error_respon   = "Gagal mengirim: Isi tanggapan tidak boleh kosong.";
+        $error_topik_id = $id_topik;
+    } elseif ($id_topik > 0) {
+        // Simpan tanggapan baru ke tabel respon
         $stmt_ins = mysqli_prepare($connect, "INSERT INTO respon (Id_User, Id_Topik, Isi_Respon) VALUES (?, ?, ?)");
-        mysqli_stmt_bind_param($stmt_ins, "iis", $id_expert, $id_topik,$isi_respon);
+        mysqli_stmt_bind_param($stmt_ins, "iis", $id_expert, $id_topik, $isi_respon);
         mysqli_stmt_execute($stmt_ins);
 
-        // Sesuaikan dengan standar status temanmu ('Selesai') agar langsung hijau di beranda client
+        // Perbarui status topik menjadi 'Selesai'
         $status_baru = "Selesai";
         $stmt_status = mysqli_prepare($connect, "UPDATE topik SET Status = ? WHERE Id_Topik = ?");
-        mysqli_stmt_bind_param($stmt_status, "si", $status_baru,$id_topik);
+        mysqli_stmt_bind_param($stmt_status, "si", $status_baru, $id_topik);
         mysqli_stmt_execute($stmt_status);
 
         header("Location: diskusi.php?berhasil=tambah#topik-" . $id_topik);
@@ -26,15 +38,20 @@ if (isset($_POST["kirim_respon"])) {
     }
 }
 
-// 2. PROSES EDIT TANGGAPAN (Hanya bisa mengedit tanggapan milik sendiri)
+// 2. PROSES EDIT TANGGAPAN (Hanya dapat mengedit tanggapan milik sendiri)
 if (isset($_POST["simpan_edit_respon"])) {
     $id_respon  = (int) ($_POST["id_respon"] ?? 0);
     $id_topik   = (int) ($_POST["id_topik"] ?? 0);
     $isi_respon = trim($_POST["isi_respon"] ?? "");
 
-    if ($id_respon > 0 &&$isi_respon !== "") {
+    // Validasi server-side PHP: masukan wajib saat memperbarui tanggapan
+    if ($isi_respon === "") {
+        $error_edit_respon = "Gagal memperbarui: Isi tanggapan tidak boleh kosong.";
+        $error_edit_id     = $id_respon;
+    } elseif ($id_respon > 0) {
+        // Update tanggapan di database sesuai Id_Respon dan Id_User
         $stmt_upd = mysqli_prepare($connect, "UPDATE respon SET Isi_Respon = ? WHERE Id_Respon = ? AND Id_User = ?");
-        mysqli_stmt_bind_param($stmt_upd, "sii", $isi_respon, $id_respon,$id_expert);
+        mysqli_stmt_bind_param($stmt_upd, "sii", $isi_respon, $id_respon, $id_expert);
         mysqli_stmt_execute($stmt_upd);
 
         header("Location: diskusi.php?berhasil=edit#topik-" . $id_topik);
@@ -42,28 +59,29 @@ if (isset($_POST["simpan_edit_respon"])) {
     }
 }
 
-// 3. PROSES HAPUS TANGGAPAN (Hanya bisa menghapus tanggapan milik sendiri)
+// 3. PROSES HAPUS TANGGAPAN (Hanya dapat menghapus tanggapan milik sendiri)
 if (isset($_POST["hapus_respon"])) {
     $id_respon = (int) ($_POST["id_respon"] ?? 0);
     $id_topik  = (int) ($_POST["id_topik"] ?? 0);
 
     if ($id_respon > 0) {
+        // Hapus data tanggapan milik expert yang sedang login
         $stmt_del = mysqli_prepare($connect, "DELETE FROM respon WHERE Id_Respon = ? AND Id_User = ?");
-        mysqli_stmt_bind_param($stmt_del, "ii", $id_respon,$id_expert);
+        mysqli_stmt_bind_param($stmt_del, "ii", $id_respon, $id_expert);
         mysqli_stmt_execute($stmt_del);
 
-        // Cek sisa tanggapan pada topik ini; jika kosong (0), kembalikan status ke 'Terbuka'
+        // Cek sisa tanggapan pada topik; jika 0, kembalikan status topik menjadi 'Terbuka'
         if ($id_topik > 0) {
             $stmt_cek = mysqli_prepare($connect, "SELECT COUNT(*) AS total FROM respon WHERE Id_Topik = ?");
             mysqli_stmt_bind_param($stmt_cek, "i", $id_topik);
             mysqli_stmt_execute($stmt_cek);
-            $res_cek   = mysqli_stmt_get_result($stmt_cek);
-            $data_cek  = mysqli_fetch_assoc($res_cek);
+            $res_cek  = mysqli_stmt_get_result($stmt_cek);
+            $data_cek = mysqli_fetch_assoc($res_cek);
 
             if ((int) ($data_cek["total"] ?? 0) === 0) {
                 $status_kembali = "Terbuka";
                 $stmt_status = mysqli_prepare($connect, "UPDATE topik SET Status = ? WHERE Id_Topik = ?");
-                mysqli_stmt_bind_param($stmt_status, "si", $status_kembali,$id_topik);
+                mysqli_stmt_bind_param($stmt_status, "si", $status_kembali, $id_topik);
                 mysqli_stmt_execute($stmt_status);
             }
         }
@@ -73,10 +91,10 @@ if (isset($_POST["hapus_respon"])) {
     }
 }
 
-// Cek apakah sedang membuka mode edit untuk tanggapan tertentu
-$edit_id = isset($_GET["edit"]) ? (int) $_GET["edit"] : 0;
+// Tentukan ID tanggapan yang sedang dibuka dalam mode edit (baik dari GET maupun saat validasi edit gagal)
+$edit_id = $error_edit_id > 0 ? $error_edit_id : (isset($_GET["edit"]) ? (int) $_GET["edit"] : 0);
 
-// Ambil semua topik diskusi masuk beserta data pengirim & kategorinya
+// 4. AMBIL SELURUH TOPIK DISKUSI BESERTA DATA PENGIRIM DAN KATEGORINYA
 $query_topik = mysqli_query($connect, "
     SELECT t.*, u.Username, k.Nama_Kategori 
     FROM topik t
@@ -98,7 +116,7 @@ $query_topik = mysqli_query($connect, "
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR NAVIGASI -->
     <aside class="sidebar">
         <a href="../index.php" class="logo">
             <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
@@ -124,7 +142,7 @@ $query_topik = mysqli_query($connect, "
         </a>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- KONTEN UTAMA -->
     <main class="main-content">
 
         <!-- TOPBAR -->
@@ -137,15 +155,16 @@ $query_topik = mysqli_query($connect, "
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($user['username'] ?? 'Expert'); ?>
+                    <?= htmlspecialchars($nama_expert); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
-                    <?= strtoupper(substr(htmlspecialchars($user['username'] ?? 'E'), 0, 1)); ?>
+                    <?= strtoupper(substr(htmlspecialchars($nama_expert), 0, 1)); ?>
                 </a>
             </div>
         </header>
 
         <section class="content">
+            <!-- HEADER HALAMAN -->
             <div class="form-header" style="margin-bottom: 20px;">
                 <div class="header-icon">
                     <i class="fa-solid fa-inbox"></i>
@@ -156,11 +175,12 @@ $query_topik = mysqli_query($connect, "
                 </div>
             </div>
 
+            <!-- NOTIFIKASI BERHASIL -->
             <?php if (isset($_GET['berhasil'])): ?>
                 <?php
                     $pesan_sukses = "Tanggapan berhasil dikirim.";
-                    if ($_GET['berhasil'] === 'edit')$pesan_sukses = "Tanggapan berhasil diperbarui.";
-                    if ($_GET['berhasil'] === 'hapus')$pesan_sukses = "Tanggapan berhasil dihapus.";
+                    if ($_GET['berhasil'] === 'edit')  $pesan_sukses = "Tanggapan berhasil diperbarui.";
+                    if ($_GET['berhasil'] === 'hapus') $pesan_sukses = "Tanggapan berhasil dihapus.";
                 ?>
                 <div style="background-color: #dcfce7; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
                     <?= $pesan_sukses; ?>
@@ -171,18 +191,21 @@ $query_topik = mysqli_query($connect, "
             <?php if ($query_topik && mysqli_num_rows($query_topik) > 0): ?>
                 <?php while ($topik = mysqli_fetch_assoc($query_topik)): ?>
                     <?php
-                        $id_topik_cur  = (int)$topik['Id_Topik'];
-                        $status_cur    =$topik['Status'] ?? 'Terbuka';
+                        $id_topik_cur  = (int) $topik['Id_Topik'];
+                        $status_cur    = $topik['Status'] ?? 'Terbuka';
                         $sudah_dijawab = ($status_cur === 'Selesai');
 
                         // Ambil semua tanggapan dari seluruh expert untuk topik ini
-                        $query_respon = mysqli_query($connect, "
+                        $stmt_resp = mysqli_prepare($connect, "
                             SELECT r.*, u.Username 
                             FROM respon r
                             LEFT JOIN user u ON r.Id_User = u.Id_User
-                            WHERE r.Id_Topik = $id_topik_cur
+                            WHERE r.Id_Topik = ?
                             ORDER BY r.Created_At ASC
                         ");
+                        mysqli_stmt_bind_param($stmt_resp, "i", $id_topik_cur);
+                        mysqli_stmt_execute($stmt_resp);
+                        $query_respon = mysqli_stmt_get_result($stmt_resp);
                     ?>
                     <div id="topik-<?= $id_topik_cur; ?>" class="form-container" style="margin-bottom: 24px;">
                         <!-- HEADER TOPIK -->
@@ -198,7 +221,7 @@ $query_topik = mysqli_query($connect, "
                                 </h3>
                             </div>
 
-                            <!-- BADGE STATUS OTOMATIS -->
+                            <!-- BADGE STATUS TOPIK -->
                             <span style="padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;
                                 background: <?= $sudah_dijawab ? '#dcfce7' : '#e0f2fe'; ?>;
                                 color: <?= $sudah_dijawab ? '#15803d' : '#0369a1'; ?>;">
@@ -211,10 +234,11 @@ $query_topik = mysqli_query($connect, "
                             <?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?>
                         </p>
 
-                        <!-- LAMPIRAN (DETEKSI FOLDER OTOMATIS) -->
+                        <!-- LAMPIRAN FILE (DETEKSI FOLDER OTOMATIS) -->
                         <?php if (!empty($topik['Lampiran'])): ?>
                             <?php
-                                $nama_file = $topik['Lampiran'];$lokasi_cek = [
+                                $nama_file = $topik['Lampiran'];
+                                $lokasi_cek = [
                                     "../uploads/" . $nama_file,
                                     "../client/uploads/" . $nama_file,
                                     "../assets/uploads/" . $nama_file,
@@ -223,9 +247,9 @@ $query_topik = mysqli_query($connect, "
                                 ];
 
                                 $url_lampiran = "../uploads/" . $nama_file;
-                                foreach ($lokasi_cek as$path) {
+                                foreach ($lokasi_cek as $path) {
                                     if (file_exists(__DIR__ . "/" . $path)) {
-                                        $url_lampiran =$path;
+                                        $url_lampiran = $path;
                                         break;
                                     }
                                 }
@@ -246,8 +270,9 @@ $query_topik = mysqli_query($connect, "
 
                                 <?php while ($resp = mysqli_fetch_assoc($query_respon)): ?>
                                     <?php
-                                        $id_resp_cur   = (int) $resp['Id_Respon'];$milik_sendiri = ((int) $resp['Id_User'] ===$id_expert);
-                                        $sudah_diedit  = (!empty($resp['Updated_At']) && $resp['Updated_At'] !==$resp['Created_At']);
+                                        $id_resp_cur   = (int) $resp['Id_Respon'];
+                                        $milik_sendiri = ((int) $resp['Id_User'] === $id_expert);
+                                        $sudah_diedit  = (!empty($resp['Updated_At']) && $resp['Updated_At'] !== $resp['Created_At']);
                                     ?>
                                     <div style="border-left: 3px solid <?= $milik_sendiri ? '#2563eb' : '#94a3b8'; ?>; padding-left: 12px; margin-bottom: 14px;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
@@ -262,14 +287,15 @@ $query_topik = mysqli_query($connect, "
                                                 <?php endif; ?>
                                             </span>
 
-                                            <!-- TOMBOL EDIT & HAPUS (Hanya tampil jika tanggapan milik expert yang login) -->
-                                            <?php if ($milik_sendiri && $edit_id !==$id_resp_cur): ?>
+                                            <!-- TOMBOL EDIT & HAPUS (Hanya tampil untuk tanggapan milik expert yang sedang login) -->
+                                            <?php if ($milik_sendiri && $edit_id !== $id_resp_cur): ?>
                                                 <div style="display: flex; align-items: center; gap: 10px;">
                                                     <a href="diskusi.php?edit=<?= $id_resp_cur; ?>#topik-<?= $id_topik_cur; ?>" style="font-size: 12px; color: #2563eb; text-decoration: none;">
                                                         <i class="fa-solid fa-pen-to-square"></i> Edit
                                                     </a>
 
-                                                    <form method="POST" action="diskusi.php" style="margin: 0; display: inline;" onsubmit="return confirm('Yakin ingin menghapus tanggapan ini?');">
+                                                    <!-- Form hapus murni menggunakan POST PHP tanpa JavaScript -->
+                                                    <form method="POST" action="diskusi.php" style="margin: 0; display: inline;">
                                                         <input type="hidden" name="id_respon" value="<?= $id_resp_cur; ?>">
                                                         <input type="hidden" name="id_topik" value="<?= $id_topik_cur; ?>">
                                                         <button type="submit" name="hapus_respon" style="background: none; border: none; padding: 0; font-size: 12px; color: #dc2626; cursor: pointer; font-family: inherit;">
@@ -280,12 +306,19 @@ $query_topik = mysqli_query($connect, "
                                             <?php endif; ?>
                                         </div>
 
-                                        <?php if ($milik_sendiri && $edit_id ===$id_resp_cur): ?>
-                                            <!-- FORM INLINE EDIT TANGGAPAN -->
-                                            <form method="POST" action="diskusi.php" style="margin-top: 8px;">
+                                        <?php if ($milik_sendiri && $edit_id === $id_resp_cur): ?>
+                                            <!-- FORM EDIT TANGGAPAN (Validasi server-side tanpa atribut required) -->
+                                            <form method="POST" action="diskusi.php#topik-<?= $id_topik_cur; ?>" style="margin-top: 8px;">
                                                 <input type="hidden" name="id_respon" value="<?= $id_resp_cur; ?>">
                                                 <input type="hidden" name="id_topik" value="<?= $id_topik_cur; ?>">
-                                                <textarea name="isi_respon" rows="3" style="width: 100%; padding: 8px; border: 1px solid #93c5fd; border-radius: 6px; font-family: inherit; margin-bottom: 8px;" required><?= htmlspecialchars($resp['Isi_Respon']); ?></textarea>
+
+                                                <?php if ($error_edit_respon !== "" && $error_edit_id === $id_resp_cur): ?>
+                                                    <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; font-size: 13px;">
+                                                        <?= htmlspecialchars($error_edit_respon); ?>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                                <textarea name="isi_respon" rows="3" style="width: 100%; padding: 8px; border: 1px solid #93c5fd; border-radius: 6px; font-family: inherit; margin-bottom: 8px;"><?= $error_edit_id === $id_resp_cur ? '' : htmlspecialchars($resp['Isi_Respon']); ?></textarea>
                                                 <div style="display: flex; gap: 8px;">
                                                     <button type="submit" name="simpan_edit_respon" class="btn" style="padding: 6px 14px; font-size: 13px;">Simpan Perubahan</button>
                                                     <a href="diskusi.php#topik-<?= $id_topik_cur; ?>" class="btn btn-outline-cancel" style="padding: 6px 14px; font-size: 13px; text-decoration: none;">Batal</a>
@@ -301,13 +334,19 @@ $query_topik = mysqli_query($connect, "
                             </div>
                         <?php endif; ?>
 
-                        <!-- FORM TAMBAH TANGGAPAN BARU (Semua expert bisa ikut menanggapi) -->
-                        <form method="POST" action="diskusi.php" style="border-top: 1px solid #e2e8f0; padding-top: 14px;">
+                        <!-- FORM TAMBAH TANGGAPAN BARU (Validasi server-side tanpa atribut required) -->
+                        <form method="POST" action="diskusi.php#topik-<?= $id_topik_cur; ?>" style="border-top: 1px solid #e2e8f0; padding-top: 14px;">
                             <input type="hidden" name="id_topik" value="<?= $id_topik_cur; ?>">
+
+                            <?php if ($error_respon !== "" && $error_topik_id === $id_topik_cur): ?>
+                                <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 10px 14px; margin-bottom: 10px; border-radius: 6px; font-size: 13px;">
+                                    <?= htmlspecialchars($error_respon); ?>
+                                </div>
+                            <?php endif; ?>
 
                             <div style="margin-bottom: 10px;">
                                 <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Tambah Tanggapan:</label>
-                                <textarea name="isi_respon" rows="3" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit;" placeholder="Tulis tanggapan atau masukan Anda untuk topik ini..." required></textarea>
+                                <textarea name="isi_respon" rows="3" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit;" placeholder="Tulis tanggapan atau masukan Anda untuk topik ini..."></textarea>
                             </div>
 
                             <div style="display: flex; justify-content: flex-end;">

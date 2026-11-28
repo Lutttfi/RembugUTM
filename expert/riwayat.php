@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . "/../client/validasi.php";
 
-// Cek login + pastikan role expert
+// Cek login dan pastikan role pengguna adalah expert
 $user = wajibLogin($connect, "expert");
 $id_expert = (int) $user["Id_User"];
+$nama_expert = $user["Username"] ?? $user["username"] ?? "Expert";
 
-// Ambil riwayat topik/laporan yang pernah ditanggapi oleh expert yang sedang login
-$query_topik = mysqli_query($connect, "
+// Ambil riwayat topik diskusi yang pernah ditanggapi oleh expert yang sedang login
+$stmt_topik = mysqli_prepare($connect, "
     SELECT DISTINCT 
         t.*, 
         k.Nama_Kategori, 
@@ -15,9 +16,12 @@ $query_topik = mysqli_query($connect, "
     INNER JOIN respon r ON t.Id_Topik = r.Id_Topik
     LEFT JOIN kategori k ON t.Id_Kategori = k.Id_Kategori
     LEFT JOIN user u ON t.Id_User = u.Id_User
-    WHERE r.Id_User = $id_expert
+    WHERE r.Id_User = ?
     ORDER BY t.Created_At DESC
 ");
+mysqli_stmt_bind_param($stmt_topik, "i", $id_expert);
+mysqli_stmt_execute($stmt_topik);
+$query_topik = mysqli_stmt_get_result($stmt_topik);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -32,7 +36,7 @@ $query_topik = mysqli_query($connect, "
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR NAVIGASI -->
     <aside class="sidebar">
         <a href="../index.php" class="logo">
            <span class="ikon-logo">R</span> Rembug<b>Rakyat</b>
@@ -58,7 +62,7 @@ $query_topik = mysqli_query($connect, "
         </a>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- KONTEN UTAMA -->
     <main class="main-content">
 
         <!-- TOPBAR -->
@@ -71,17 +75,17 @@ $query_topik = mysqli_query($connect, "
 
             <div class="profile" style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 14px; font-weight: 600;">
-                    <?= htmlspecialchars($user['username'] ?? 'Expert'); ?>
+                    <?= htmlspecialchars($nama_expert); ?>
                 </span>
                 <a href="profil.php" class="avatar" title="Lihat Profil">
-                    <?= strtoupper(substr(htmlspecialchars($user['username'] ?? 'E'), 0, 1)); ?>
+                    <?= strtoupper(substr(htmlspecialchars($nama_expert), 0, 1)); ?>
                 </a>
             </div>
         </header>
 
         <section class="content">
 
-            <!-- HEADER & TOMBOL LIHAT LAPORAN MASUK -->
+            <!-- HEADER HALAMAN & TOMBOL NAVIGASI -->
             <div class="discussion-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>Riwayat Tanggapan Saya</h2>
                 <a href="diskusi.php" class="btn" style="text-decoration: none;">Lihat Laporan Masuk</a>
@@ -93,16 +97,20 @@ $query_topik = mysqli_query($connect, "
                         <?php
                         $id_topik = (int) $topik['Id_Topik'];
 
-                        $query_respon = mysqli_query($connect, "
+                        // Ambil seluruh daftar tanggapan milik expert ini pada topik terkait
+                        $stmt_respon = mysqli_prepare($connect, "
                             SELECT r.*, u.Username AS Nama_Expert 
                             FROM respon r
                             LEFT JOIN user u ON r.Id_User = u.Id_User
-                            WHERE r.Id_Topik = $id_topik AND r.Id_User = $id_expert
+                            WHERE r.Id_Topik = ? AND r.Id_User = ?
                             ORDER BY r.Id_Respon ASC
                         ");
+                        mysqli_stmt_bind_param($stmt_respon, "ii", $id_topik, $id_expert);
+                        mysqli_stmt_execute($stmt_respon);
+                        $query_respon = mysqli_stmt_get_result($stmt_respon);
                         ?>
 
-                        <!-- TOPIC CARD DINAMIS -->
+                        <!-- KARTU TOPIK RIWAYAT -->
                         <div class="topic-card">
                             <div class="topic-top">
                                 <span class="topic-category"><?= htmlspecialchars($topik['Nama_Kategori'] ?? 'Umum'); ?></span>
@@ -112,12 +120,12 @@ $query_topik = mysqli_query($connect, "
                             <h3><?= htmlspecialchars($topik['Judul_Topik']); ?></h3>
 
                             <div class="topic-info">
-                                Pelapor: <strong><?= htmlspecialchars($topik['Nama_Pelapor'] ?? 'Masyarakat'); ?></strong> · <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
+                                Pelapor: <strong><?= htmlspecialchars($topik['Nama_Pelapor'] ?? 'Masyarakat'); ?></strong> &middot; <?= date('d M Y H:i', strtotime($topik['Created_At'])); ?>
                             </div>
 
                             <p class="topic-content"><?= nl2br(htmlspecialchars($topik['Isi_Diskusi'])); ?></p>
 
-                            <!-- TAMPILKAN LAMPIRAN JIKA ADA (DETEKSI FOLDER OTOMATIS) -->
+                            <!-- TAMPILKAN LAMPIRAN FILE JIKA TERSEDIA -->
                             <?php if (!empty($topik['Lampiran'])) : ?>
                                 <?php
                                 $nama_file = $topik['Lampiran'];

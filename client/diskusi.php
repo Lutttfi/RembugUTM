@@ -30,9 +30,9 @@ if ($role !== 'client') {
 $nama_tampil = $data_user['Username'] ?? $data_user['username'] ?? 'Pengguna';
 
 // Ambil pesan error & input lama dari session (validasi server-side PHP)
-$errors   =$_SESSION['errors'] ?? [];
-$old_data =$_SESSION['old_data'] ?? [];
-unset($_SESSION['errors'],$_SESSION['old_data']);
+$errors   = $_SESSION['errors'] ?? [];
+$old_data = $_SESSION['old_data'] ?? [];
+unset($_SESSION['errors'], $_SESSION['old_data']);
 
 // Ambil data kategori dari database untuk dropdown
 $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kategori ASC");
@@ -111,25 +111,25 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                     </div>
                 </div>
 
-                <!-- NOTIFIKASI ERROR VALIDASI SERVER-SIDE PHP -->
-                <?php if (!empty($errors)) : ?>
+                <!-- NOTIFIKASI KHUSUS ERROR DATABASE (JIKA ADA) -->
+                <?php if (!empty($errors['database'])) : ?>
                     <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
-                        <strong>Periksa kembali isian Anda:</strong>
-                        <ul style="margin: 6px 0 0 18px; padding: 0;">
-                            <?php foreach ($errors as$err) : ?>
-                                <li><?= htmlspecialchars($err); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <?= htmlspecialchars($errors['database']); ?>
                     </div>
                 <?php endif; ?>
 
-                <form action="validasi.php" method="POST" enctype="multipart/form-data" class="form-body">
+                <form action="validasi.php" method="POST" class="form-body">
 
                     <!-- JUDUL -->
                     <div class="form-group-row">
                         <label class="form-label" for="judul">Judul Topik <span style="color: #ef4444;">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="judul" name="judul" placeholder="Tulis topik atau pertanyaan yang ingin dibahas..." value="<?= htmlspecialchars($old_data['judul'] ?? ''); ?>">
+                            <input type="text" id="judul" name="judul" placeholder="Tulis topik atau pertanyaan yang ingin dibahas..." value="<?= htmlspecialchars($old_data['judul'] ?? ''); ?>" style="<?= !empty($errors['judul']) ? 'border-color: #ef4444;' : ''; ?>">
+                            <?php if (!empty($errors['judul'])) : ?>
+                                <small style="color: #ef4444; display: block; margin-top: 5px; font-size: 13px;">
+                                    <?= htmlspecialchars($errors['judul']); ?>
+                                </small>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -137,14 +137,19 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                     <div class="form-group-row">
                         <label class="form-label" for="kategori">Kategori <span style="color: #ef4444;">*</span></label>
                         <div class="form-input">
-                            <select id="kategori" name="kategori">
+                            <select id="kategori" name="kategori" style="<?= !empty($errors['kategori']) ? 'border-color: #ef4444;' : ''; ?>">
                                 <option value="">Pilih kategori diskusi...</option>
                                 <?php while ($row = mysqli_fetch_assoc($query_kategori)) : ?>
-                                    <option value="<?= $row['Id_Kategori']; ?>" <?= (isset($old_data['kategori']) && $old_data['kategori'] ==$row['Id_Kategori']) ? 'selected' : ''; ?>>
+                                    <option value="<?= $row['Id_Kategori']; ?>" <?= (isset($old_data['kategori']) && $old_data['kategori'] == $row['Id_Kategori']) ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($row['Nama_Kategori']); ?>
                                     </option>
                                 <?php endwhile; ?>
                             </select>
+                            <?php if (!empty($errors['kategori'])) : ?>
+                                <small style="color: #ef4444; display: block; margin-top: 5px; font-size: 13px;">
+                                    <?= htmlspecialchars($errors['kategori']); ?>
+                                </small>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -152,18 +157,12 @@ $query_kategori = mysqli_query($connect, "SELECT * FROM kategori ORDER BY Id_Kat
                     <div class="form-group-row">
                         <label class="form-label" for="isi">Isi Diskusi <span style="color: #ef4444;">*</span></label>
                         <div class="form-input">
-                            <textarea id="isi" name="isi" placeholder="Uraikan topik pembahasan, latar belakang, atau pertanyaan Anda secara jelas..."><?= htmlspecialchars($old_data['isi'] ?? ''); ?></textarea>
-                        </div>
-                    </div>
-
-                    <!-- LAMPIRAN -->
-                    <div class="form-group-row">
-                        <label class="form-label">Lampiran <small class="text-muted">(Opsional)</small></label>
-                        <div class="form-input">
-                            <div class="file-upload-box">
-                                <input type="file" id="lampiran" name="lampiran" class="file-input-native">
-                            </div>
-                            <span class="input-hint">Format: JPG, PNG, PDF (maks. 5MB)</span>
+                            <textarea id="isi" name="isi" placeholder="Uraikan topik pembahasan, latar belakang, atau pertanyaan Anda secara jelas..." style="<?= !empty($errors['isi']) ? 'border-color: #ef4444;' : ''; ?>"><?= htmlspecialchars($old_data['isi'] ?? ''); ?></textarea>
+                            <?php if (!empty($errors['isi'])) : ?>
+                                <small style="color: #ef4444; display: block; margin-top: 5px; font-size: 13px;">
+                                    <?= htmlspecialchars($errors['isi']); ?>
+                                </small>
+                            <?php endif; ?>
                         </div>
                     </div>
 
