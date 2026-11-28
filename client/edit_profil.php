@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/validasi.php";
+require_once __DIR__ . "/../validasi.php";
 
 // Cek login + pastikan role expert (data pengguna dikembalikan)
 $user = wajibLogin($connect, "client");
@@ -25,7 +25,7 @@ if (isset($_POST["ubah_profil"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil - RembugUTM</title>
+    <title>Edit Profil - RembugRakyat</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -33,7 +33,7 @@ if (isset($_POST["ubah_profil"])) {
     <aside class="sidebar">
         <a href="../index.php" class="logo">
             <span class="logo-icon">R</span>
-            Rembug<b>UTM</b>
+            Rembug<b>Rakyat</b>
         </a>
 
         <nav class="menu">
@@ -61,7 +61,7 @@ if (isset($_POST["ubah_profil"])) {
             <div class="topbar-title">
                 <a href="../index.php" class="logo logo-dark">
                     <span class="logo-icon">R</span>
-                    Rembug<b>UTM</b>
+                    Rembug<b>Rakyat</b>
                 </a>
             </div>
 
@@ -75,7 +75,7 @@ if (isset($_POST["ubah_profil"])) {
         <section class="content">
             <div class="profile-header">
                 <h1>Profil Saya</h1>
-                <p>Lihat dan kelola informasi akun RembugUTM kamu.</p>
+                <p>Lihat dan kelola informasi akun RembugRakyat kamu.</p>
             </div>
         </section>
     </main>
@@ -89,7 +89,7 @@ if (isset($_POST["ubah_profil"])) {
                 &times;
             </a>
         </div>
-        <p>Perbarui informasi akun RembugUTM kamu.</p>
+        <p>Perbarui informasi akun RembugRakyat kamu.</p>
         <?php if (!empty($error)): ?>
             <div class="error">
                 <?= $error; ?>

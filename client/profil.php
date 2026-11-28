@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/validasi.php";
+require_once __DIR__ . "/../validasi.php";
 
 // Cek login + pastikan role client (data pengguna dikembalikan)
 $user = wajibLogin($connect, "client");

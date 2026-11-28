@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "validasi.php";
+require "../validasi.php";
 
 // Cek login
 if (!isset($_SESSION["login"])) {
@@ -98,7 +98,7 @@ $query_laporan = mysqli_query($connect, "
             <div class="kotak-laporan">
                 
             <div class="list-item">
-                <!-- Ambil semua data laporan satu per satu dari database, lalu cetak ke layar -->
+                <!-- mengambil semua data laporan satu per satu dari database -->
                 <?php while ($row = mysqli_fetch_assoc($query_laporan)) { ?>
                     
                     <div class="item-laporan-lengkap">
@@ -107,7 +107,7 @@ $query_laporan = mysqli_query($connect, "
                                 <!-- Tampilkan judul laporannya -->
                                 <h3><?= $row["Judul_Topik"] ?></h3>
                                 
-                                <!-- Tampilkan info siapa yang lapor, kategorinya apa, dan kapan dibuat -->
+                                <!-- menampilkan info pelapor, kategori, dan kapan dibuat -->
                                 <span class="tanggal">
                                     Oleh <b><?= $row["nama_pelapor"] ?></b> • 
                                     Kategori: <?= $row["Nama_Kategori"] ?> • 

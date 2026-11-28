@@ -1,5 +1,5 @@
 <?php
-require "../client/validasi.php";
+require "../validasi.php";
 
 session_start();
 $errors = [];

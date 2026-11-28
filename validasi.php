@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../database/koneksi.php";
+require_once __DIR__ . "/database/koneksi.php";
 
 // Function untuk mengupdate data berdasarkan ID
 function update_buku($Id_User, $Username, $Password, $Email, $Role)

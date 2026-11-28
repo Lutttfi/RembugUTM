@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../client/validasi.php";
+require "../validasi.php";
 
 // Cek apakah user sudah login, kalau belum arahkan ke halaman masuk
 if (!isset($_SESSION["login"])) {
