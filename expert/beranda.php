@@ -14,14 +14,16 @@ $query_user  = mysqli_query($connect, "SELECT Username FROM user WHERE Id_User =
 $data_user   = mysqli_fetch_assoc($query_user);
 $nama_expert = $data_user["Username"] ?? "Expert";
 
-// mengambil semua kiriman laporan dari client dengan menggabungkan tabel topik, user, dan kategori
+// mengambil semua laporan client dan jawaban expert 
 $query_laporan = mysqli_query($connect, "
-    SELECT topik.Judul_Topik, topik.Isi_Diskusi,
-        topik.Status, topik.Created_At,
-        user.Username AS nama_pelapor,
-        kategori.Nama_Kategori
-    FROM topik JOIN user ON topik.Id_User = user.Id_User
+    SELECT topik.Judul_Topik, topik.Isi_Diskusi, topik.Status, topik.Created_At,
+        pelapor.Username AS nama_pelapor, kategori.Nama_Kategori,
+        respon.Isi_Respon, expert.Username AS nama_expert
+    FROM topik
+    JOIN user AS pelapor ON topik.Id_User = pelapor.Id_User
     JOIN kategori ON topik.Id_Kategori = kategori.Id_Kategori
+    LEFT JOIN respon ON topik.Id_Topik = respon.Id_Topik
+    LEFT JOIN user AS expert ON respon.Id_User = expert.Id_User
     ORDER BY topik.Id_Topik DESC
 ");
 ?>
@@ -127,13 +129,13 @@ $query_laporan = mysqli_query($connect, "
                                     <p class="isi-singkat"><?= nl2br(htmlspecialchars($row["Isi_Diskusi"])) ?></p>
                                 </div>
 
-                                <!-- Label status laporan -->
-                                <?php if ($row["Status"] == "Selesai") { ?>
-                                    <span class="label-status status-selesai">Selesai</span>
-                                <?php } else { ?>
-                                    <span class="label-status status-proses">Dalam Proses</span>
-                                <?php } ?>
                             </div>
+                            <?php if (!empty($row["Isi_Respon"])) { ?>
+                                <div class="kotak-jawaban">
+                                    <b>Jawaban Expert (<?= htmlspecialchars($row["nama_expert"]) ?>):</b><br>
+                                    <?= htmlspecialchars($row["Isi_Respon"]) ?>
+                                </div>
+                            <?php } ?>
                         </div>
 
                     <?php } ?>
